@@ -1,13 +1,21 @@
-# JavaScript React Chrome Extension Boilerplate
+# Proclivity
 
-A basic react Chrome Extension boilerplate that gets you started quickly. It supports modern, modular JavaScript, [ESM compatible React](https://medium.com/@joeldenning/an-esm-bundle-for-any-npm-package-5f850db0e04d) and automatic reloading during development. Jest, ESLint and Prettier included. Bundled using [Rollup](https://rollupjs.org/guide/en/)
+A browser plugin that assists with reading webcomics by improving accessibility — focused specially on archival readings through webcomics.
+
+## Features
+
+- Save and load your progress automatically with support for setting a manual checkpoint
+- Add consistent, customizable keyboard navigation with support for Gmail-style key sequences
+- Copy comic title text to a static image caption below the comic (e.g. [xkcd](https://xkcd.com))
+- Copy any after-comics to below the comic (e.g. [Saturday Morning Breakfast Cereal](https://smbc-comics.com))
+- Expand textboxes in-place (e.g. [What If?](https://what-if.xkcd.com), [Homestuck](https://homestuck.com))
 
 ## Get Started
 
 Type this into your terminal:
 
 ```sh
-git clone https://github.com/extend-chrome/js-react-boilerplate.git
+git clone https://github.com/micah-yeager/proclivity
 npm install
 ```
 
@@ -31,22 +39,4 @@ npm run build
 
 This will create a ZIP file with your package name and version in the `releases`
 folder.
-
-## Source Layout
-
-Your manifest is at `src/manifest.json`, and Rollup will bundle any files you
-include here. All the filepaths in your manifest should point to files in `src`.
-
-## Features
-
-- Simple Bundling with Rollup
-- Chrome Extension reloader
-- Jest for testing
-
-
-## Resources
-
-[Chrome Extension official documentation](https://developer.chrome.com/docs/webstore/)
-
-[How to Publish your extension step by step video tutorial](https://www.youtube.com/playlist?list=PLYlOQabA4Mm0bPiMKIBMgZK0u2jbYsrC6)
 
