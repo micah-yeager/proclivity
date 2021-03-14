@@ -1,10 +1,10 @@
 # Proclivity
 
-A browser plugin that assists with reading webcomics by improving accessibility — focused specially on archival readings through webcomics.
+A browser plugin that assists with reading webcomics by improving accessibility — focused especially on archival readings through webcomics.
 
 ## Features
 
-- Save and load your progress automatically with support for setting a manual checkpoint
+- Save and load your progress automatically with support for setting manual checkpoints
 - Add consistent, customizable keyboard navigation with support for Gmail-style key sequences
 - Copy comic title text to a static image caption below the comic (e.g. [xkcd](https://xkcd.com))
 - Copy any after-comics to below the comic (e.g. [Saturday Morning Breakfast Cereal](https://smbc-comics.com))
