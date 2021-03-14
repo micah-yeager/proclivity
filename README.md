@@ -2,7 +2,9 @@
 
 A browser plugin that assists with reading webcomics by improving accessibility — focused especially on archival readings through webcomics.
 
-## Features
+## Overview
+
+### Features
 
 - Save and load your progress automatically with support for setting manual checkpoints
 - Add consistent, customizable keyboard navigation with support for Gmail-style key sequences
@@ -10,7 +12,33 @@ A browser plugin that assists with reading webcomics by improving accessibility 
 - Copy any after-comics to below the comic (e.g. [Saturday Morning Breakfast Cereal](https://smbc-comics.com))
 - Expand textboxes in-place (e.g. [What If?](https://what-if.xkcd.com), [Homestuck](https://homestuck.com))
 
-## Get started
+### Supported webcomics
+
+Issues or pull requests for additional sites are welcome!
+
+- [Buttersafe](https://www.buttersafe.com/)
+- [Daisy Owl](https://daisyowl.com/)
+- [Dinosaur Comics](https://qwantz.com/)
+- [Dr. McNinja](http://drmcninja.com/)
+- [Dresden Codak](https://dresdencodak.com/)
+- [Gunnerkrigg Court](https://www.gunnerkrigg.com/)
+- [Hark! A Vagrant](http://www.harkavagrant.com/)
+- [Homestuck](https://www.homestuck.com/)
+- [Jolly Jack's Collected Curios](https://collectedcurios.com/)
+- [Lackadaisy Cats](https://lackadaisycats.com/)
+- [Oglaf](https://www.oglaf.com/) (NSFW)
+- [Paradox Space](http://hs.hiveswap.com/paradoxspace/index.php)
+- [Poorly Drawn Lines](https://poorlydrawnlines.com/)
+- [Prequel](https://www.prequeladventure.com/)
+- [Romantically Apocalyptic](https://romanticallyapocalyptic.com/)
+- [Sam & Fuzzy](https://www.samandfuzzy.com/)
+- [Saturday Morning Breakfast Cereal](https://www.smbc-comics.com/)
+- [Three Word Phrase](http://threewordphrase.com/)
+- [What If?](https://what-if.xkcd.com/)
+- [Wilde Life](https://www.wildelifecomic.com/)
+- [xkcd](https://xkcd.com/)
+
+## Building locally
 
 Type this into your terminal:
 
