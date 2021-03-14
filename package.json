@@ -28,13 +28,19 @@
     "test": "jest"
   },
   "dependencies": {
+    "@rollup/plugin-alias": "^3.1.2",
+    "@rollup/plugin-json": "^4.1.0",
     "@types/chrome": "^0.0.127",
     "@types/firefox-webext-browser": "^82.0.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "node-sass": "^5.0.0",
     "prettier": "^2.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-icons": "^4.2.0",
+    "rollup-plugin-postcss": "^4.0.0",
+    "tn-mousetrap": "^1.6.7",
     "webextension-polyfill": "^0.7.0"
   },
   "devDependencies": {

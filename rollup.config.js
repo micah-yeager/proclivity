@@ -1,7 +1,10 @@
 import path from 'path'
 
+import alias from '@rollup/plugin-alias'
 import babel from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
+import json from '@rollup/plugin-json'
+import postcss from 'rollup-plugin-postcss'
 import replace from '@rollup/plugin-replace'
 import resolve from '@rollup/plugin-node-resolve'
 
@@ -10,6 +13,33 @@ import { emptyDir } from 'rollup-plugin-empty-dir'
 import zip from 'rollup-plugin-zip'
 
 const isProduction = process.env.NODE_ENV === 'production'
+
+// Aliases for module resolution
+const projectRootDir = path.resolve(__dirname)
+const aliases = [
+    {
+        find: 'src',
+        replacement: path.resolve(projectRootDir, 'src')
+    }
+]
+if (isProduction) {
+  aliases.concat(
+    [
+      {
+        find: 'react',
+        // Use the production build
+        replacement: require.resolve('react/esm/react.production.min.js'),
+      },
+      {
+        find: 'react-dom',
+        // Use the production build
+        replacement: require.resolve(
+            'react-dom/esm/react-dom.production.min.js',
+        ),
+      },
+    ]
+  )
+}
 
 export default {
   input: 'src/manifest.json',
@@ -22,6 +52,7 @@ export default {
     chromeExtension(),
     // Adds a Chrome extension reloader during watch mode
     simpleReloader(),
+    alias({ entries: aliases }),
     // Replace environment variables
     replace({
       preventAssignment: true,
@@ -32,8 +63,14 @@ export default {
       ignore: ['node_modules'],
       babelHelpers: 'bundled',
     }),
-    resolve(),
+    resolve({ preferBuiltins: false }),
     commonjs(),
+    json({ compact: true }),
+        postcss({
+            extract: false,
+            modules: true,
+            use: ['sass'],
+        }),
     // Empties the output dir before a new build
     emptyDir(),
     // Outputs a zip file in ./releases
