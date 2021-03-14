@@ -10,7 +10,7 @@ A browser plugin that assists with reading webcomics by improving accessibility 
 - Copy any after-comics to below the comic (e.g. [Saturday Morning Breakfast Cereal](https://smbc-comics.com))
 - Expand textboxes in-place (e.g. [What If?](https://what-if.xkcd.com), [Homestuck](https://homestuck.com))
 
-## Get Started
+## Get started
 
 Type this into your terminal:
 
@@ -40,3 +40,9 @@ npm run build
 This will create a ZIP file with your package name and version in the `releases`
 folder.
 
+## Support the dev
+
+If you feel so inclined, you can donate using one of the following options:
+- [PayPal](https://paypal.me/MicahHummert)
+- [Cash App](https://cash.app/$micahyeagers)
+- Bitcoin: 39s1W2rJHbrVfN5hpTJUJt8T7EtBhuJr2e
