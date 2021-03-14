@@ -1,10 +1,58 @@
 {
-  "background": { "scripts": ["background/index.js"] },
-  "content_scripts": [
-    {
-      "js": ["content/index.js"],
-      "matches": ["https://*/*", "http://*/*"]
+    "manifest_version": 2,
+    "permissions": [
+    	"tabs",
+    	"declarativeContent",
+    	"storage"
+    ],
+    "background": {
+        "scripts": ["background/index.js"],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "run_at": "document_start",
+            "js": ["content/index.js"],
+            "matches": [
+                "*://*.qwantz.com/*",
+                "*://*.daisyowl.com/*",
+                "*://*.drmcninja.com/*",
+                "*://*.smbc-comics.com/*",
+                "*://*.homestuck.com/*",
+                "*://*.buttersafe.com/*",
+                "*://*.dresdencodak.com/*",
+                "*://*.gunnerkrigg.com/*",
+                "*://*.harkavagrant.com/*",
+                "*://*.lackadaisycats.com/*",
+                "*://hs.hiveswap.com/paradoxspace/*",
+                "*://*.poorlydrawnlines.com/*",
+                "*://*.prequeladventure.com/*",
+                "*://*.romanticallyapocalyptic.com/*",
+                "*://*.samandfuzzy.com/*",
+                "*://*.collectedcurios.com/*",
+                "*://*.wildelifecomic.com/*",
+                "*://*.threewordphrase.com/*",
+                "*://*.oglaf.com/*",
+                "*://xkcd.com/*",
+                "*://what-if.xkcd.com/*"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        "mousetrap-*.js",
+        "index-*.js"
+    ],
+    "page_action": {
+        "default_popup": "pages/popup/index.html"
+    },
+    "options_page": "pages/options/index.html",
+    "icons": {
+        "16": "assets/images/Proclivity-16.png",
+        "32": "assets/images/Proclivity-32.png",
+        "64": "assets/images/Proclivity-64.png",
+        "128": "assets/images/Proclivity-128.png",
+        "256": "assets/images/Proclivity-256.png",
+        "512": "assets/images/Proclivity-512.png",
+        "1024": "assets/images/Proclivity-1024.png"
     }
-  ],
-  "browser_action": { "default_popup": "pages/popup/index.html" }
 }
