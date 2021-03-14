@@ -1,6 +1,9 @@
 # Chrome extension release zip files
 releases
 
+# macOS resource files
+.DS_Store
+
 # Logs
 logs
 *.log
