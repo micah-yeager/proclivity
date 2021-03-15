@@ -166,6 +166,23 @@ const siteRules = {
             },
         },
     },
+    "dumbingofage.com": {
+        "/": {
+            "name": "Dumbing of Age",
+            "indexUrl": "https://www.dumbingofage.com/",
+            "nav": {
+                "prev": ".navi-prev",
+                "next": ".navi-next",
+            },
+            "alt": [{
+                "comic": "#comic .comicpane img",
+                "style": "margin-bottom: 20px",
+            }],
+            "autoSave": {
+                "allow": /[0-9]{4}\/comic\/book-[0-9]{1,2}\/.*\//g,
+            },
+        },
+    },
     "gunnerkrigg.com": {
         "/": {
             "name": "Gunnerkrigg Court",

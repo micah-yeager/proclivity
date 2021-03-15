@@ -23,6 +23,7 @@ Issues or pull requests for additional sites are welcome!
 - [Dinosaur Comics](https://qwantz.com/)
 - [Dr. McNinja](http://drmcninja.com/)
 - [Dresden Codak](https://dresdencodak.com/)
+- [Dumbing of Age](https://www.dumbingofage.com/)
 - [Gunnerkrigg Court](https://www.gunnerkrigg.com/)
 - [Hark! A Vagrant](http://www.harkavagrant.com/)
 - [Homestuck](https://www.homestuck.com/)
