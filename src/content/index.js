@@ -105,6 +105,7 @@ class ComicRule extends KeyMap {
     constructor(config) {
         let configKeyMap = {
             'comic': new KeyMapElement('comic'),
+            'destin': new KeyMapElement('destin'),
             'after': new KeyMapElement('afterComic'),
             'ignore': new KeyMapElement('ignoredPatterns', []),
             'style': new KeyMapElement('wrapperStyle') }
@@ -128,8 +129,31 @@ class PostComicWrapper {
         } else {
             this._node = document.createElement('div')
             this._node.setAttribute('class', 'proclivity-wrapper')
-            // place the created element after the comic
-            this.comicNode.parentNode.insertBefore(this._node, this.comicNode.nextSibling)
+
+            let targetNode
+            if (this.rule.destin !== undefined && this.rule.destin.select) {
+                targetNode = document.querySelector(this.rule.destin.select)
+                console.log(targetNode)
+                if (targetNode) {
+                    if (this.rule.destin.insert === 'before') {
+                        targetNode.parentNode.insertBefore(this._node, targetNode)
+                    } else if (this.rule.destin.insert === 'after') {
+                        targetNode.parentNode.insertBefore(this._node, targetNode.nextSibling)
+                    } else if (this.rule.destin.insert === 'prepend') {
+                        targetNode.prepend(this._node)
+                    } else if (this.rule.destin.insert === 'append') {
+                        targetNode.appendChild(this._node)
+                    // failsafe if no match
+                    } else {
+                        targetNode = undefined
+                    }
+                }
+            }
+            if (!targetNode) {
+                // place the created element after the comic
+                this.comicNode.parentNode.insertBefore(this._node, this.comicNode.nextSibling)
+            }
+            
             // add a class to the created element to temporarily hide it until processing is done
             this._node.classList.add('proclivity-wip')
             

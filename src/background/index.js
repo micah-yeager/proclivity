@@ -14,6 +14,10 @@
 //         },
 //         "alt": { // rules for copying alt-text
 //             "comic": "[selector for the comic images with alt-text, ok to select multiple elements]",
+//             "destin": { // will go directly after comic if omitted
+//                 "select": [selector for the element to put the alt-text]",
+//                 "insert": "[before|after|prepend|append]"
+//             }
 //             "ignore": [
 //                 "[regex pattern to ignore; if matched, no alt-text will be copied]"
 //             ],
