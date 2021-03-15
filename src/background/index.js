@@ -46,6 +46,23 @@
 // }
 
 const siteRules = {
+    "beefpaper.com": {
+        "/": {
+            "name": "Beefpaper",
+            "indexUrl": "http://beefpaper.com/",
+            "nav": {
+                "prev": ".comic-nav-previous",
+                "next": ".comic-nav-next",
+            },
+            "alt": [{
+                "comic": "#comic img",
+                "style": "color: black;"
+            }],
+            "autoSave": {
+                "allow": /comic\/.*\//g,
+            },
+        },
+    },
     "buttersafe.com": {
         "/": {
             "name": "Buttersafe",

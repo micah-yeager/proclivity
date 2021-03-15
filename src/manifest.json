@@ -14,6 +14,7 @@
             "run_at": "document_start",
             "js": ["content/index.js"],
             "matches": [
+                "*://*.beefpaper.com/*",
                 "*://*.buttersafe.com/*",
                 "*://*.collectedcurios.com/*",
                 "*://*.daisyowl.com/*",

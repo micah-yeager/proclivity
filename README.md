@@ -16,6 +16,7 @@ A browser plugin that assists with reading webcomics by improving accessibility 
 
 Issues or pull requests for additional sites are welcome!
 
+- [Beefpaper](http://beefpaper.com/)
 - [Buttersafe](https://www.buttersafe.com/)
 - [Daisy Owl](https://daisyowl.com/)
 - [Dinosaur Comics](https://qwantz.com/)
