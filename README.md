@@ -20,6 +20,7 @@ Issues or pull requests for additional sites are welcome!
 - [Buttersafe](https://www.buttersafe.com/)
 - [Bunny](http://www.bunny-comic.com/)
 - [Daisy Owl](https://daisyowl.com/)
+- [diesel sweeties](https://www.dieselsweeties.com/)
 - [Dinosaur Comics](https://qwantz.com/)
 - [Dr. McNinja](http://drmcninja.com/)
 - [Dresden Codak](https://dresdencodak.com/)

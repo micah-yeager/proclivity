@@ -118,6 +118,31 @@ const siteRules = {
             },
         },
     },
+    "dieselsweeties.com": {
+        "/archive": {
+            "skipIndex": true,
+            "name": "diesel sweeties (archive)",
+            "indexUrl": "https://www.dieselsweeties.com/",
+            "nav": {
+                "next": "a[title=\"read the next webcomic\"]",
+                "prev": "a[title=\"read the previous webcomic\"]",
+            },
+            "autoSave": {
+                "allow": /\/[0-9]+/g,
+            },
+        },
+        "/": {
+            "name": "diesel sweeties",
+            "indexUrl": "https://www.dieselsweeties.com/",
+            "nav": {
+                "next": "#wrapmore a:first-child",
+                "prev": "#wrapmore a:nth-child(3)",
+            },
+            "autoSave": {
+                "allow": /ics\/[0-9]+\//g,
+            },
+        },
+    },
     "qwantz.com": {
         "/": {
             "name": "Dinosaur Comics",
