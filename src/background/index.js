@@ -101,6 +101,43 @@ const siteRules = {
             },
         },
     },
+    "collectedcurios.com": {
+        "/sequentialart.php": {
+            "name": "Sequential Art",
+            "indexUrl": "https://collectedcurios.com/sequentialart.php",
+            "nav": {
+                "prev": "#nav > a:nth-of-type(3)",
+                "next": "#nav > a:nth-of-type(4)",
+            },
+            "autoSave": {
+                "allow": /\?s=[0-9]+/g,
+            },
+        },
+        "/battlebunnies.php": {
+            "skipIndex": true,
+            "name": "Battle Bunnies",
+            "indexUrl": "https://collectedcurios.com/battlebunnies.php",
+            "nav": {
+                "prev": "#nav > a:nth-of-type(3)",
+                "next": "#nav > a:nth-of-type(4)",
+            },
+            "autoSave": {
+                "allow": /\?s=[0-9]+/g,
+            },
+        },
+        "/spiderandscorpion.php": {
+            "skipIndex": true,
+            "name": "Spider & Scorpion",
+            "indexUrl": "https://collectedcurios.com/spiderandscorpion.php",
+            "nav": {
+                "prev": "#nav > a:nth-of-type(3)",
+                "next": "#nav > a:nth-of-type(4)",
+            },
+            "autoSave": {
+                "allow": /\?s=[0-9]+/g,
+            },
+        },
+    },
     "daisyowl.com": {
         "/": {
             "name": "Daisy Owl",
@@ -531,43 +568,6 @@ const siteRules = {
             }],
             "autoSave": {
                 "allow": /comic\/.+/g,
-            },
-        },
-    },
-    "collectedcurios.com": {
-        "/sequentialart.php": {
-            "name": "Sequential Art",
-            "indexUrl": "https://collectedcurios.com/sequentialart.php",
-            "nav": {
-                "prev": "#nav > a:nth-of-type(3)",
-                "next": "#nav > a:nth-of-type(4)",
-            },
-            "autoSave": {
-                "allow": /\?s=[0-9]+/g,
-            },
-        },
-        "/battlebunnies.php": {
-            "skipIndex": true,
-            "name": "Battle Bunnies",
-            "indexUrl": "https://collectedcurios.com/battlebunnies.php",
-            "nav": {
-                "prev": "#nav > a:nth-of-type(3)",
-                "next": "#nav > a:nth-of-type(4)",
-            },
-            "autoSave": {
-                "allow": /\?s=[0-9]+/g,
-            },
-        },
-        "/spiderandscorpion.php": {
-            "skipIndex": true,
-            "name": "Spider & Scorpion",
-            "indexUrl": "https://collectedcurios.com/spiderandscorpion.php",
-            "nav": {
-                "prev": "#nav > a:nth-of-type(3)",
-                "next": "#nav > a:nth-of-type(4)",
-            },
-            "autoSave": {
-                "allow": /\?s=[0-9]+/g,
             },
         },
     },
