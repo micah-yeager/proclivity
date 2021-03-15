@@ -41,6 +41,7 @@ Issues or pull requests for additional sites are welcome!
 - [Romantically Apocalyptic](https://romanticallyapocalyptic.com/)
 - [Sam & Fuzzy](https://www.samandfuzzy.com/)
 - [Saturday Morning Breakfast Cereal](https://www.smbc-comics.com/)
+- [Scenes from a Multiverse](https://amultiverse.com/)
 - [Three Word Phrase](http://threewordphrase.com/)
 - [What If?](https://what-if.xkcd.com/)
 - [Wilde Life](https://www.wildelifecomic.com/)

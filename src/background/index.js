@@ -571,6 +571,23 @@ const siteRules = {
             },
         },
     },
+    "amultiverse.com": {
+        "/": {
+            "name": "Scenes from a Multiverse",
+            "indexUrl": "https://amultiverse.com/",
+            "alt": [{
+                "comic": "#comic img",
+                "style": "margin-top: 20px",
+            }],
+            "nav": {
+                "prev": "a.comic-nav-previous",
+                "next": "a.comic-nav-next",
+            },
+            "autoSave": {
+                "allow": /comic\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/.+\//g
+            },
+        },
+    },
     "threewordphrase.com": {
         "/": {
             "name": "Three Word Phrase",
