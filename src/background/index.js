@@ -308,6 +308,19 @@ const siteRules = {
             },
         },
     },
+    "questionablecontent.net": {
+        "/": {
+            "name": "Questionable Content",
+            "indexUrl": "https://www.questionablecontent.net/",
+            "nav": {
+                "prev": "#comicnav li:nth-child(2) a",
+                "next": "#comicnav li:nth-child(3) a",
+            },
+            "autoSave": {
+                "allow": /view\.php\?comic=[0-9]+/g,
+            },
+        },
+    },
     "romanticallyapocalyptic.com": {
         "/": {
             "name": "Romantically Apocalyptic",

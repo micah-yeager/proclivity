@@ -34,6 +34,7 @@
                 "*://*.threewordphrase.com/*",
                 "*://*.oglaf.com/*",
                 "*://xkcd.com/*",
+                "*://questionablecontent.net/*",
                 "*://what-if.xkcd.com/*"
             ]
         }
