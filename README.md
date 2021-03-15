@@ -31,6 +31,7 @@ Issues or pull requests for additional sites are welcome!
 - [Homestuck](https://www.homestuck.com/)
 - [Johnny Wander](http://www.johnnywander.com/)
 - [Jolly Jack's Collected Curios](https://collectedcurios.com/)
+- [Junior Scientist Power Hour](https://www.jspowerhour.com/)
 - [Lackadaisy Cats](https://lackadaisycats.com/)
 - [Oglaf](https://www.oglaf.com/) (NSFW)
 - [Paradox Space](http://hs.hiveswap.com/paradoxspace/index.php)

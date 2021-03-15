@@ -394,6 +394,19 @@ const siteRules = {
             },
         },
     },
+    "jspowerhour.com": {
+        "/": {
+            "name": "Junior Scientist Power Hour",
+            "indexUrl": "https://www.jspowerhour.com/",
+            "nav": {
+                "prev": "a[aria-label=\"previous\"]",
+                "next": "a[aria-label=\"next\"]",
+            },
+            "autoSave": {
+                "allow": /comics\/[0-9]+\/?/g,
+            },
+        },
+    },
     "lackadaisycats.com": {
         "/comic.php": {
             "name": "Lackadaisy Cats",
