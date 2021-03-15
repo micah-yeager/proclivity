@@ -1,263 +1,480 @@
 // import psl from 'psl'
 
+// format for a site rule; ANY non-applicable sections can be omitted
+// "[domain, minus 'www']": {
+//     "[comic path prefix]": {
+//         "skipIndex": [boolean], // skip showing comic in the option page list of comics
+//         "name": "[comic name]",
+//         "nsfw": [boolean], // mark webcomic as not safe for work
+//         "indexUrl": "[full path to index, including domain; used for the option page link]", 
+//         "nav": { // rules for implementing keyboard navigation
+//             "useParentLevel": [#] // number of levels above the selector that should be used (since no parent selector exists)
+//             "prev": "[selector to the 'next' button]",
+//             "next": "[selector to the 'prev' button]",
+//         },
+//         "alt": { // rules for copying alt-text
+//             "comic": "[selector for the comic images with alt-text, ok to select multiple elements]",
+//             "ignore": [
+//                 "[regex pattern to ignore; if matched, no alt-text will be copied]"
+//             ],
+//             "after": "[selector for after-comic, will be appended to alt-text element]",
+//             "style": "[css styles to apply to generated static alt-text",
+//         },
+//         "exp": [ // rules for expanding elements in-place
+//             {
+//                 "source": "[selector for the element to be expanded]",
+//                 "destin": "[selector for the expansion destination, can be the same as 'source']",
+//                 "prefix": "[expansion prefix, can be HTML code]",
+//                 "suffix": "[expansion suffix, can be HTML code]",
+//                 "style": "[css styles to apply to generated expanded element]",
+//                 "type": "link", // omit if not applicable; assumes element to be expanded is a link — if the source file link ends with a supported image type, it'll copy it
+//             },
+//             ...
+//         ],
+//         "sty": [
+//             {
+//                 "destin": "[css selector]",
+//                 "styles": "[css styles]",
+//             },
+//             ...
+//         ],
+//         "autoSave": {
+//             "allow": /[regex pattern to match, if matched, page will be saved in progress]/g,
+//             "ignore": /[regex pattern to ignore, overrides 'pattern']/g,
+//         } 
+//     }
+// }
 
 const siteRules = {
     "buttersafe.com": {
-        "name": "Buttersafe",
-        "index": "https://www.buttersafe.com/",
-        "nav": {
-            "prev": "a[rel=prev]",
-            "next": "a[rel=next]"
-        }
+        "/": {
+            "name": "Buttersafe",
+            "indexUrl": "https://www.buttersafe.com/",
+            "nav": {
+                "prev": "a[rel=prev]",
+                "next": "a[rel=next]",
+            },
+            "autoSave": {
+                "allow": /[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/.+/g,
+            },
+        },
     },
     "daisyowl.com": {
-        "name": "Daisy Owl",
-        "index": "https://daisyowl.com/",
-        "nav": {
-            "prev":  ".nav > *:first-child",
-            "next":  ".nav > *:last-child"
+        "/": {
+            "name": "Daisy Owl",
+            "indexUrl": "https://daisyowl.com/",
+            "nav": {
+                "prev":  ".nav > *:first-child",
+                "next":  ".nav > *:last-child",
+            },
+            "alt": [{
+                "comic": ".main img",
+                "style": "text-align: center; padding: 7px; margin: 0 0 20px; font-size: 1.2em; margin-top: -2em;",
+            }],
+            "autoSave": {
+                "allow": /comic\/[0-9]{4}-[0-9]{2}-[0-9]{2}\/?/g,
+            },
         },
-        "alt": [{
-            "comic": ".main img",
-            "style": "text-align: center; padding: 7px; margin: 0 0 20px; font-size: 1.2em; margin-top: -2em;"
-        }]
     },
     "qwantz.com": {
-        "name": "Dinosaur Comics",
-        "index": "https://qwantz.com/",
-        "nav": {
-            "prev":  "a[rel=prev]",
-            "next":  "a[rel=next]"
+        "/": {
+            "name": "Dinosaur Comics",
+            "indexUrl": "https://qwantz.com/",
+            "nav": {
+                "prev":  "a[rel=prev]",
+                "next":  "a[rel=next]",
+            },
+            "alt": [{
+                "comic": "img.comic",
+                "style": "text-align: center; background: rgba(255,255,255,.8); padding: 7px; margin: 7px 0;",
+            }],
+            "autoSave": {
+                "allow": /index\.php\?comic=[0-9]+/g,
+            },
         },
-        "alt": [{
-            "comic": "img.comic",
-            "style": "text-align: center; background: rgba(255,255,255,.8); padding: 7px; margin: 7px 0;"
-        }]
     },
     "drmcninja.com": {
-        "name": "Dr. McNinja",
-        "index": "http://drmcninja.com/",
-        "nav": {
-            "prev":  ".prepostnav > a.prev",
-            "next":  ".prepostnav > a.next"
+        "/": {
+            "name": "Dr. McNinja",
+            "indexUrl": "http://drmcninja.com/",
+            "nav": {
+                "prev":  ".prepostnav > a.prev",
+                "next":  ".prepostnav > a.next",
+            },
+            "alt": [{
+                "comic": "#comic > img",
+                "ignore": ["[0-9]+?p[0-9]+"],
+                "style": "text-align: center; margin: 1em 0 2em; text-decoration: none !important; font-size: 1.2em;",
+            }],
+            "autoSave": {
+                "allow": /archives\/comic\/[0-9]{1,2}p[0-9]{1,3}\//g,
+            },
         },
-        "alt": [{
-            "comic": "#comic > img",
-            "ignore": ["[0-9]+?p[0-9]+"],
-            "style": "text-align: center; margin: 1em 0 2em; text-decoration: none !important; font-size: 1.2em;"
-        }]
     },
     "dresdencodak.com": {
-        "name": "Dresden Codak",
-        "index": "https://dresdencodak.com/",
-        "nav": {
-            "prev": "img[alt=\"Previous\"]",
-            "next": "img[alt=\"Next Page\"]"
-        }
+        "/": {
+            "name": "Dresden Codak",
+            "indexUrl": "https://dresdencodak.com/",
+            "nav": {
+                "prev": "img[alt=\"Previous\"]",
+                "next": "img[alt=\"Next Page\"]"
+            },
+            "autoSave": {
+                "allow": /[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/.+/g,
+            },
+        },
     },
     "gunnerkrigg.com": {
-        "name": "Gunnerkrigg Court",
-        "index": "https://www.gunnerkrigg.com/",
-        "nav": {
-            "prev": ".extra > .nav > a.left",
-            "next": ".extra > .nav > a.right"
-        }
+        "/": {
+            "name": "Gunnerkrigg Court",
+            "indexUrl": "https://www.gunnerkrigg.com/",
+            "nav": {
+                "prev": ".extra > .nav > a.left",
+                "next": ".extra > .nav > a.right",
+            },
+            "autoSave": {
+                "allow": /\?p=[0-9]+/g,
+            },
+        },
     },
     "harkavagrant.com": {
-        "name": "Hark! A Vagrant",
-        "index": "http://www.harkavagrant.com/",
-        "nav": {
-            "useParentLevel": 1,
-            "prev": "a > img[src=\"buttonprevious.png\"]",
-            "next": "a > img[src=\"buttonnext.png\"]"
-        }
+        "/": {
+            "name": "Hark! A Vagrant",
+            "indexUrl": "http://www.harkavagrant.com/",
+            "nav": {
+                "useParentLevel": 1,
+                "prev": "a > img[src=\"buttonprevious.png\"]",
+                "next": "a > img[src=\"buttonnext.png\"]",
+            },
+            "autoSave": {
+                "allow": /index\.php\?id=[0-9]+/g,
+            },
+        },
     },
     "homestuck.com": {
-        "name": "Homestuck",
-        "index": "https://www.homestuck.com/",
-        "nav": {
-            "prev": ".o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a",
-            "next": ".o_story-nav > div:last-of-type a"
+        "/story": {
+            "name": "Homestuck",
+            "indexUrl": "https://www.homestuck.com/story",
+            "nav": {
+                "prev": ".o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a",
+                "next": ".o_story-nav > div:last-of-type a",
+            },
+            "alt": [{
+                "comic": "body > div > img",
+                "style": "text-align: center; margin: .4em 0 .8em;",
+            }],
+            "exp": [
+                {
+                    "source": ".o_chat-log",
+                    "destin": ".o_chat-container",
+                    "style": "display: block; line-height: 1.35; font-size: 14px; text-align: left; padding: 16px 32.5px",
+                }, {
+                    "source": ".o_chat-log span a",
+                    "destin": ".o_chat-log span a",
+                    "prefix": "<img src=\"",
+                    "suffix": "\" />",
+                    "style": "display: inline-block; text-indent: 0;",
+                    "type": "link",
+                },
+            ],
+            "sty": [
+                {
+                    "destin": ".o_chat-container span[style*=\"color: #FFFFFF\"]",
+                    "styles": "background-color: #000;",
+                }, {
+                    "destin": ".o_chat-container br + span",
+                    "styles": "display: block; padding-left: 26px; text-indent: -26px;",
+                }, {
+                    "destin": ".o_chat-container span, .o_chat-container span *",
+                    "styles": "vertical-align: top;",
+                }, {
+                    "destin": ".o_chat-container br + span + br",
+                    "styles": "display: none;",
+                }, {
+                    "destin": ".o_chat-container img",
+                    "styles": "padding: 3px 0;",
+                },
+            ],
+            "autoSave": {
+                "allow": /\/[0-9]+/g,
+            },
         },
-        "alt": [{
-            "comic": "body > div > img",
-            "style": "text-align: center; margin: .4em 0 .8em;"
-        }],
-        "exp": [
-            {
-                "source": ".o_chat-log",
-                "destin": ".o_chat-container",
-                "style": "display: block; line-height: 1.35; font-size: 14px; text-align: left; padding: 16px 32.5px"
-            }, {
-                "source": ".o_chat-log span a",
-                "destin": ".o_chat-log span a",
-                "prefix": "<img src=\"",
-                "suffix": "\" />",
-                "style": "display: inline-block; text-indent: 0;",
-                "type": "link",
-            }
-        ],
-        "sty": [
-            {
-                "destin": ".o_chat-container span[style*=\"color: #FFFFFF\"]",
-                "styles": "background-color: #000;"
-            }, {
-                "destin": ".o_chat-container br + span",
-                "styles": "display: block; padding-left: 26px; text-indent: -26px;"
-            }, {
-                "destin": ".o_chat-container span, .o_chat-container span *",
-                "styles": "vertical-align: top;"
-            }, {
-                "destin": ".o_chat-container br + span + br",
-                "styles": "display: none;"
-            }, {
-                "destin": ".o_chat-container img",
-                "styles": "padding: 3px 0;"
-            }
-        ],
-        "inl": [
-            {
-                "source": ".o_chat-container",
-                "destin": "/^.*?(<span.*?>).+?<\/span>((.*?(<span.*?>).+?<\/span>.*?)|(.+?[^ ]))$/mg",
-                "styles": "display: inline-block"
-            }
-        ]
-    },
-    "collectedcurios.com": {
-        "name": "Jolly Jack\'s Collected Curios",
-        "index": "https://collectedcurios.com/",
-        "nav": {
-            "prev": "#nav > a:nth-of-type(3)",
-            "next": "#nav > a:nth-of-type(4)"
-        }
+        "/problem-sleuth": {
+            "skipIndex": true,
+            "name": "Problem Sleuth",
+            "indexUrl": "https://www.homestuck.com/problem-sleuth",
+            "nav": {
+                "prev": ".o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a",
+                "next": ".o_story-nav > div:last-of-type a",
+            },
+            "autoSave": {
+                "allow": /\/[0-9]+/g,
+            },
+        },
+        "/jailbreak": {
+            "skipIndex": true,
+            "name": "Jailbreak",
+            "indexUrl": "https://www.homestuck.com/jailbreak",
+            "nav": {
+                "prev": ".o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a",
+                "next": ".o_story-nav > div:last-of-type a",
+            },
+            "autoSave": {
+                "allow": /\/[0-9]+/g,
+            },
+        },
+        "/epilogues": {
+            "skipIndex": true,
+            "name": "Homestuck Epilogues",
+            "indexUrl": "https://www.homestuck.com/epilogues",
+            "nav": {
+                "prev": ".o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a",
+                "next": ".o_story-nav > div:last-of-type a"
+            },
+            "autoSave": {
+                "allow": /\/(prologue|meat|candy)\/[0-9]+/g,
+            },
+        },
     },
     "lackadaisycats.com": {
-        "name": "Lackadaisy Cats",
-        "index": "https://lackadaisycats.com/",
-        "nav": {
-            "prev": ".prev > a",
-            "next": ".next > a"
-        }
+        "/comic.php": {
+            "name": "Lackadaisy Cats",
+            "indexUrl": "https://lackadaisycats.com/comic.php",
+            "nav": {
+                "prev": ".prev > a",
+                "next": ".next > a",
+            },
+            "autoSave": {
+                "allow": /\?comicid=[0-9]+/g,
+            },
+        },
     },
     "oglaf.com": {
-        "name": "Oglaf",
-        "index": "https://www.oglaf.com/",
-        "nav": {
-            "prev": "a[rel=prev]",
-            "next": "a[rel=next"
+        "/": {
+            "name": "Oglaf",
+            "nsfw": true,
+            "indexUrl": "https://www.oglaf.com/",
+            "nav": {
+                "prev": "a[rel=prev]",
+                "next": "a[rel=next",
+            },
+            "alt": [{
+                "comic": "img#strip",
+                "style": "text-align: center; margin: 1em 0 2em; text-decoration: none !important; font-size: 1.2em;",
+            }],
+            "autoSave": {
+                "allow": /.+/g,
+                "ignore": /archive\//g,
+            },
         },
-        "alt": [{
-            "comic": "img#strip",
-            "style": "text-align: center; margin: 1em 0 2em; text-decoration: none !important; font-size: 1.2em;"
-        }]
     },
     "hs.hiveswap.com": {
-        "name": "Paradox Space",
-        "index": "http://hs.hiveswap.com/paradoxspace/index.php",
-        "nav": {
-            "prev": "div.comnavPrev",
-            "next": "div.comnavNext"
-        }
+        "/paradoxspace/index.php": {
+            "skipIndex": true,
+            "name": "Paradox Space",
+            "indexUrl": "http://hs.hiveswap.com/paradoxspace/index.php",
+            "nav": {
+                "prev": "div.comnavPrev",
+                "next": "div.comnavNext",
+            },
+            "autoSave": {
+                "allow": /\?comic=[0-9]+/g,
+            },
+        },
     },
     "poorlydrawnlines.com": {
-        "name": "Poorly Drawn Lines",
-        "index": "https://poorlydrawnlines.com/",
-        "nav": {
-            "prev": "a[rel=prev]",
-            "next": "a[rel=next]"
-        }
+        "/": {
+            "name": "Poorly Drawn Lines",
+            "indexUrl": "https://poorlydrawnlines.com/",
+            "nav": {
+                "prev": "a[rel=prev]",
+                "next": "a[rel=next]",
+            },
+            "autoSave": {
+                "allow": /comic\/.+/g,
+            },
+        },
     },
     "prequeladventure.com": {
-        "name": "Prequel",
-        "index": "https://www.prequeladventure.com/",
-        "nav": {
-            "prev": ".previous > a[rel=prev]",
-            "next": ".next > a[rel=next]"
-        }
+        "/": {
+            "name": "Prequel",
+            "indexUrl": "https://www.prequeladventure.com/",
+            "nav": {
+                "prev": ".previous > a[rel=prev]",
+                "next": ".next > a[rel=next]",
+            },
+            "autoSave": {
+                "allow": /[0-9]{4}\/[0-9]{2}\/.+\//g,
+            },
+        },
     },
     "romanticallyapocalyptic.com": {
-        "name": "Romantically Apocalyptic",
-        "index": "https://romanticallyapocalyptic.com/",
-        "nav": {
-            "prev": "a[accesskey=p]",
-            "next": "a[accesskey=n]"
-        }
+        "/": {
+            "name": "Romantically Apocalyptic",
+            "indexUrl": "https://romanticallyapocalyptic.com/",
+            "nav": {
+                "prev": "a[accesskey=p]",
+                "next": "a[accesskey=n]",
+            },
+            "autoSave": {
+                "allow": /.+/g,
+                "ignore": /(info|wiki|archives|store|forums|gallery|links|contact|login|join).+/g,
+            },
+        },
     },
     "samandfuzzy.com": {
-        "name": "Sam & Fuzzy",
-        "index": "https://www.samandfuzzy.com/",
-        "nav": {
-            "prev": ".prev-page > a",
-            "next": ".next-page > a"
-        }
+        "/": {
+            "name": "Sam & Fuzzy",
+            "indexUrl": "https://www.samandfuzzy.com/",
+            "nav": {
+                "prev": ".prev-page > a",
+                "next": ".next-page > a"
+            },
+            "autoSave": {
+                "allow": /[0-9]+\/?/g,
+            },
+        },
     },
     "smbc-comics.com": {
-        "name": "Saturday Morning Breakfast Cereal",
-        "index": "https://www.smbc-comics.com/",
-        "alt": [{
-            "comic": "#cc-comic",
-            "after": "#aftercomic img",
-            "ignore": ["[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]"],
-            "style": "text-align: center; margin: 1em 0 .2em; text-decoration: none !important; font-size: 1.2em; color: black; display: inline-block;"
-        }]
+        "/": {
+            "name": "Saturday Morning Breakfast Cereal",
+            "indexUrl": "https://www.smbc-comics.com/",
+            "alt": [{
+                "comic": "#cc-comic",
+                "after": "#aftercomic img",
+                "ignore": ["[0-9][0-9][0-9][0-9]-[0-1][0-9]-[0-3][0-9]"],
+                "style": "text-align: center; margin: 1em 0 .2em; text-decoration: none !important; font-size: 1.2em; color: black; display: inline-block;",
+            }],
+            "autoSave": {
+                "allow": /comic\/.+/g,
+            },
+        },
+    },
+    "collectedcurios.com": {
+        "/sequentialart.php": {
+            "name": "Sequential Art",
+            "indexUrl": "https://collectedcurios.com/sequentialart.php",
+            "nav": {
+                "prev": "#nav > a:nth-of-type(3)",
+                "next": "#nav > a:nth-of-type(4)",
+            },
+            "autoSave": {
+                "allow": /\?s=[0-9]+/g,
+            },
+        },
+        "/battlebunnies.php": {
+            "skipIndex": true,
+            "name": "Battle Bunnies",
+            "indexUrl": "https://collectedcurios.com/battlebunnies.php",
+            "nav": {
+                "prev": "#nav > a:nth-of-type(3)",
+                "next": "#nav > a:nth-of-type(4)",
+            },
+            "autoSave": {
+                "allow": /\?s=[0-9]+/g,
+            },
+        },
+        "/spiderandscorpion.php": {
+            "skipIndex": true,
+            "name": "Spider & Scorpion",
+            "indexUrl": "https://collectedcurios.com/spiderandscorpion.php",
+            "nav": {
+                "prev": "#nav > a:nth-of-type(3)",
+                "next": "#nav > a:nth-of-type(4)",
+            },
+            "autoSave": {
+                "allow": /\?s=[0-9]+/g,
+            },
+        },
     },
     "threewordphrase.com": {
-        "name": "Three Word Phrase",
-        "index": "http://threewordphrase.com/",
-        "nav": {
-            "prev": "img[src=\"/prevlink.gif\"]",
-            "next": "img[src=\"/nextlink.gif\"]"
-        }
+        "/": {
+            "name": "Three Word Phrase",
+            "indexUrl": "http://threewordphrase.com/",
+            "nav": {
+                "prev": "img[src=\"/prevlink.gif\"]",
+                "next": "img[src=\"/nextlink.gif\"]",
+            },
+            "autoSave": {
+                "allow": /.+/g,
+                "ignore": /(archive|index).htm/g,
+            },
+        },
     },
     "what-if.xkcd.com": {
-        "name": "What If?",
-        "index": "https://what-if.xkcd.com/",
-        "nav": {
-            "prev": ".nav-prev > a",
-            "next": ".nav-next > a"
+        "/": {
+            "name": "What If?",
+            "indexUrl": "https://what-if.xkcd.com/",
+            "nav": {
+                "prev": ".nav-prev > a",
+                "next": ".nav-next > a",
+            },
+            "alt": [{
+                "comic": "img.illustration",
+                "style": "text-align: center; margin: 0 auto; text-decoration: none !important; font-style: oblique; line-height: 1.2em; font-size: 16px;",
+            }],
+            "exp": [{
+                "source": ".refbody",
+                "destin": ".refnum",
+                "prefix": " [",
+                "suffix": "] ",
+                "style": "bottom: 0; text-decoration: none; cursor: default; font-size: .75em;",
+            }],
+            "autoSave": {
+                "allow": /[0-9]+\//g,
+            },
         },
-        "alt": [{
-            "comic": "img.illustration",
-            "style": "text-align: center; margin: 0 auto; text-decoration: none !important; font-style: oblique; line-height: 1.2em; font-size: 16px;"
-        }],
-        "exp": [{
-            "source": ".refbody",
-            "destin": ".refnum",
-            "prefix": " [",
-            "suffix": "] ",
-            "style": "bottom: 0; text-decoration: none; cursor: default; font-size: .75em;"
-        }]
     },
     "wildelifecomic.com": {
-        "name": "Wilde Life",
-        "index": "https://www.wildelifecomic.com/",
-        "nav": {
-            "prev": "a.cc-prev",
-            "next": "a.cc-next"
+        "/": {
+            "name": "Wilde Life",
+            "indexUrl": "https://www.wildelifecomic.com/",
+            "nav": {
+                "prev": "a.cc-prev",
+                "next": "a.cc-next",
+            },
+            "alt": [{
+                "comic": "#cc-comicbody img",
+                "ignore": ["[0-9]+"],
+                "style": "text-align: center; background: rgba(255,255,255,.8); margin: 0;padding: 12px;",
+            }],
+            "autoSave": {
+                "allow": /comic\/[0-9]+/g,
+            },
         },
-        "alt": [{
-            "comic": "#cc-comicbody img",
-            "ignore": ["[0-9]+"],
-            "style": "text-align: center; background: rgba(255,255,255,.8); margin: 0;padding: 12px;"
-        }]
     },
     "xkcd.com": {
-        "name": "xkcd",
-        "index": "https://xkcd.com/",
-        "nav": {
-            "prev":  ".comicNav a[rel=prev]",
-            "next":  ".comicNav a[rel=next]"
+        "/": {
+            "name": "xkcd",
+            "indexUrl": "https://xkcd.com/",
+            "nav": {
+                "prev":  ".comicNav a[rel=prev]",
+                "next":  ".comicNav a[rel=next]",
+            },
+            "alt": [{
+                "comic": "#comic img",
+                "style": "text-align: center; margin: 7px auto 30px; text-decoration: none !important;",
+            }],
+            "autoSave": {
+                "allow": /[0-9]+\//g,
+            },
         },
-        "alt": [{
-            "comic": "#comic img",
-            "style": "text-align: center; margin: 7px auto 30px; text-decoration: none !important;"
-        }]
-    }
+    },
 }
 
 const siteList = {}
 for (const [key, value] of Object.entries(siteRules)) {
-    siteList[value.name] = value.index
+    for (const [skey, svalue] of Object.entries(value)) {
+        if (!svalue.skipIndex) {
+            siteList[svalue.name] = svalue.indexUrl
+        }
+    }
+}
+
+
+// helpers
+function escapeString(string) {
+    return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 
@@ -303,8 +520,25 @@ chrome.runtime.onMessage.addListener(
         }
 
         if (request.domain in siteRules) {
-            let domain = request.domain
-            let siteData = siteRules[domain]
+            let webcomicSite = request.domain
+            let domainData = siteRules[webcomicSite]
+
+            let sitePath
+            let siteData
+            // test each comic on a host to see if the path starts with the appropriate string
+            for (let key in domainData) {
+                if (request.path.startsWith(key)) {
+                    sitePath = key
+                    webcomicSite += key
+                    siteData = domainData[key]
+                    break
+                }
+            }
+            // if sitePath or siteData don't exist, skip rest of processing
+            if ((!sitePath || !siteData) && !request.popup) {
+                sendResponse({ config: { globalEnabled: false } })
+                return
+            }
 
             let globalDefaults = {
                 globalEnabled: true,
@@ -316,35 +550,62 @@ chrome.runtime.onMessage.addListener(
                 globalCustomStyles: true,
                 globalAutoSaveProgress: true }
             let siteDefaults = {
-                ['siteKeyboardNav_' + domain]: true,
-                ['siteStaticCaptions_' + domain]: true,
-                ['siteTextboxExpansion_' + domain]: true,
-                ['siteCustomStyles_' + domain]: true,
-                ['siteAutoSaveProgress_' + domain]: true,
-                ['siteProgressAutoSaved_' + domain]: request.path }
+                ['siteKeyboardNav_' + webcomicSite]: true,
+                ['siteStaticCaptions_' + webcomicSite]: true,
+                ['siteTextboxExpansion_' + webcomicSite]: true,
+                ['siteCustomStyles_' + webcomicSite]: true,
+                ['siteAutoSaveProgress_' + webcomicSite]: true,
+                ['siteProgressAutoSaved_' + webcomicSite]: request.path }
             let defaults = { ...globalDefaults, ...siteDefaults }
 
             chrome.storage.sync.get(defaults, function(items) {
-                let autoSavedKey = 'siteProgressAutoSaved_' + domain
+                if (!items.globalEnabled && !request.popup) {
+                    sendResponse({ config: { globalEnabled: false } })
+                    return
+                }
+
+                let autoSavedKey = 'siteProgressAutoSaved_' + webcomicSite
                 let autoSavedUrl = items[autoSavedKey]
                 delete items[autoSavedKey]
 
                 if (items['globalEnabled']
+                    && siteData.autoSave.allow
                     && items['globalAutoSaveProgress']
-                    && items['siteAutoSaveProgress_' + domain]
-                    && request.path !== (new URL(siteData.index).pathname)) {
-                    // we don't care that we're saving the auto-saved progress after retrieval because:
-                    // a) retrieving only matters when accessing the index
-                    // b) setting only occurs when accessing a non-index
-                    chrome.storage.sync.set({
-                        ['siteProgressAutoSaved_' + domain]: request.path
-                    }, function() {})
+                    && items['siteAutoSaveProgress_' + webcomicSite]
+                    && siteData.autoSave.allow) {
+
+                    if (!request.popup) {
+                        let allowProgressSave = false
+                        let escapedSitePath = escapeString(sitePath)
+                        if (siteData.autoSave.allow) {
+                            let regex = new RegExp(
+                                escapedSitePath + siteData.autoSave.allow.source
+                            )
+                            allowProgressSave = regex.test(request.path)
+                        }
+                        if (allowProgressSave && siteData.autoSave.ignore) {
+                            let regex = new RegExp(
+                                escapedSitePath + siteData.autoSave.ignore.source
+                            )
+                            allowProgressSave = regex.test(request.path)
+                        }
+
+                        if (allowProgressSave) {
+                            // we don't care that we're saving the auto-saved progress after retrieval because:
+                            // a) retrieving only matters when accessing the index
+                            // b) setting only occurs when accessing a non-index
+                            chrome.storage.sync.set({
+                                ['siteProgressAutoSaved_' + webcomicSite]: request.path
+                            }, function() {})
+                        }
+                    }
                 }
 
                 let response = {
                     siteData: siteData,
                     config: items,
-                    domain: domain,
+                    webcomicSite: webcomicSite,
+                    sitePath: sitePath,
                     autoSavedUrl: autoSavedUrl
                 }
                 sendResponse(response)
@@ -386,7 +647,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         if (key.startsWith('global')) {
             reloadAll = true
             for (let domain in siteRules) {
-                let pattern = '*://*.' + domain + '/*'
+                let pattern = '*://*.' + domain + '*'
                 patterns.push(pattern)
             }
             break
@@ -395,7 +656,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         } else if (key.startsWith('site')) {
             reloadSite = true
             let domain = key.split('_').slice(-1)
-            let pattern = '*://*.' + domain + '/*'
+            let pattern = '*://*.' + domain + '*'
             patterns.push(pattern)
         }
     }

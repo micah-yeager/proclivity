@@ -326,7 +326,7 @@ class ExpansionSet {
 
 // website stuffs
 class ComicWebsite extends KeyMap {
-    constructor(siteData, config, domain) {
+    constructor(siteData, config, webcomicSite) {
         let configKeyMap = {
             'nav': new KeyMapElement('navSelectors', {}),
             'alt': new KeyMapElement('altRules', []),
@@ -346,11 +346,11 @@ class ComicWebsite extends KeyMap {
         this.enableStylesGlobal = config['globalCustomStyles']
 
         // set local config
-        this.enableNavLocal = config['siteKeyboardNav_' + domain]
-        this.enableAltLocal = config['siteStaticCaptions_' + domain]
-        this.enableAfterLocal = config['siteStaticAfterComics_' + domain]
-        this.enableExpansionLocal = config['siteTextboxExpansion_' + domain]
-        this.enableStylesLocal = config['siteCustomStyles_' + domain]
+        this.enableNavLocal = config['siteKeyboardNav_' + webcomicSite]
+        this.enableAltLocal = config['siteStaticCaptions_' + webcomicSite]
+        this.enableAfterLocal = config['siteStaticAfterComics_' + webcomicSite]
+        this.enableExpansionLocal = config['siteTextboxExpansion_' + webcomicSite]
+        this.enableStylesLocal = config['siteCustomStyles_' + webcomicSite]
 
         // setup
         this.style = new Style()
@@ -543,10 +543,11 @@ function handleResponse(response) {
 	if (!response.config.globalEnabled) { return }
 
 	// do progress redirect here if enabled for the fastest turnaround time
+    let path = location.pathname + location.search
 	if (response.config.globalAutoSaveProgress
-		&& response.config['siteAutoSaveProgress_' + response.domain]
-		&& location.pathname !== response.autoSavedUrl
-		&& location.pathname === (new URL(response.siteData.index).pathname)
+		&& response.config['siteAutoSaveProgress_' + response.webcomicSite]
+		&& path !== response.autoSavedUrl
+		&& path === response.sitePath
 	) {
 		// use .replace() so no history is generated
 		location.replace(response.autoSavedUrl)
@@ -554,7 +555,7 @@ function handleResponse(response) {
 	}
 
 	// pass the rules to the comic class
-    let site = new ComicWebsite(response.siteData, response.config, response.domain)    
+    let site = new ComicWebsite(response.siteData, response.config, response.webcomicSite)    
 }
 
 // send a message to the background page to get rules from the domain

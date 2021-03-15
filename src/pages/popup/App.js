@@ -6,7 +6,7 @@ import styles from './index.scss'
 
 
 class App extends Component {
-	siteDefaultPairs = {
+	siteLabelPairs = {
 		'siteKeyboardNav': 'Enable keyboard navigation',
 		'siteStaticCaptions': 'Enable static captions',
 		'siteTextboxExpansion': 'Enable textbox expansion',
@@ -19,7 +19,7 @@ class App extends Component {
 
 		this.handleChange = this.handleChange.bind(this)
 		this.getStorageFromTabUrl = this.getStorageFromTabUrl.bind(this)
-		this.bootstrapStateFromStorage = this.bootstrapStateFromStorage.bind(this)
+		this.bootstrapStateFromResponse = this.bootstrapStateFromResponse.bind(this)
 		this.processStorageChange = this.processStorageChange.bind(this)
 	}
 
@@ -37,81 +37,44 @@ class App extends Component {
 
 	getStorageFromTabUrl(tabs) {
 		// set URL
-		let url = tabs[0].url
-		this.setState({ url: url })
+		let url = new URL(tabs[0].url)
+		let path = url.pathname + url.search
 
 		// parse URL
-		let parsedUrl = psl.parse((new URL(url)).hostname)
+		let parsedUrl = psl.parse(url.hostname)
 		// if subdomain that isn't www, add it to the final domain
 		let domain = (parsedUrl.subdomain === 'www' || parsedUrl.subdomain === null) ? '' : parsedUrl.subdomain + '.'
 		domain += parsedUrl.domain
+
+		this.setState({ url: url })
+		this.setState({ path: path })
 		this.setState({ domain: domain})
 
-		// set up defaults
-		let globalDefaults = {
-			globalEnabled: true,
-			nextCombo: ['right'],
-	        prevCombo: ['left'],
-	        globalKeyboardNav: true,
-	        globalStaticCaptions: true,
-	        globalTextboxExpansion: true,
-	        globalCustomStyles: true,
-	        globalAutoSaveProgress: true }
-		let siteDefaultValue = true
-		let siteDefaults = {
-			['siteProgressManualSaved_' + domain]: url,
-		}
-		
-		// add site-specific defaults
-		for (const [key, value] of Object.entries(this.siteDefaultPairs)) {
-			let newKey = key + '_' + domain
-			delete Object.assign(this.siteDefaultPairs, {[newKey]: this.siteDefaultPairs[key] })[key]
-			siteDefaults[key + '_' + domain] = siteDefaultValue
-		}
-
-		// combine defaults
-		this.defaults = { ...globalDefaults, ...siteDefaults }
-		// apply settings from storage
-		chrome.storage.sync.get(this.defaults, this.bootstrapStateFromStorage)
+		// apply settings from background page
+		chrome.runtime.sendMessage({
+			domain: domain,
+			path: path,
+			popup: true
+		}, this.bootstrapStateFromResponse)
 		// add storage listener
 		chrome.storage.onChanged.addListener(this.processStorageChange)
 	}
 
-	bootstrapStateFromStorage(items) {
-		for (const [key, value] of Object.entries(items)) {
-			this.setState({ [key]: value })
-		}
+	bootstrapStateFromResponse(response) {
+		this.setState(response.config)
 		// set loading to be false to start rendering
 		this.setState({ loading: false })
 	}
 
 	processStorageChange(changes, namespace) {
-		let reloadAll = false
-		let reloadSite = false
-
+		let processedChanges = {}
 		for (let key in changes) {
 			// only apply changes if applicable to this site
-			if (key in this.defaults) {
-				this.setState({ [key]: changes[key].newValue })
-
-				if (key.startsWith('global')) {
-					reloadAll = true
-				} else if (key.startsWith('site')) {
-					reloadSite = true
-				}
+			if (key in this.state) {
+				processedChanges[key] = changes[key].newValue
 			}
 		}
-
-		if (reloadAll) {
-			chrome.runtime.sendMessage({
-				reload: '__all__'
-			}, function(ack) {})
-
-		} else if (reloadSite) {
-			chrome.runtime.sendMessage({
-				reload: this.state.domain
-			}, function(ack) {})
-		}
+		this.setState(processedChanges)
 	}
 
 	handleChange(key, value) {
@@ -143,13 +106,16 @@ class App extends Component {
 			              title="More options" />
 				</HeaderSection>
 				<Section title="Settings for this site" type="popup">
-					{Object.entries(this.siteDefaultPairs).map(([key, value]) => 
-						<Toggle key={key}
+					{Object.entries(this.state).map(([key, value]) => {
+						let baseName = key.split('_')[0]
+						if (baseName in this.siteLabelPairs) {
+							return <Toggle key={key}
 								id={key}
-								value={this.state[key]}
+								value={value}
 								onChange={this.handleChange}
-								title={value} />
-					)}
+								title={this.siteLabelPairs[baseName]} />
+						}
+					})}
 					<Button key="save"
 							id={'siteProgressManualSaved_' + this.state.domain}
 							onChange={this.handleChange}
