@@ -160,6 +160,19 @@ const siteRules = {
             },
         },
     },
+    "doodleforfood.com": {
+        "/": {
+            "name": "Doodle for Food",
+            "indexUrl": "https://www.doodleforfood.com/",
+            "nav": {
+                "prev": "a.previous-button",
+                "next": "a.next-button",
+            },
+            "autoSave": {
+                "allow": /page\/[0-9]+\/?/g,
+            },
+        },
+    },
     "drmcninja.com": {
         "/": {
             "name": "Dr. McNinja",

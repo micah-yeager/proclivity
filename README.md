@@ -22,6 +22,7 @@ Issues or pull requests for additional sites are welcome!
 - [Daisy Owl](https://daisyowl.com/)
 - [diesel sweeties](https://www.dieselsweeties.com/)
 - [Dinosaur Comics](https://qwantz.com/)
+- [Doodle for Food](https://www.doodleforfood.com/)
 - [Dr. McNinja](http://drmcninja.com/)
 - [Dresden Codak](https://dresdencodak.com/)
 - [Dumbing of Age](https://www.dumbingofage.com/)
