@@ -18,6 +18,7 @@ Issues or pull requests for additional sites are welcome!
 
 - [Beefpaper](http://beefpaper.com/)
 - [Buttersafe](https://www.buttersafe.com/)
+- [Bunny](http://www.bunny-comic.com/)
 - [Daisy Owl](https://daisyowl.com/)
 - [Dinosaur Comics](https://qwantz.com/)
 - [Dr. McNinja](http://drmcninja.com/)

@@ -67,6 +67,27 @@ const siteRules = {
             },
         },
     },
+    "bunny-comic.com": {
+        "/": {
+            "name": "Bunny",
+            "indexUrl": "http://www.bunny-comic.com/",
+            "nav": {
+                "prev": "#navigator a:nth-child(2)",
+                "next": "#navigator a:nth-child(3)",
+            },
+            "alt": [{
+                "comic": "#strip a:nth-child(2) img",
+                "destin": {
+                    "select": "#strip > .comic",
+                    "insert": "before",
+                },
+                "style": "padding-bottom: 0; margin-bottom: -20px;",
+            }],
+            "autoSave": {
+                "allow": /[0-9]+\.html/g,
+            },
+        },
+    },
     "buttersafe.com": {
         "/": {
             "name": "Buttersafe",

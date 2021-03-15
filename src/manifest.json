@@ -15,6 +15,7 @@
             "js": ["content/index.js"],
             "matches": [
                 "*://*.beefpaper.com/*",
+                "*://*.bunny-comic.com/*",
                 "*://*.buttersafe.com/*",
                 "*://*.collectedcurios.com/*",
                 "*://*.daisyowl.com/*",
