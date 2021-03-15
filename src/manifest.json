@@ -34,8 +34,8 @@
                 "*://*.wildelifecomic.com/*",
                 "*://hs.hiveswap.com/paradoxspace/*",
                 "*://questionablecontent.net/*",
-                "*://what-if.xkcd.com/*"
-                "*://xkcd.com/*",
+                "*://what-if.xkcd.com/*",
+                "*://xkcd.com/*"
             ]
         }
     ],
