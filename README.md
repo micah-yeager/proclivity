@@ -29,6 +29,7 @@ Issues or pull requests for additional sites are welcome!
 - [Gunnerkrigg Court](https://www.gunnerkrigg.com/)
 - [Hark! A Vagrant](http://www.harkavagrant.com/)
 - [Homestuck](https://www.homestuck.com/)
+- [Johnny Wander](http://www.johnnywander.com/)
 - [Jolly Jack's Collected Curios](https://collectedcurios.com/)
 - [Lackadaisy Cats](https://lackadaisycats.com/)
 - [Oglaf](https://www.oglaf.com/) (NSFW)

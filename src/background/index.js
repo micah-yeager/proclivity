@@ -333,6 +333,67 @@ const siteRules = {
             },
         },
     },
+    "johnnywander.com": {
+        "/barbarous": {
+            "skipIndex": true,
+            "name": "Johnny Wander",
+            "indexUrl": "http://www.johnnywander.com/barbarous",
+            "nav": {
+                "prev": "a.cc-prev",
+                "next": "a.cc-next",
+            },
+            "autoSave": {
+                "allow": /\/.+\/?/g,
+            },
+        },
+        "/luckypenny": {
+            "skipIndex": true,
+            "name": "Johnny Wander",
+            "indexUrl": "http://www.johnnywander.com/luckypenny",
+            "nav": {
+                "prev": "a.cc-prev",
+                "next": "a.cc-next",
+            },
+            "autoSave": {
+                "allow": /\/.+\/?/g,
+            },
+        },
+        "/autobio": {
+            "skipIndex": true,
+            "name": "Johnny Wander",
+            "indexUrl": "http://www.johnnywander.com/autobio",
+            "nav": {
+                "prev": "a.cc-prev",
+                "next": "a.cc-next",
+            },
+            "autoSave": {
+                "allow": /\/.+\/?/g,
+            },
+        },
+        "/fiction": {
+            "skipIndex": true,
+            "name": "Johnny Wander",
+            "indexUrl": "http://www.johnnywander.com/fiction",
+            "nav": {
+                "prev": "a.cc-prev",
+                "next": "a.cc-next",
+            },
+            "autoSave": {
+                "allow": /\/.+\/?/g,
+            },
+        },
+        "/": {
+            "name": "Johnny Wander",
+            "indexUrl": "http://www.johnnywander.com/",
+            "nav": {
+                "prev": "a.cc-prev",
+                "next": "a.cc-next",
+            },
+            "autoSave": {
+                "allow": /comic\/.+\/?/g,
+            },
+        },
+    },
     "lackadaisycats.com": {
         "/comic.php": {
             "name": "Lackadaisy Cats",
