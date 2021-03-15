@@ -34,6 +34,7 @@
                 "*://*.oglaf.com/*",
                 "*://*.poorlydrawnlines.com/*",
                 "*://*.prequeladventure.com/*",
+                "*://*.questionablecontent.net/*",
                 "*://*.qwantz.com/*",
                 "*://*.romanticallyapocalyptic.com/*",
                 "*://*.samandfuzzy.com/*",
@@ -41,7 +42,6 @@
                 "*://*.threewordphrase.com/*",
                 "*://*.wildelifecomic.com/*",
                 "*://hs.hiveswap.com/paradoxspace/*",
-                "*://questionablecontent.net/*",
                 "*://what-if.xkcd.com/*",
                 "*://xkcd.com/*"
             ]
