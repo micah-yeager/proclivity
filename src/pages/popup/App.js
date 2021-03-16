@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {HeaderSection, Section, Toggle, Link, Button} from 'src/pages/components/settings'
+import {HeaderSection, Section, Toggle, Link, Button, Info} from 'src/pages/components/settings'
 import psl from 'psl'
 import 'src/pages/components/styles'
 import styles from './index.scss'
@@ -88,9 +88,25 @@ class App extends Component {
 	render() {
 		if (this.state.loading) {
 			return (
-				<div className={styles.pageContainer}>
-					<div className={styles.pageContent} />
-				</div>
+				<div></div>
+			)
+		}
+
+		if (!this.state.webcomicSite) {
+			return (
+				<HeaderSection title="Proclivity" type="popup">
+					<Toggle key="globalEnabled"
+							id="globalEnabled"
+							value={this.state.globalEnabled}
+							onChange={this.handleChange}
+							title="Enabled" />
+					<Link key="options"
+			              url={chrome.extension.getURL('pages/options/index.html')}
+			              title="More options" />
+	                <Info key="notEnabled"
+			              title="No settings for this page"
+			              description="Navigate to a comic on this site to see more settings" />
+				</HeaderSection>
 			)
 		}
 

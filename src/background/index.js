@@ -770,11 +770,6 @@ chrome.runtime.onMessage.addListener(
                 }
             }
             // if sitePath or siteData don't exist, skip rest of processing
-            if ((!sitePath || !siteData) && !request.popup) {
-                sendResponse({ config: { globalEnabled: false } })
-                return
-            }
-
             let globalDefaults = {
                 globalEnabled: true,
                 globalNextCombo: ['right'],
@@ -784,6 +779,14 @@ chrome.runtime.onMessage.addListener(
                 globalTextboxExpansion: true,
                 globalCustomStyles: true,
                 globalAutoSaveProgress: true }
+            if (!sitePath || !siteData) {
+                console.log('blah')
+                chrome.storage.sync.get(globalDefaults, function(items) {
+                    sendResponse({ config: items })
+                })
+                return true
+            }
+            
             let siteDefaults = {
                 ['siteKeyboardNav_' + webcomicSite]: true,
                 ['siteStaticCaptions_' + webcomicSite]: true,
