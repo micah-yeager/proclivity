@@ -1,5 +1,7 @@
 # Chrome extension release zip files
 releases
+dist.crx
+dist.pem
 
 # macOS resource files
 .DS_Store
