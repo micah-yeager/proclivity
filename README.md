@@ -46,6 +46,7 @@ Issues or pull requests for additional sites are welcome!
 - [Three Word Phrase](http://threewordphrase.com/)
 - [What If?](https://what-if.xkcd.com/)
 - [Wilde Life](https://www.wildelifecomic.com/)
+- [Wondermark](http://wondermark.com/)
 - [xkcd](https://xkcd.com/)
 
 ## Building locally

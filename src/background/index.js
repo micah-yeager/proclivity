@@ -657,6 +657,23 @@ const siteRules = {
             },
         },
     },
+    "wondermark.com": {
+        "/": {
+            "name": "Wondermark",
+            "indexUrl": "https://wondermark.com/",
+            "nav": {
+                "prev": ".comic-nav-previous a",
+                "next": ".comic-nav-next a",
+            },
+            "alt": [{
+                "comic": "#comic img",
+                "style": "margin-bottom: 5px;",
+            }],
+            "autoSave": {
+                "allow": /c?[0-9]+\/?/g,
+            },
+        },
+    },
     "xkcd.com": {
         "/": {
             "name": "xkcd",
