@@ -131,15 +131,15 @@ class App extends Component {
 					</Section>
 					<Section title="Support the dev">
 						<Link key="paypal"
-							  id=""
+							  id="paypal"
 							  url="https://paypal.me/MicahHummert"
 							  title="PayPal" />
 						<Link key="cash-app"
-							  id=""
+							  id="cash-app"
 							  url="https://cash.app/$micahyeagers"
 							  title="Cash App" />
 						<Info key="bitcoin"
-							  id=""
+							  id="bitcoin"
 							  title="Bitcoin wallet"
 							  description="39s1W2rJHbrVfN5hpTJUJt8T7EtBhuJr2e" />
 					</Section>
