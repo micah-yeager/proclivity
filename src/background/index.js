@@ -808,7 +808,6 @@ chrome.runtime.onMessage.addListener(
                 delete items[autoSavedKey]
 
                 if (items['globalEnabled']
-                    && siteData.autoSave.allow
                     && items['globalAutoSaveProgress']
                     && items['siteAutoSaveProgress_' + webcomicSite]
                     && siteData.autoSave.allow) {
