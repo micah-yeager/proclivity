@@ -560,6 +560,10 @@ const siteRules = {
         "/": {
             "name": "Saturday Morning Breakfast Cereal",
             "indexUrl": "https://www.smbc-comics.com/",
+            "nav": {
+                "prev": ".cc-nav .cc-prev",
+                "next": ".cc-nav .cc-next",
+            },
             "alt": [{
                 "comic": "#cc-comic",
                 "after": "#aftercomic img",
@@ -567,7 +571,7 @@ const siteRules = {
                 "style": "text-align: center; margin: 1em 0 .2em; text-decoration: none !important; font-size: 1.2em; color: black; display: inline-block;",
             }],
             "autoSave": {
-                "allow": /comic\/.+/g,
+                "allow": /comic\/.+\/?/g,
             },
         },
     },
