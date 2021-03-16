@@ -789,6 +789,7 @@ chrome.runtime.onMessage.addListener(
                 ['siteStaticCaptions_' + webcomicSite]: true,
                 ['siteTextboxExpansion_' + webcomicSite]: true,
                 ['siteCustomStyles_' + webcomicSite]: true,
+                ['siteProgressManualSaved_' + webcomicSite]: null,
                 ['siteAutoSaveProgress_' + webcomicSite]: true,
                 ['siteProgressAutoSaved_' + webcomicSite]: request.path }
             let defaults = { ...globalDefaults, ...siteDefaults }

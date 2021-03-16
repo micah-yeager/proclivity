@@ -182,8 +182,13 @@ class PostComicWrapper {
     set afterComic(node) {
         if (!document.querySelector('#proclivity-after-comic')) {
             node.setAttribute('id', 'proclivity-after-comic')
+            
+            // create a wrapper since we don't want it inline with the static caption
+            let afterComicWrapper = document.createElement('div')
+            afterComicWrapper.appendChild(node)
+
             // place the post-comic content within the wrapper
-            this.node.insertAdjacentHTML('beforeend', node.outerHTML)
+            this.node.insertAdjacentHTML('beforeend', afterComicWrapper.outerHTML)
         }
     }
     

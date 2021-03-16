@@ -62,6 +62,7 @@ class App extends Component {
 
 	bootstrapStateFromResponse(response) {
 		this.setState(response.config)
+		this.setState({ webcomicSite: response.webcomicSite })
 		// set loading to be false to start rendering
 		this.setState({ loading: false })
 	}
@@ -117,12 +118,12 @@ class App extends Component {
 						}
 					})}
 					<Button key="save"
-							id={'siteProgressManualSaved_' + this.state.domain}
+							id={'siteProgressManualSaved_' + this.state.webcomicSite}
 							onChange={this.handleChange}
 							title="Save checkpoint"
 							action="Save" />
 					<Link key="load"
-						  url={this.state.['siteProgressManualSaved_' + this.state.domain]}
+						  url={this.state.['siteProgressManualSaved_' + this.state.webcomicSite]}
 						  title="Load saved checkpoint" />
 				</Section>
 			</div>
