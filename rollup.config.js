@@ -2,6 +2,7 @@ import path from 'path'
 
 import alias from '@rollup/plugin-alias'
 import babel from '@rollup/plugin-babel'
+import cleanup from 'rollup-plugin-cleanup'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import postcss from 'rollup-plugin-postcss'
@@ -71,6 +72,7 @@ export default {
             modules: true,
             use: ['sass'],
         }),
+    cleanup({'comments': 'none'}),
     // Empties the output dir before a new build
     emptyDir(),
     // Outputs a zip file in ./releases
