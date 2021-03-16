@@ -593,7 +593,6 @@ const siteRules = {
             "name": "Something Positive",
             "indexUrl": "https://somethingpositive.net/",
             "nav": {
-                // "useParentLevel": 1,
                 "prev": "body > table tr table tr table table tr table td:nth-child(3) a",
                 "next": "body > table tr table tr table table tr table td:nth-child(5) a",
             },
