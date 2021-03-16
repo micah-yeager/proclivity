@@ -459,7 +459,7 @@ const siteRules = {
     },
     "oglaf.com": {
         "/": {
-            "name": "Oglaf",
+            "name": "Oglaf (NSFW)",
             "nsfw": true,
             "indexUrl": "https://www.oglaf.com/",
             "nav": {
