@@ -468,7 +468,16 @@ const siteRules = {
             },
             "alt": [{
                 "comic": "img#strip",
-                "style": "text-align: center; margin: 1em 0 2em; text-decoration: none !important; font-size: 1.2em;",
+                "destin": {
+                    "select": ".content",
+                    "insert": "append",
+                },
+                "wrapperStyle": "padding: 597px 160px 16px 16px; background-color: #ccc; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;",
+                "style": "text-align: center; margin-bottom: 0; text-decoration: none !important; font-size: 1em;",
+            }],
+            "sty": [{
+                "destin": ".align.btm",
+                "styles": "display: none;",
             }],
             "autoSave": {
                 "allow": /.+/g,
