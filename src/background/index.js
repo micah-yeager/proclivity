@@ -317,7 +317,7 @@ const siteRules = {
                     "styles": "background-color: #000;",
                 }, {
                     "destin": ".o_chat-container br + span",
-                    "styles": "display: block; padding-left: 26px; text-indent: -26px;",
+                    "styles": "display: block; padding-left: 34px; text-indent: -34px;",
                 }, {
                     "destin": ".o_chat-container span, .o_chat-container span *",
                     "styles": "vertical-align: top;",
