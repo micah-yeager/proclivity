@@ -451,6 +451,7 @@ class ComicWebsite extends KeyMap {
 
        	// apply CSS rules to generated content if enabled globally and locally
         if (this.enableStylesGlobal && this.enableStylesLocal) {
+            this.addStyles()
         	this.style.apply()
         }
     }
@@ -535,6 +536,13 @@ class ComicWebsite extends KeyMap {
 				domain: parseBaseUrl(location.hostname),
 				path: location.pathname + location.search
 			}, function(response) {})
+        }
+    }
+
+    addStyles() {
+        for (var i = this.styleRules.length - 1; i >= 0; i--) {
+            let styleRule = this.styleRules[i]
+            this.style.addRule(styleRule.destin, styleRule.styles)
         }
     }
 
