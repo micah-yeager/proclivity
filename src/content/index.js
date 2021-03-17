@@ -108,7 +108,8 @@ class ComicRule extends KeyMap {
             'destin': new KeyMapElement('destin'),
             'after': new KeyMapElement('afterComic'),
             'ignore': new KeyMapElement('ignoredPatterns', []),
-            'style': new KeyMapElement('wrapperStyle') }
+            'style': new KeyMapElement('style'),
+            'wrapperStyle': new KeyMapElement('wrapperStyle') }
 
         super(config, configKeyMap)
     }
@@ -173,16 +174,16 @@ class PostComicWrapper {
         this.node.appendChild(altNode)
 
         // if the ruleset includes styling rules
-        if (this.rule.wrapperStyle) {
+        if (this.rule.style) {
             // build CSS rules to be added later
-            this.style.addRule('.proclivity-wrapper > p', this.rule.wrapperStyle)
+            this.style.addRule('.proclivity-wrapper > p', this.rule.style)
         }
     }
     
     set afterComic(node) {
         if (!document.querySelector('#proclivity-after-comic')) {
             node.setAttribute('id', 'proclivity-after-comic')
-            
+
             // create a wrapper since we don't want it inline with the static caption
             let afterComicWrapper = document.createElement('div')
             afterComicWrapper.appendChild(node)
@@ -196,6 +197,10 @@ class PostComicWrapper {
         // add class to wrapper for styling
         this.node.classList.add('proclivity-wrapper')
         // set the wrapper width to the comic width
+        if (this.rule.wrapperStyle) {
+            console.log(this.rule)
+            this.style.addRule('.proclivity-wrapper', this.rule.wrapperStyle)
+        }
         this.style.addRule('.proclivity-wrapper', 'width:' + this.comicNode.width + 'px; margin: 0 auto')
         // remove the temporary class to reveal it on the page
         this.node.classList.remove('proclivity-wip')
