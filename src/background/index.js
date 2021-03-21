@@ -894,24 +894,23 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   // check if url changed
   if (changeInfo.url) {
     chrome.tabs.sendMessage(tabId, 'urlchanged')
+  }
 
-    // only do this after complete  to reduce needless iterations
-    if (changeInfo.status === 'complete') {
-      // declarativeContent replacement since it's only supported in Chrome
-      let url = new URL(changeInfo.url)
-      for (let i in siteMatchRules) {
-        let rule = siteMatchRules[i]
+  // only do this after complete  to reduce needless iterations
+  if (changeInfo.status === 'complete') {
+    // declarativeContent replacement since it's only supported in Chrome
+    for (let i in siteMatchRules) {
+      let rule = siteMatchRules[i]
 
-        if (rule.test(url)) {
-          chrome.pageAction.show(tabId)
+      if (rule.test(tab.url)) {
+        chrome.pageAction.show(tabId)
 
-          // return early
-          return
-        }
+        // return early
+        return
       }
-      // hide if no rules matched
-      chrome.pageAction.hide(tabId)
     }
+    // hide if no rules matched
+    chrome.pageAction.hide(tabId)
   }
 })
 
