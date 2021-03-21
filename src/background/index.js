@@ -762,7 +762,6 @@ chrome.runtime.onMessage.addListener(
                 globalCustomStyles: true,
                 globalAutoSaveProgress: true }
             if (!sitePath || !siteData) {
-                console.log('blah')
                 chrome.storage.sync.get(globalDefaults, function(items) {
                     sendResponse({ config: items })
                 })
@@ -868,8 +867,6 @@ chrome.tabs.onUpdated.addListener(
 
 // add storage listener to reload sites on change
 chrome.storage.onChanged.addListener(function(changes, namespace) {
-    let reloadAll = false
-    let reloadSite = false
     let patterns = []
 
     for (let key in changes) {
@@ -883,7 +880,6 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
         // if a global setting
         if (key.startsWith('global')) {
-            reloadAll = true
             for (let domain in siteRules) {
                 let pattern = '*://*.' + domain + '*'
                 patterns.push(pattern)
@@ -892,7 +888,6 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 
         // if a site-specific setting
         } else if (key.startsWith('site')) {
-            reloadSite = true
             let domain = key.split('_').slice(-1)
             let pattern = '*://*.' + domain + '*'
             patterns.push(pattern)
