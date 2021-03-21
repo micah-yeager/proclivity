@@ -778,8 +778,9 @@ for (const [domain, value] of Object.entries(siteRules)) {
 browser.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request === 'indexSiteList') {
-      sendResponse(indexSiteList)
-      return
+      return new Promise((resolve) => {
+        resolve(indexSiteList)
+      })
     }
 
     let rootDomain = sender.origin
@@ -814,10 +815,9 @@ browser.runtime.onMessage.addListener(
         globalAutoSaveProgress: true,
       }
       if (!sitePath || !siteData) {
-        browser.storage.sync.get(globalDefaults).then(function (items) {
-          sendResponse({ config: items })
+        return browser.storage.sync.get(globalDefaults).then(function (items) {
+          return { config: items }
         })
-        return true
       }
 
       let siteDefaults = {
@@ -831,10 +831,9 @@ browser.runtime.onMessage.addListener(
       }
       let defaults = { ...globalDefaults, ...siteDefaults }
 
-      browser.storage.sync.get(defaults).then(function (items) {
+      return browser.storage.sync.get(defaults).then(function (items) {
         if (!items.globalEnabled && !request.popup) {
-          sendResponse({ config: { globalEnabled: false } })
-          return
+          return { config: { globalEnabled: false } }
         }
 
         let autoSavedKey = 'siteProgressAutoSaved_' + webcomicSite
@@ -878,17 +877,14 @@ browser.runtime.onMessage.addListener(
           }
         }
 
-        let response = {
+        return {
           siteData: siteData,
           config: items,
           webcomicSite: webcomicSite,
           sitePath: sitePath,
           autoSavedUrl: autoSavedUrl,
         }
-        sendResponse(response)
       })
-      // return true so response can be sent asyncronously
-      return true
     }
   }.bind(siteRules),
 )
