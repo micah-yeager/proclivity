@@ -782,15 +782,20 @@ browser.runtime.onMessage.addListener(
       return
     }
 
-    if (request.domain in siteRules) {
-      let webcomicSite = request.domain
+    let rootDomain = sender.origin
+      .replace(/^(?:https?:\/\/)?(?:www\.)?/i, '')
+      .split('/')[0]
+    if (request === 'siteRules' && rootDomain in siteRules) {
+      let webcomicSite = rootDomain
+      let pathObj = new URL(sender.url)
+      let path = pathObj.pathname + pathObj.search
       let domainData = siteRules[webcomicSite]
 
       let sitePath
       let siteData
       // test each comic on a host to see if the path starts with the appropriate string
       for (let key in domainData) {
-        if (request.path.startsWith(key)) {
+        if (path.startsWith(key)) {
           sitePath = key
           webcomicSite += key
           siteData = domainData[key]
@@ -822,7 +827,7 @@ browser.runtime.onMessage.addListener(
         ['siteCustomStyles_' + webcomicSite]: true,
         ['siteProgressManualSaved_' + webcomicSite]: null,
         ['siteAutoSaveProgress_' + webcomicSite]: true,
-        ['siteProgressAutoSaved_' + webcomicSite]: request.path,
+        ['siteProgressAutoSaved_' + webcomicSite]: path,
       }
       let defaults = { ...globalDefaults, ...siteDefaults }
 
@@ -850,14 +855,14 @@ browser.runtime.onMessage.addListener(
                 // autoSave.allow.source is a part of RegExp, not a typo
                 escapedSitePath + siteData.autoSave.allow.source,
               )
-              allowProgressSave = regex.test(request.path)
+              allowProgressSave = regex.test(path)
             }
             if (allowProgressSave && siteData.autoSave.ignore) {
               let regex = new RegExp(
                 // autoSave.ignore.source is a part of RegExp, not a typo
                 escapedSitePath + siteData.autoSave.ignore.source,
               )
-              allowProgressSave = regex.test(request.path)
+              allowProgressSave = regex.test(path)
             }
 
             if (allowProgressSave) {
@@ -866,7 +871,7 @@ browser.runtime.onMessage.addListener(
               // b) setting only occurs when accessing a non-index
               browser.storage.sync
                 .set({
-                  ['siteProgressAutoSaved_' + webcomicSite]: request.path,
+                  ['siteProgressAutoSaved_' + webcomicSite]: path,
                 })
                 .then(() => {})
             }

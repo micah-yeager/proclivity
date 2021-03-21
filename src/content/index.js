@@ -1,5 +1,5 @@
-import psl from 'psl'
 import Mousetrap from 'tn-mousetrap'
+import DOMPurify from 'dompurify'
 
 // constants
 let IMG_TYPES = ['jpg', 'png', 'gif']
@@ -7,13 +7,13 @@ let IMG_TYPES = ['jpg', 'png', 'gif']
 // helpers
 // parse URL
 function parseBaseUrl(url) {
-  let parsedUrl = psl.parse(url)
-  let domain =
-    parsedUrl.subdomain === 'www' || parsedUrl.subdomain === null
-      ? ''
-      : parsedUrl.subdomain + '.'
-  domain += parsedUrl.domain
-  return domain
+  return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
+}
+
+function sanitizeHTML(str) {
+  return str.replace(/[^\w. ]/gi, function (c) {
+    return '&#' + c.charCodeAt(0) + ';'
+  })
 }
 
 class KeyMapElement {
@@ -235,7 +235,7 @@ class Comic {
 
       // otherwise, find it
     } else {
-      let data = this.node.getAttribute('title')
+      let data = DOMPurify.sanitize(this.node.getAttribute('title'))
       // if title text doesn't match the ignored regex
       if (data && !this._inIgnoreList(data)) {
         this._altText = data
@@ -298,21 +298,21 @@ class Expansion {
     // if the target is a link...
     if (this.rule.type === 'link' && this.sourceNode.tagName == 'A') {
       // get link
-      let link = this.sourceNode.getAttribute('href')
+      let link = new URL(this.sourceNode.getAttribute('href'))
       // get file extension from link
-      let ext = link.split('.').slice(-1).pop().toLowerCase()
+      let ext = link.pathname.split('.').slice(-1).pop().toLowerCase()
       // check if it's in the approved image extensions
       if (ext in IMG_TYPES) {
         // build the destination node contents as an node utilizing the link (usually as an img source)
         this.destinationNode.innerHTML = [
           // contentPrefix usually contains something like <img src="
           this.rule.contentPrefix,
-          link,
+          DOMPurify.sanitize(link.href),
           // contentSuffix usually contains something like " />
           this.rule.contentSuffix,
         ].join('')
         // otherwise, if it's a YouTube link
-      } else if (parseBaseUrl(link) === 'youtube.com') {
+      } else if (parseBaseUrl(link.host) === 'youtube.com') {
         // TODO: implement YouTube imbeds
       }
       // otherwise (usually if it's just plain text)
@@ -320,7 +320,8 @@ class Expansion {
       // create the node with the set prefixes and suffixes
       this.destinationNode.innerHTML = [
         this.rule.contentPrefix,
-        this.sourceNode.innerHTML,
+        // can't sanitize using encoding since subelements are allowed and often expected
+        DOMPurify.sanitize(this.sourceNode.innerHTML),
         this.rule.contentSuffix,
       ].join('')
     }
@@ -560,13 +561,8 @@ class ComicWebsite extends KeyMap {
       this.loadUnfinished()
       this.loadFinished()
 
-      // re-send message to update progress
-      browser.runtime
-        .sendMessage({
-          domain: parseBaseUrl(location.hostname),
-          path: location.pathname + location.search,
-        })
-        .then((response) => {})
+      // re-send message to update progress, since everything is already applied (i.e. single-page app), don't need to worry about the response
+      browser.runtime.sendMessage('siteRules').then((_) => {})
     }
   }
 
@@ -638,9 +634,4 @@ function handleResponse(response) {
 }
 
 // send a message to the background page to get rules from the domain
-browser.runtime
-  .sendMessage({
-    domain: parseBaseUrl(location.hostname),
-    path: location.pathname + location.search,
-  })
-  .then(handleResponse)
+browser.runtime.sendMessage('siteRules').then(handleResponse)
