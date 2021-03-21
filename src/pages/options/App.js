@@ -44,7 +44,7 @@ class App extends Component {
 		this.defaults = { ...toggleOptionDefaults, ...keyComboDefaults }
 
 		// apply settings from storage
-		browser.runtime.sendMessage('siteList').then(
+		browser.runtime.sendMessage('indexSiteList').then(
 			function (siteList) {
 				console.log(siteList)
 				this.siteList = siteList
