@@ -133,8 +133,9 @@ class PostComicWrapper {
       let targetNode
       if (this.rule.destin !== undefined && this.rule.destin.select) {
         targetNode = document.querySelector(this.rule.destin.select)
-        console.log(targetNode)
+
         if (targetNode) {
+          // sibling nodes
           if (this.rule.destin.insert === 'before') {
             targetNode.parentNode.insertBefore(this._node, targetNode)
           } else if (this.rule.destin.insert === 'after') {
@@ -142,10 +143,13 @@ class PostComicWrapper {
               this._node,
               targetNode.nextSibling,
             )
+
+            // parent nodes
           } else if (this.rule.destin.insert === 'prepend') {
             targetNode.prepend(this._node)
           } else if (this.rule.destin.insert === 'append') {
             targetNode.appendChild(this._node)
+
             // failsafe if no match
           } else {
             targetNode = undefined
