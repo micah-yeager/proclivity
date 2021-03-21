@@ -883,7 +883,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         // if a global setting
         if (key.startsWith('global')) {
             for (let domain in siteRules) {
-                let pattern = '*://*.' + domain + '*'
+                let pattern = '*://*.' + domain + '/*'
                 patterns.push(pattern)
             }
             break
@@ -891,7 +891,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         // if a site-specific setting
         } else if (key.startsWith('site')) {
             let domain = key.split('_').slice(-1)
-            let pattern = '*://*.' + domain + '*'
+            let pattern = '*://*.' + domain + '/*'
             patterns.push(pattern)
         }
     }
