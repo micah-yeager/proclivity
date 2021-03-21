@@ -722,21 +722,6 @@ function escapeString(string) {
 }
 
 
-// set up on install
-chrome.runtime.onInstalled.addListener(function() {
-    chrome.storage.sync.set({
-        globalEnabled: true,
-        globalNextCombo: ['right'],
-        globalPrevCombo: ['left'],
-        globalStaticCaptions: true,
-        globalKeyboardNav: true,
-        globalCustomStyles: true,
-        globalTextboxExpansion: true,
-	}, function() {
-        console.log('Initialized sync storage')
-    })
-})
-
 
 // set up popup conditions
 let conditions = []
