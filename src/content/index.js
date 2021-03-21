@@ -451,7 +451,9 @@ class ComicWebsite extends KeyMap {
 
        	// apply CSS rules to generated content if enabled globally and locally
         if (this.enableStylesGlobal && this.enableStylesLocal) {
-            this.addStyles()
+            if (this.styleRules) {
+                this.addStyles()
+            }
         	this.style.apply()
         }
     }
