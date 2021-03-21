@@ -46,7 +46,6 @@ class App extends Component {
 		// apply settings from storage
 		browser.runtime.sendMessage('indexSiteList').then(
 			function (siteList) {
-				console.log(siteList)
 				this.siteList = siteList
 				browser.storage.sync
 					.get(this.defaults)
