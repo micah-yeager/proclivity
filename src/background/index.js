@@ -798,12 +798,14 @@ chrome.runtime.onMessage.addListener(
                         let escapedSitePath = escapeString(sitePath)
                         if (siteData.autoSave.allow) {
                             let regex = new RegExp(
+                                // autoSave.allow.source is a part of RegExp, not a typo
                                 escapedSitePath + siteData.autoSave.allow.source
                             )
                             allowProgressSave = regex.test(request.path)
                         }
                         if (allowProgressSave && siteData.autoSave.ignore) {
                             let regex = new RegExp(
+                                // autoSave.ignore.source is a part of RegExp, not a typo
                                 escapedSitePath + siteData.autoSave.ignore.source
                             )
                             allowProgressSave = regex.test(request.path)
