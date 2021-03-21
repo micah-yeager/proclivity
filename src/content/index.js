@@ -99,6 +99,79 @@ class Style {
   }
 }
 
+class NavigationRule extends KeyMap {
+  constructor(config) {
+    let configKeyMap = {
+      next: new KeyMapElement('next'),
+      prev: new KeyMapElement('prev'),
+      useParentLevel: new KeyMapElement('parentLevel'),
+    }
+
+    super(config, configKeyMap)
+  }
+}
+class Navigation {
+  constructor(rule, nextCombo, prevCombo) {
+    this.rule = rule
+    this.nextCombo = nextCombo
+    this.prevCombo = prevCombo
+  }
+
+  initialize() {
+    // get next and previous button elements
+    let prev = document.querySelector(this.rule.prev)
+    let next = document.querySelector(this.rule.next)
+
+    // if defined, get the parents from selector (since queries can't select parent nodes)
+    // need to use if {} because range generation will still generate a single-element array if undefined
+    if (!this.levels && this.rule.parentLevel) {
+      this.levels = [...Array(this.rule.parentLevel).keys()]
+    }
+
+    // bind the key combos
+    if (prev && !this.prevBound) {
+      // add for idempotency
+      this.prevBound = true
+
+      // get parents as defined above
+      for (let i in this.levels) {
+        prev = prev.parentElement
+      }
+
+      Mousetrap.bind(
+        this.prevCombo,
+        function (e) {
+          // if the prev element exists, click it
+          prev.click()
+        }.bind(this),
+      )
+    }
+
+    if (next && !this.nextBound) {
+      // add for idempotency
+      this.nextBound = true
+
+      // get parents as defined above
+      for (let i in this.levels) {
+        next = next.parentElement
+      }
+
+      Mousetrap.bind(
+        this.nextCombo,
+        function (e) {
+          // if the next element exists, click it
+          next.click()
+        }.bind(this),
+      )
+    }
+  }
+
+  reset() {
+    Mousetrap.unbind(this.nextCombo)
+    Mousetrap.unbind(this.nextCombo)
+  }
+}
+
 // comic classes, used for alt-text and post-comic panels
 class ComicRule extends KeyMap {
   constructor(config) {
@@ -468,9 +541,10 @@ class ComicWebsite extends KeyMap {
 
   // things that should occur before the page finishes loading
   loadUnfinished() {
+    this.nav = this.createNav()
     // apply nav if enabled globally and locally and if the nav selectors exist
     if (this.enableNavGlobal && this.enableNavLocal && this.navSelectors) {
-      this.createNav()
+      this.nav.initialize()
     }
 
     // apply CSS rules to generated content if enabled globally and locally
@@ -505,52 +579,8 @@ class ComicWebsite extends KeyMap {
   }
 
   createNav() {
-    // get next and previous button elements
-    let prev = document.querySelector(this.navSelectors['prev'])
-    let next = document.querySelector(this.navSelectors['next'])
-
-    // if defined, get the parents from selector (since queries can't select parent nodes)
-    // need to use if {} because range generation will still generate a single-element array if undefined
-    if (!this.levels && this.navSelectors.useParentLevel) {
-      this.levels = [...Array(this.navSelectors.useParentLevel).keys()]
-    }
-
-    // bind the key combos
-    if (prev && !this.prevBound) {
-      // add for idempotency
-      this.prevBound = true
-
-      // get parents as defined above
-      for (let i in this.levels) {
-        prev = prev.parentElement
-      }
-
-      Mousetrap.bind(
-        this.prevCombo,
-        function (e) {
-          // if the prev element exists, click it
-          prev.click()
-        }.bind(this),
-      )
-    }
-
-    if (next && !this.nextBound) {
-      // add for idempotency
-      this.nextBound = true
-
-      // get parents as defined above
-      for (let i in this.levels) {
-        next = next.parentElement
-      }
-
-      Mousetrap.bind(
-        this.nextCombo,
-        function (e) {
-          // if the next element exists, click it
-          next.click()
-        }.bind(this),
-      )
-    }
+    let rule = new NavigationRule(this.navSelectors)
+    return new Navigation(rule, this.nextCombo, this.prevCombo)
   }
 
   // refresh comic in case this is a single-page app (e.g. DaisyOwl); will get interrupted on DOM reload for non-single-page sites
