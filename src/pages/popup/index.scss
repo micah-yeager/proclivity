@@ -1,14 +1,16 @@
 body {
-    height: initial;
-    padding: 6px;
-    width: calc(var(--cr-toolbar-field-width) / 2.25);
-    padding: 0 calc(var(--cr-section-padding) / 2) calc(var(--cr-section-vertical-padding) / 2);
-    box-sizing: border-box;
+	height: initial;
+	padding: 6px;
+	width: calc(var(--cr-toolbar-field-width) / 2.25);
+	padding: 0 calc(var(--cr-section-padding) / 2)
+		calc(var(--cr-section-vertical-padding) / 2);
+	box-sizing: border-box;
 }
 
 .settings-wrapper .header .title {
-    padding: 0;
+	padding: 0;
 }
 .toggle-row label {
-    padding: calc(var(--toggle-row-label-vertical-padding, 0) / 4) var(--toggle-row-label-horizontal-padding, 0);
+	padding: calc(var(--toggle-row-label-vertical-padding, 0) / 4)
+		var(--toggle-row-label-horizontal-padding, 0);
 }
