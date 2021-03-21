@@ -706,45 +706,33 @@ const siteRules = {
     },
 }
 
-const siteList = {}
-for (const [key, value] of Object.entries(siteRules)) {
-    for (const [skey, svalue] of Object.entries(value)) {
-        if (!svalue.skipIndex) {
-            siteList[svalue.name] = svalue.indexUrl
-        }
-    }
-}
-
-
 // helpers
 function escapeString(string) {
     return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
 
 
+// globals
+const indexSiteList = {}
+const siteMatchRules = []
+for (const [domain, value] of Object.entries(siteRules)) {
+    for (const [subkey, subvalue] of Object.entries(value)) {
+        let escapedDomain = escapeString(domain)
+        let rule = RegExp('https?:\/\/.*?\.?' + escapedDomain + '\/.*')
+        siteMatchRules.push(rule)
 
-// set up popup conditions
-let conditions = []
-for (let site in siteRules) {
-    conditions.push(
-        new chrome.declarativeContent.PageStateMatcher({
-            pageUrl: {hostSuffix: site},
-        })
-    )
+        if (!subvalue.skipIndex) {
+            indexSiteList[subvalue.name] = subvalue.indexUrl
+        }
+    }
 }
-chrome.declarativeContent.onPageChanged.removeRules(undefined, function() {
-    chrome.declarativeContent.onPageChanged.addRules([{
-        conditions: conditions,
-        actions: [new chrome.declarativeContent.ShowPageAction()]
-    }])
-}.bind(conditions))
 
 
 // add message listeners
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        if (request === 'siteList') {
-            sendResponse(siteList)
+        if (request === 'indexSiteList') {
+            sendResponse(indexSiteList)
             return
         }
 
@@ -855,6 +843,24 @@ chrome.tabs.onUpdated.addListener(
         // check if url changed
         if (changeInfo.url) {
             chrome.tabs.sendMessage(tabId, 'urlchanged')
+
+            // only do this after complete  to reduce needless iterations
+            if (changeInfo.status === 'complete') {
+                // declarativeContent replacement since it's only supported in Chrome
+                let url = new URL(changeInfo.url)
+                for (let i in siteMatchRules) {
+                    let rule = siteMatchRules[i]
+
+                    if (rule.test(url)) {
+                        chrome.pageAction.show(tabId)
+
+                        // return early
+                        return
+                    }
+                }
+                // hide if no rules matched
+                chrome.pageAction.hide(tabId)
+            }
         }
     }
 )
