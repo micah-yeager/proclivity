@@ -50,7 +50,7 @@ export default {
     chunkFileNames: path.join('chunks','[name]-[hash].js'),
   },
   plugins: [
-    chromeExtension(),
+    chromeExtension({ browserPolyfill: true }),
     // Adds a Chrome extension reloader during watch mode
     simpleReloader(),
     alias({ entries: aliases }),
