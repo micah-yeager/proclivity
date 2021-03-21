@@ -1,76 +1,127 @@
 {
-    "manifest_version": 2,
-    "permissions": [
-    	"tabs",
-    	"declarativeContent",
-    	"storage"
-    ],
-    "background": {
-        "scripts": ["background/index.js"],
-        "persistent": false
+  "manifest_version": 2,
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "proclivity@yeagers.co",
+      "strict_min_version": "69.0"
     },
-    "content_scripts": [
-        {
-            "run_at": "document_start",
-            "js": ["content/index.js"],
-            "matches": [
-                "*://amultiverse.com/*",
-                "*://beefpaper.com/*",
-                "*://www.bunny-comic.com/*",
-                "*://www.buttersafe.com/*",
-                "*://collectedcurios.com/*",
-                "*://www.collectedcurios.com/*",
-                "*://daisyowl.com/*",
-                "*://dieselsweeties.com/*",
-                "*://www.dieselsweeties.com/*",
-                "*://www.doodleforfood.com/*",
-                "*://dresdencodak.com/*",
-                "*://drmcninja.com/*",
-                "*://www.dumbingofage.com/*",
-                "*://www.gunnerkrigg.com/*",
-                "*://www.harkavagrant.com/*",
-                "*://www.homestuck.com/*",
-                "*://johnnywander.com/*",
-                "*://www.johnnywander.com/*",
-                "*://www.jspowerhour.com/*",
-                "*://lackadaisycats.com/*",
-                "*://www.lackadaisycats.com/*",
-                "*://www.oglaf.com/*",
-                "*://poorlydrawnlines.com/*",
-                "*://www.prequeladventure.com/*",
-                "*://questionablecontent.net/*",
-                "*://www.questionablecontent.net/*",
-                "*://qwantz.com/*",
-                "*://www.qwantz.com/*",
-                "*://romanticallyapocalyptic.com/*",
-                "*://www.samandfuzzy.com/*",
-                "*://www.smbc-comics.com/*",
-                "*://somethingpositive.net/*",
-                "*://threewordphrase.com/*",
-                "*://www.threewordphrase.com/*",
-                "*://www.wildelifecomic.com/*",
-                "*://wondermark.com/*",
-                "*://hs.hiveswap.com/paradoxspace/*",
-                "*://what-if.xkcd.com/*",
-                "*://xkcd.com/*"
-            ]
-        }
-    ],
-    "web_accessible_resources": [
-        "mousetrap-*.js",
-        "index-*.js"
-    ],
-    "page_action": {
-        "default_popup": "pages/popup/index.html"
-    },
-    "options_page": "pages/options/index.html",
-    "icons": {
-        "16": "assets/images/Proclivity-16.png",
-        "32": "assets/images/Proclivity-32.png",
-        "64": "assets/images/Proclivity-64.png",
-        "128": "assets/images/Proclivity-128.png",
-        "256": "assets/images/Proclivity-256.png",
-        "512": "assets/images/Proclivity-512.png",
-        "1024": "assets/images/Proclivity-1024.png"
+    "edge": {
+      "browser_action_next_to_addressbar": true
     }
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "*://amultiverse.com/",
+    "*://beefpaper.com/",
+    "*://www.bunny-comic.com/",
+    "*://www.buttersafe.com/",
+    "*://collectedcurios.com/",
+    "*://www.collectedcurios.com/",
+    "*://daisyowl.com/",
+    "*://dieselsweeties.com/",
+    "*://www.dieselsweeties.com/",
+    "*://www.doodleforfood.com/",
+    "*://dresdencodak.com/",
+    "*://drmcninja.com/",
+    "*://www.dumbingofage.com/",
+    "*://www.gunnerkrigg.com/",
+    "*://www.harkavagrant.com/",
+    "*://www.homestuck.com/",
+    "*://johnnywander.com/",
+    "*://www.johnnywander.com/",
+    "*://www.jspowerhour.com/",
+    "*://lackadaisycats.com/",
+    "*://www.lackadaisycats.com/",
+    "*://www.oglaf.com/",
+    "*://poorlydrawnlines.com/",
+    "*://www.prequeladventure.com/",
+    "*://questionablecontent.net/",
+    "*://www.questionablecontent.net/",
+    "*://qwantz.com/",
+    "*://www.qwantz.com/",
+    "*://romanticallyapocalyptic.com/",
+    "*://www.samandfuzzy.com/",
+    "*://www.smbc-comics.com/",
+    "*://somethingpositive.net/",
+    "*://threewordphrase.com/",
+    "*://www.threewordphrase.com/",
+    "*://www.wildelifecomic.com/",
+    "*://wondermark.com/",
+    "*://hs.hiveswap.com/paradoxspace/",
+    "*://what-if.xkcd.com/",
+    "*://xkcd.com/"
+  ],
+  "background": {
+    "scripts": ["background/index.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "js": ["content/index.js"],
+      "matches": [
+        "*://amultiverse.com/*",
+        "*://beefpaper.com/*",
+        "*://collectedcurios.com/battlebunnies.php*",
+        "*://collectedcurios.com/sequentialart.php*",
+        "*://collectedcurios.com/spiderandscorpion.php*",
+        "*://daisyowl.com/comic/*",
+        "*://dieselsweeties.com/*",
+        "*://dresdencodak.com/*",
+        "*://drmcninja.com/*",
+        "*://hs.hiveswap.com/paradoxspace/*",
+        "*://johnnywander.com/*",
+        "*://lackadaisycats.com/*",
+        "*://poorlydrawnlines.com/*",
+        "*://questionablecontent.net/*",
+        "*://qwantz.com/*",
+        "*://romanticallyapocalyptic.com/*",
+        "*://somethingpositive.net/*",
+        "*://threewordphrase.com/*",
+        "*://what-if.xkcd.com/*",
+        "*://wondermark.com/*",
+        "*://www.bunny-comic.com/*",
+        "*://www.buttersafe.com/*",
+        "*://www.collectedcurios.com/battlebunnies.php*",
+        "*://www.collectedcurios.com/sequentialart.php*",
+        "*://www.collectedcurios.com/spiderandscorpion.php*",
+        "*://www.dieselsweeties.com/*",
+        "*://www.doodleforfood.com/*",
+        "*://www.dumbingofage.com/*",
+        "*://www.gunnerkrigg.com/*",
+        "*://www.harkavagrant.com/*",
+        "*://www.homestuck.com/epilogues/*",
+        "*://www.homestuck.com/jailbreak/*",
+        "*://www.homestuck.com/problem-sleuth/*",
+        "*://www.homestuck.com/story/*",
+        "*://www.johnnywander.com/*",
+        "*://www.jspowerhour.com/*",
+        "*://www.lackadaisycats.com/comic.php*",
+        "*://www.oglaf.com/*",
+        "*://www.prequeladventure.com/*",
+        "*://www.questionablecontent.net/*",
+        "*://www.qwantz.com/*",
+        "*://www.samandfuzzy.com/*",
+        "*://www.smbc-comics.com/*",
+        "*://www.threewordphrase.com/*",
+        "*://www.wildelifecomic.com/*",
+        "*://xkcd.com/*"
+      ]
+    }
+  ],
+  "web_accessible_resources": ["mousetrap-*.js", "index-*.js"],
+  "page_action": {
+    "default_popup": "pages/popup/index.html"
+  },
+  "options_page": "pages/options/index.html",
+  "icons": {
+    "16": "assets/images/Proclivity-16.png",
+    "32": "assets/images/Proclivity-32.png",
+    "64": "assets/images/Proclivity-64.png",
+    "128": "assets/images/Proclivity-128.png",
+    "256": "assets/images/Proclivity-256.png",
+    "512": "assets/images/Proclivity-512.png",
+    "1024": "assets/images/Proclivity-1024.png"
+  }
 }
