@@ -413,7 +413,7 @@ class ComicWebsite extends KeyMap {
     var preLoaded = false
     var postLoaded = false
 
-    chrome.runtime.onMessage.addListener(
+    browser.runtime.onMessage.addListener(
       function (request, sender, sendResponse) {
         // listen for messages sent from background.js
         if (request === 'urlchanged') {
@@ -561,13 +561,12 @@ class ComicWebsite extends KeyMap {
       this.loadFinished()
 
       // re-send message to update progress
-      chrome.runtime.sendMessage(
-        {
+      browser.runtime
+        .sendMessage({
           domain: parseBaseUrl(location.hostname),
           path: location.pathname + location.search,
-        },
-        function (response) {},
-      )
+        })
+        .then((response) => {})
     }
   }
 
@@ -639,10 +638,9 @@ function handleResponse(response) {
 }
 
 // send a message to the background page to get rules from the domain
-chrome.runtime.sendMessage(
-  {
+browser.runtime
+  .sendMessage({
     domain: parseBaseUrl(location.hostname),
     path: location.pathname + location.search,
-  },
-  handleResponse,
-)
+  })
+  .then(handleResponse)

@@ -39,7 +39,7 @@ class App extends Component {
 
 	componentDidMount() {
 		let query = { active: true, currentWindow: true }
-		chrome.tabs.query(query, this.getStorageFromTabUrl)
+		browser.tabs.query(query).then(this.getStorageFromTabUrl)
 	}
 
 	getStorageFromTabUrl(tabs) {
@@ -61,16 +61,15 @@ class App extends Component {
 		this.setState({ domain: domain })
 
 		// apply settings from background page
-		chrome.runtime.sendMessage(
-			{
+		browser.runtime
+			.sendMessage({
 				domain: domain,
 				path: path,
 				popup: true,
-			},
-			this.bootstrapStateFromResponse,
-		)
+			})
+			.then(this.bootstrapStateFromResponse)
 		// add storage listener
-		chrome.storage.onChanged.addListener(this.processStorageChange)
+		browser.storage.onChanged.addListener(this.processStorageChange)
 	}
 
 	bootstrapStateFromResponse(response) {
@@ -93,8 +92,7 @@ class App extends Component {
 
 	handleChange(key, value) {
 		let dict = { [key]: value }
-		chrome.storage.sync.set(
-			dict,
+		browser.storage.sync.set(dict).then(
 			function () {
 				this.setState(dict)
 			}.bind(this),
@@ -118,7 +116,7 @@ class App extends Component {
 					/>
 					<Link
 						key="options"
-						url={chrome.extension.getURL('pages/options/index.html')}
+						url={browser.extension.getURL('pages/options/index.html')}
 						title="More options"
 					/>
 					<Info
@@ -142,7 +140,7 @@ class App extends Component {
 					/>
 					<Link
 						key="options"
-						url={chrome.extension.getURL('pages/options/index.html')}
+						url={browser.extension.getURL('pages/options/index.html')}
 						title="More options"
 					/>
 				</HeaderSection>

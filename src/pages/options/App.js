@@ -44,14 +44,16 @@ class App extends Component {
 		this.defaults = { ...toggleOptionDefaults, ...keyComboDefaults }
 
 		// apply settings from storage
-		chrome.runtime.sendMessage(
-			'siteList',
+		browser.runtime.sendMessage('siteList').then(
 			function (siteList) {
+				console.log(siteList)
 				this.siteList = siteList
-				chrome.storage.sync.get(this.defaults, this.bootstrapStateFromStorage)
+				browser.storage.sync
+					.get(this.defaults)
+					.then(this.bootstrapStateFromStorage)
 			}.bind(this),
 		)
-		chrome.storage.onChanged.addListener(this.processStorageChange)
+		browser.storage.onChanged.addListener(this.processStorageChange)
 	}
 
 	bootstrapStateFromStorage(items) {
@@ -72,8 +74,7 @@ class App extends Component {
 
 	handleChange(key, value) {
 		let dict = { [key]: value }
-		chrome.storage.sync.set(
-			dict,
+		browser.storage.sync.set(dict).then(
 			function () {
 				this.setState(dict)
 			}.bind(this),

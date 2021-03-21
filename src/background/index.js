@@ -775,7 +775,7 @@ for (const [domain, value] of Object.entries(siteRules)) {
 }
 
 // add message listeners
-chrome.runtime.onMessage.addListener(
+browser.runtime.onMessage.addListener(
   function (request, sender, sendResponse) {
     if (request === 'indexSiteList') {
       sendResponse(indexSiteList)
@@ -809,7 +809,7 @@ chrome.runtime.onMessage.addListener(
         globalAutoSaveProgress: true,
       }
       if (!sitePath || !siteData) {
-        chrome.storage.sync.get(globalDefaults, function (items) {
+        browser.storage.sync.get(globalDefaults).then(function (items) {
           sendResponse({ config: items })
         })
         return true
@@ -826,7 +826,7 @@ chrome.runtime.onMessage.addListener(
       }
       let defaults = { ...globalDefaults, ...siteDefaults }
 
-      chrome.storage.sync.get(defaults, function (items) {
+      browser.storage.sync.get(defaults).then(function (items) {
         if (!items.globalEnabled && !request.popup) {
           sendResponse({ config: { globalEnabled: false } })
           return
@@ -864,12 +864,11 @@ chrome.runtime.onMessage.addListener(
               // we don't care that we're saving the auto-saved progress after retrieval because:
               // a) retrieving only matters when accessing the index
               // b) setting only occurs when accessing a non-index
-              chrome.storage.sync.set(
-                {
+              browser.storage.sync
+                .set({
                   ['siteProgressAutoSaved_' + webcomicSite]: request.path,
-                },
-                function () {},
-              )
+                })
+                .then(() => {})
             }
           }
         }
@@ -890,10 +889,10 @@ chrome.runtime.onMessage.addListener(
 )
 
 // add tab state change listener since single-page apps are very difficult to listen to from within the content script
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   // check if url changed
   if (changeInfo.url) {
-    chrome.tabs.sendMessage(tabId, 'urlchanged')
+    browser.tabs.sendMessage(tabId, 'urlchanged')
   }
 
   // only do this after complete  to reduce needless iterations
@@ -903,19 +902,19 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       let rule = siteMatchRules[i]
 
       if (rule.test(tab.url)) {
-        chrome.pageAction.show(tabId)
+        browser.pageAction.show(tabId)
 
         // return early
         return
       }
     }
     // hide if no rules matched
-    chrome.pageAction.hide(tabId)
+    browser.pageAction.hide(tabId)
   }
 })
 
 // add storage listener to reload sites on change
-chrome.storage.onChanged.addListener(
+browser.storage.onChanged.addListener(
   function (changes, namespace) {
     let patterns = []
 
@@ -948,11 +947,11 @@ chrome.storage.onChanged.addListener(
     // need to explicitly use a conditional here, otherwise all tabs will be returned on query, causing a reload storm if multiple webcomic tabs are open
     if (patterns.length > 0) {
       // url can be a list of strings
-      chrome.tabs.query({ url: patterns }, function (tabs) {
+      browser.tabs.query({ url: patterns }).then(function (tabs) {
         // reload tabs (no batch command, need to do it one-by-one)
         for (let i in tabs) {
           let tab = tabs[i]
-          chrome.tabs.reload(tab.id)
+          browser.tabs.reload(tab.id)
         }
       })
     }
