@@ -2,6 +2,7 @@
 releases
 dist.crx
 dist.pem
+*.zip
 
 # macOS resource files
 .DS_Store
