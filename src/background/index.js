@@ -918,6 +918,7 @@ browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 })
 
 // add storage listener to reload sites on change
+// TODO: replace tab reloading with dynamic enabling/disabling
 browser.storage.onChanged.addListener(
   function (changes, namespace) {
     let patterns = []
