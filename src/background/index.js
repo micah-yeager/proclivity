@@ -942,8 +942,8 @@ browser.storage.onChanged.addListener(
 
         // if a site-specific setting
       } else if (key.startsWith('site')) {
-        let domain = key.split('_').slice(-1)
-        let pattern = '*://*.' + domain + '/*'
+        let webcomicSite = key.split('_').slice(-1)
+        let pattern = '*://*.' + webcomicSite + '*'
         patterns.push(pattern)
       }
     }
