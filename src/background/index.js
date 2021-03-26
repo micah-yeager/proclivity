@@ -758,6 +758,9 @@ const siteRules = {
 function escapeString(string) {
   return string.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
+function parseBaseUrl(url) {
+  return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
+}
 
 // globals
 const indexSiteList = {}
@@ -783,13 +786,17 @@ browser.runtime.onMessage.addListener(
       })
     }
 
-    let rootDomain = sender.origin
-      .replace(/^(?:https?:\/\/)?(?:www\.)?/i, '')
-      .split('/')[0]
-    if (request === 'siteRules' && rootDomain in siteRules) {
+    let rootDomain = parseBaseUrl(sender.origin)
+    let urlObj = new URL(sender.url)
+    let path = urlObj.pathname + urlObj.search
+    // need to check if it's a popup AND if it's from the chrome extension domain
+    if (request.popup === true && rootDomain === 'chrome-extension:') {
+      rootDomain = parseBaseUrl(request.domain)
+      path = request.path
+    }
+    if (rootDomain in siteRules) {
       let webcomicSite = rootDomain
-      let pathObj = new URL(sender.url)
-      let path = pathObj.pathname + pathObj.search
+
       let domainData = siteRules[webcomicSite]
 
       let sitePath

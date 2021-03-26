@@ -595,9 +595,9 @@ class ComicWebsite extends KeyMap {
       this.loadUnfinished()
       this.loadFinished()
 
-      // re-send message to update progress, since everything is already applied (i.e. single-page app), don't need to worry about the response
-      browser.runtime.sendMessage('siteRules').then((_) => {})
     }
+    // re-send message to update progress, since everything is already applied (i.e. single-page app), don't need to worry about the response
+    browser.runtime.sendMessage({ popup: false }).then((_) => {})
   }
 
   addStyles() {
@@ -668,4 +668,4 @@ function handleResponse(response) {
 }
 
 // send a message to the background page to get rules from the domain
-browser.runtime.sendMessage('siteRules').then(handleResponse)
+browser.runtime.sendMessage({ popup: false }).then(handleResponse)

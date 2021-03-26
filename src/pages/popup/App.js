@@ -62,11 +62,7 @@ class App extends Component {
 
 		// apply settings from background page
 		browser.runtime
-			.sendMessage({
-				domain: domain,
-				path: path,
-				popup: true,
-			})
+			.sendMessage({ popup: true, domain: domain, path: path })
 			.then(this.bootstrapStateFromResponse)
 		// add storage listener
 		browser.storage.onChanged.addListener(this.processStorageChange)
