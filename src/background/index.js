@@ -904,18 +904,14 @@ browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   }
 
   // only do this after complete  to reduce needless iterations
-  if (changeInfo.status === 'complete') {
-    // declarativeContent replacement since it's only supported in Chrome
-    for (let i in siteMatchRules) {
-      let rule = siteMatchRules[i]
-
-      if (rule.test(tab.url)) {
-        browser.pageAction.show(tabId)
-
-        // return early
-        return
-      }
-    }
+  // declarativeContent replacement since it's only supported in Chrome
+  let urlObj = new URL(tab.url)
+  if (
+    changeInfo.status === 'complete' &&
+    parseBaseUrl(urlObj.hostname) in siteRules
+  ) {
+    browser.pageAction.show(tabId)
+  } else {
     // hide if no rules matched
     browser.pageAction.hide(tabId)
   }
