@@ -583,19 +583,23 @@ class ComicWebsite extends KeyMap {
     return new Navigation(rule, this.nextCombo, this.prevCombo)
   }
 
-  // refresh comic in case this is a single-page app (e.g. DaisyOwl); will get interrupted on DOM reload for non-single-page sites
-  refreshComic() {
+  reset() {
     for (let i = this.comicNodes.length - 1; i >= 0; i--) {
       let comicNode = this.comicNodes[i]
       // remove the post-comic wrapper contents
       comicNode.postComicWrapper.clear()
-      // reset generated styles
-      this.style.reset()
-      // re-run the items that are generated after page load — include items before load finishes for single-page apps where nav elements might change
-      this.loadUnfinished()
-      this.loadFinished()
-
     }
+    // reset generated styles
+    this.style.reset()
+  }
+
+  // refresh comic in case this is a single-page app (e.g. DaisyOwl); will get interrupted on DOM reload for non-single-page sites
+  refreshComic() {
+    this.reset()
+    // re-run the items that are generated after page load — include items before load finishes for single-page apps where nav elements might change
+    this.loadUnfinished()
+    this.loadFinished()
+
     // re-send message to update progress, since everything is already applied (i.e. single-page app), don't need to worry about the response
     browser.runtime.sendMessage({ popup: false }).then((_) => {})
   }
