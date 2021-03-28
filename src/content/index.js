@@ -500,15 +500,12 @@ class ComicWebsite extends KeyMap {
       }.bind(this),
     )
 
+    this.loadUnfinished()
+    preLoaded = true
+
     document.addEventListener(
       'readystatechange',
       function (e) {
-        // when HTML/DOM elements are ready:
-        if (e.target.readyState !== 'loading' && !preLoaded) {
-          // load things that are content-independent (e.g. nav)
-          this.loadUnfinished()
-          preLoaded = true
-        }
         // when window loaded ( external resources are loaded too- `css`,`src`, etc...)
         if (e.target.readyState === 'complete' && !postLoaded) {
           // load any remainders that were missed above
@@ -528,13 +525,9 @@ class ComicWebsite extends KeyMap {
     // also allow for skipWait if sites have slow loading times but don't need full DOM to render (e.g. qwantz.com)
     if (document.readyState === 'complete') {
       // load any remainders that were missed above
-      if (!preLoaded) {
-        this.loadUnfinished()
-      }
       if (!postLoaded) {
         this.loadFinished()
       }
-      preLoaded = true
       postLoaded = true
     }
   }
