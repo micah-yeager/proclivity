@@ -60,6 +60,7 @@
     {
       "run_at": "document_end",
       "js": ["content/index.js"],
+      "css": ["content/snackbar.css"],
       "matches": [
         "*://amultiverse.com/*",
         "*://beefpaper.com/*",

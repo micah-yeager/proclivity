@@ -1,5 +1,6 @@
 import Mousetrap from 'tn-mousetrap'
 import DOMPurify from 'dompurify'
+import Snackbar from 'node-snackbar'
 
 // constants
 let IMG_TYPES = ['jpg', 'png', 'gif']
@@ -651,8 +652,31 @@ function handleResponse(response) {
     path !== response.autoSavedUrl &&
     path === response.sitePath
   ) {
-    // use .replace() so no history is generated
-    location.replace(response.autoSavedUrl)
+    Snackbar.show({
+      text: 'Load saved progress?',
+      pos: 'top-right',
+      // set duration to null to have it open indefinitely
+      duration: null,
+      alertScreenReader: true,
+      // "first" button is on the right side
+      showAction: true,
+      actionText: 'No thanks',
+      actionTextColor: '#f28b82',
+      onActionClick: function (element) {
+        element.style.opacity = 0
+      },
+      // "second" button is on the lift side
+      showSecondButton: true,
+      secondButtonText: 'Do it',
+      secondButtonTextColor: '#1c82f0',
+      onSecondButtonClick: function (element) {
+        // use .href() so history is generated
+        location.href = response.autoSavedUrl
+        // hide notification in case of single-page apps
+        element.style.opacity = 0
+      },
+    })
+
     // don't return since single-page apps won't need a refresh
   }
 
