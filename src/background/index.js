@@ -868,7 +868,7 @@ browser.runtime.onMessage.addListener(
                 // autoSave.ignore.source is a part of RegExp, not a typo
                 escapedSitePath + siteData.autoSave.ignore.source,
               )
-              allowProgressSave = regex.test(path)
+              allowProgressSave = !regex.test(path)
             }
 
             if (allowProgressSave) {
