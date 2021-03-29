@@ -763,7 +763,7 @@ function parseBaseUrl(url) {
 }
 
 // globals
-const indexSiteList = {}
+const indexSiteList = []
 const siteMatchRules = []
 for (const [domain, value] of Object.entries(siteRules)) {
   for (const [subkey, subvalue] of Object.entries(value)) {
@@ -772,7 +772,7 @@ for (const [domain, value] of Object.entries(siteRules)) {
     siteMatchRules.push(rule)
 
     if (!subvalue.skipIndex) {
-      indexSiteList[subvalue.name] = subvalue.indexUrl
+      indexSiteList.push({ name: subvalue.name, url: subvalue.indexUrl })
     }
   }
 }

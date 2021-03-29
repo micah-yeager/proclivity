@@ -9,6 +9,7 @@ import {
 } from 'src/pages/components/settings'
 import 'src/pages/components/styles'
 import styles from './index.scss'
+import sortArray from 'sort-array'
 
 class App extends Component {
 	constructor(props) {
@@ -46,7 +47,10 @@ class App extends Component {
 		// apply settings from storage
 		browser.runtime.sendMessage('indexSiteList').then(
 			function (siteList) {
-				this.siteList = siteList
+				this.siteList = sortArray(siteList, {
+					by: 'nameLower',
+					nameLower: (name) => name.toLowerCase(),
+				})
 				browser.storage.sync
 					.get(this.defaults)
 					.then(this.bootstrapStateFromStorage)
@@ -180,8 +184,8 @@ class App extends Component {
 						/>
 					</Section>
 					<Section title="Supported webcomics">
-						{Object.entries(this.siteList).map(([key, value]) => (
-							<Link key={value} url={value} title={key} />
+						{this.siteList.map((site) => (
+							<Link key={site.url} url={site.url} title={site.name} />
 						))}
 					</Section>
 				</div>
