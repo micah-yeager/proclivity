@@ -900,7 +900,7 @@ browser.runtime.onMessage.addListener(
 browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   // check if url changed
   if (changeInfo.url) {
-    browser.tabs.sendMessage(tabId, 'urlchanged')
+    browser.tabs.sendMessage(tabId, 'urlchanged').catch((e) => {})
   }
 
   // only do this after complete  to reduce needless iterations
