@@ -484,6 +484,7 @@ const siteRules = {
     '/': {
       name: 'Oglaf [NSFW]',
       nsfw: true,
+      skipIndex: true,
       indexUrl: 'https://www.oglaf.com/',
       nav: {
         prev: 'a[rel=prev]',
