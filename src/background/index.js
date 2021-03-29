@@ -856,6 +856,7 @@ browser.runtime.onMessage.addListener(
           if (!request.popup) {
             let allowProgressSave = false
             let escapedSitePath = escapeString(sitePath)
+
             if (siteData.autoSave.allow) {
               let regex = new RegExp(
                 // autoSave.allow.source is a part of RegExp, not a typo
@@ -863,6 +864,7 @@ browser.runtime.onMessage.addListener(
               )
               allowProgressSave = regex.test(path)
             }
+
             if (allowProgressSave && siteData.autoSave.ignore) {
               let regex = new RegExp(
                 // autoSave.ignore.source is a part of RegExp, not a typo
