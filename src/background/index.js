@@ -787,7 +787,7 @@ browser.runtime.onMessage.addListener(
     }
 
     let rootDomain = parseBaseUrl(sender.origin)
-    let urlObj = new URL(sender.url)
+    let urlObj = new URL(sender.tab.url)
     let path = urlObj.pathname + urlObj.search
     // need to check if it's a popup AND if it's from the chrome extension domain
     if (request.popup === true && rootDomain === 'chrome-extension:') {
