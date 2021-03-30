@@ -793,14 +793,22 @@ browser.runtime.onMessage.addListener(
       })
     }
 
+    // if from popup, no tab property will exist
     let rootDomain = parseBaseUrl(sender.origin)
-    let urlObj = new URL(sender.tab.url)
-    let path = urlObj.pathname + urlObj.search
-    // need to check if it's a popup AND if it's from the chrome extension domain
-    if (request.popup === true && rootDomain === 'chrome-extension:') {
+    let path
+    if (sender.tab) {
+      let urlObj = new URL(sender.tab.url)
+      path = urlObj.pathname + urlObj.search
+      // need to check if it's a popup AND if it's from the chrome extension domain
+    } else if (request.popup === true && rootDomain === 'chrome-extension:') {
+      let urlObj = new URL(sender.url)
       rootDomain = parseBaseUrl(request.domain)
       path = request.path
+      // this should never naturally occur
+    } else {
+      path = ''
     }
+
     if (rootDomain in siteRules) {
       let webcomicSite = rootDomain
 
