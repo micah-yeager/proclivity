@@ -16,6 +16,7 @@ A browser plugin that assists with reading webcomics by improving accessibility 
 
 Issues or pull requests for additional sites are welcome!
 
+- [A Softer World](https://asofterworld.com/)
 - [Beefpaper](http://beefpaper.com/)
 - [Buttersafe](https://www.buttersafe.com/)
 - [Bunny](http://www.bunny-comic.com/)

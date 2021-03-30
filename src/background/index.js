@@ -51,6 +51,31 @@
 // }
 
 const siteRules = {
+  'asofterworld.com': {
+    '/': {
+      name: 'A Softer World',
+      indexUrl: 'https://asofterworld.com/',
+      nav: {
+        prev: '#previous a',
+        next: '#next a',
+      },
+      alt: [
+        {
+          comic: '#comicimg img',
+          style: 'text-align: center;',
+        },
+      ],
+      autoSave: {
+        allow: /index\.php\?id=[0-9]{1,4}/g,
+      },
+      sty: [
+        {
+          destin: '#insidebodycomic',
+          styles: 'height: auto;',
+        },
+      ],
+    },
+  },
   'beefpaper.com': {
     '/': {
       name: 'Beefpaper',
