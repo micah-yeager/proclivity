@@ -650,7 +650,11 @@ function handleResponse(response) {
     response.config.globalAutoSaveProgress &&
     response.config['siteAutoSaveProgress_' + response.webcomicSite] &&
     path !== response.autoSavedUrl &&
-    path === response.sitePath
+    // if matches sitePath or an additionalIndicies item
+    (path === response.sitePath ||
+      // ensure exists before using .indexOf()
+      (response.siteData.autoSave.additionalIndicies &&
+        response.siteData.autoSave.additionalIndicies.indexOf(path) > -1))
   ) {
     Snackbar.show({
       text: 'Load saved progress?',

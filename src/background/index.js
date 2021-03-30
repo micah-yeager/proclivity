@@ -43,6 +43,7 @@
 //             ...
 //         ],
 //         "autoSave": {
+//             additionalIndicies: ["[path]"],
 //             "allow": /[regex pattern to match, if matched, page will be saved in progress]/g,
 //             "ignore": /[regex pattern to ignore, overrides 'pattern']/g,
 //         }
