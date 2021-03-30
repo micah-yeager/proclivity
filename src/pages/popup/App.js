@@ -7,7 +7,6 @@ import {
 	Button,
 	Info,
 } from 'src/pages/components/settings'
-import psl from 'psl'
 import 'src/pages/components/styles'
 import styles from './index.scss'
 
@@ -48,13 +47,7 @@ class App extends Component {
 		let path = url.pathname + url.search
 
 		// parse URL
-		let parsedUrl = psl.parse(url.hostname)
-		// if subdomain that isn't www, add it to the final domain
-		let domain =
-			parsedUrl.subdomain === 'www' || parsedUrl.subdomain === null
-				? ''
-				: parsedUrl.subdomain + '.'
-		domain += parsedUrl.domain
+		let domain = this.parseBaseUrl(url.hostname)
 
 		this.setState({ url: url })
 		this.setState({ path: path })
@@ -66,6 +59,10 @@ class App extends Component {
 			.then(this.bootstrapStateFromResponse)
 		// add storage listener
 		browser.storage.onChanged.addListener(this.processStorageChange)
+	}
+
+	parseBaseUrl(url) {
+		return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
 	}
 
 	bootstrapStateFromResponse(response) {
