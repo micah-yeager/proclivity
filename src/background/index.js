@@ -43,7 +43,7 @@
 //             ...
 //         ],
 //         "autoSave": {
-//             additionalIndicies: ["[path]"],
+//             additionalIndices: ["[path]"],
 //             "allow": /[regex pattern to match, if matched, page will be saved in progress]/g,
 //             "ignore": /[regex pattern to ignore, overrides 'pattern']/g,
 //         }
@@ -394,7 +394,7 @@ const siteRules = {
         },
       ],
       autoSave: {
-        additionalIndicies: ['/story'],
+        additionalIndices: ['/story'],
         allow: /(story\/)?[0-9]+(\/[0-9])?/g,
       },
     },
