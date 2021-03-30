@@ -302,9 +302,44 @@ const siteRules = {
     },
   },
   'homestuck.com': {
-    '/story': {
+    '/problem-sleuth': {
+      name: 'Problem Sleuth',
+      indexUrl: 'https://www.homestuck.com/problem-sleuth',
+      nav: {
+        prev: '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
+        next: '.o_story-nav > div:last-of-type a',
+      },
+      autoSave: {
+        allow: /\/[0-9]+/g,
+      },
+    },
+    '/jailbreak': {
+      skipIndex: true,
+      name: 'Jailbreak',
+      indexUrl: 'https://www.homestuck.com/jailbreak',
+      nav: {
+        prev: '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
+        next: '.o_story-nav > div:last-of-type a',
+      },
+      autoSave: {
+        allow: /\/[0-9]+/g,
+      },
+    },
+    '/epilogues': {
+      skipIndex: true,
+      name: 'Homestuck Epilogues',
+      indexUrl: 'https://www.homestuck.com/epilogues',
+      nav: {
+        prev: '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
+        next: '.o_story-nav > div:last-of-type a',
+      },
+      autoSave: {
+        allow: /\/(prologue|meat|candy)\/[0-9]+/g,
+      },
+    },
+    '/': {
       name: 'Homestuck',
-      indexUrl: 'https://www.homestuck.com/story',
+      indexUrl: 'https://www.homestuck.com/',
       nav: {
         prev: '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
         next: '.o_story-nav > div:last-of-type a',
@@ -354,43 +389,8 @@ const siteRules = {
         },
       ],
       autoSave: {
-        allow: /\/[0-9]+/g,
-      },
-    },
-    '/problem-sleuth': {
-      skipIndex: true,
-      name: 'Problem Sleuth',
-      indexUrl: 'https://www.homestuck.com/problem-sleuth',
-      nav: {
-        prev: '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
-        next: '.o_story-nav > div:last-of-type a',
-      },
-      autoSave: {
-        allow: /\/[0-9]+/g,
-      },
-    },
-    '/jailbreak': {
-      skipIndex: true,
-      name: 'Jailbreak',
-      indexUrl: 'https://www.homestuck.com/jailbreak',
-      nav: {
-        prev: '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
-        next: '.o_story-nav > div:last-of-type a',
-      },
-      autoSave: {
-        allow: /\/[0-9]+/g,
-      },
-    },
-    '/epilogues': {
-      skipIndex: true,
-      name: 'Homestuck Epilogues',
-      indexUrl: 'https://www.homestuck.com/epilogues',
-      nav: {
-        prev: '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
-        next: '.o_story-nav > div:last-of-type a',
-      },
-      autoSave: {
-        allow: /\/(prologue|meat|candy)\/[0-9]+/g,
+        additionalIndicies: ['/story'],
+        allow: /(story\/)?[0-9]+(\/[0-9])?/g,
       },
     },
   },
