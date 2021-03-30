@@ -387,6 +387,11 @@ const siteRules = {
           destin: '.o_chat-container img',
           styles: 'padding: 3px 0;',
         },
+        {
+          destin: '#desktop_skyscraper',
+          styles:
+            'z-index: unset !important; background-color: #C6C6C6 !important;',
+        },
       ],
       autoSave: {
         additionalIndicies: ['/story'],
