@@ -281,7 +281,6 @@ class PostComicWrapper {
     this.node.classList.add('proclivity-wrapper')
     // set the wrapper width to the comic width
     if (this.rule.wrapperStyle) {
-      console.log(this.rule)
       this.style.addRule('.proclivity-wrapper', this.rule.wrapperStyle)
     }
     this.style.addRule(
