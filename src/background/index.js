@@ -337,6 +337,19 @@ const siteRules = {
         allow: /\/(prologue|meat|candy)\/[0-9]+/g,
       },
     },
+    '/sweet-bro-and-hella-jeff': {
+      skipIndex: true,
+      name: 'Sweet Bro and Hella Jeff',
+      indexUrl: 'https://www.homestuck.com/sweet-bro-and-hella-jeff',
+      nav: {
+        useParentLevel: 1,
+        prev: 'img[src="/storydata/sweet/back.jpg"]',
+        next: 'img[src="/storydata/sweet/next.jpg"]',
+      },
+      autoSave: {
+        allow: /\/[0-9]{1,2}/g,
+      },
+    },
     '/': {
       name: 'Homestuck',
       indexUrl: 'https://www.homestuck.com/',
