@@ -118,6 +118,20 @@ const siteRules = {
       },
     },
   },
+  'buttercupfestival.com': {
+    '/': {
+      name: 'Buttercup Festival',
+      indexUrl: 'http://www.buttercupfestival.com/',
+      nav: {
+        prev: 'center > * > a:nth-last-child(3)',
+        next: 'center > * > a:nth-last-child(2)',
+      },
+      autoSave: {
+        additionalIndices: ['/index.htm'],
+        allow: /[0-9]-[0-9]+\.htm/g,
+      },
+    },
+  },
   'buttersafe.com': {
     '/': {
       name: 'Buttersafe',
