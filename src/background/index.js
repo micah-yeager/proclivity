@@ -613,6 +613,25 @@ const siteRules = {
       },
     },
   },
+  'pbfcomics.com': {
+    '/': {
+      name: 'The Perry Bible Fellowship',
+      indexUrl: 'https://pbfcomics.com/',
+      nav: {
+        prev: 'a[rel="prev"]',
+        next: 'a[rel="next"]',
+      },
+      sty: [
+        {
+          destin: '#main-header',
+          styles: 'z-index: unset;',
+        },
+      ],
+      autoSave: {
+        allow: /comics\/.+?\//g,
+      },
+    },
+  },
   'questionablecontent.net': {
     '/': {
       name: 'Questionable Content',
