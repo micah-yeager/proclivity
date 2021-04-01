@@ -31,10 +31,6 @@ jobs:
         with:
           extensionDir: 'dist'
           zipFilePath: 'release/Proclivity.zip'
-          
-      - run: pwd
-      - run: ls release
-      - run: ls release/Proclivity.zip
   
       - name: Package and sign extension
         id: package-extension
