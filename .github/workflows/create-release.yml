@@ -30,7 +30,11 @@ jobs:
         uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
         with:
           extensionDir: 'dist'
-          zipFilePath: 'dist/Proclivity.zip'
+          zipFilePath: 'release/Proclivity.zip'
+          
+      - run: pwd
+      - run: ls release
+      - run: ls release/Proclivity.zip
   
       - name: Package and sign extension
         id: package-extension
@@ -38,7 +42,7 @@ jobs:
         with:
           # zip file made at the packExtensionDir step
           zipFilePath: ${{ steps.zip-extension.outputs.zipFilePath }}
-          crxFilePath: 'dist/Proclivity.crx'
+          crxFilePath: 'release/Proclivity.crx'
           privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
           # The following is optional if you need update.xml file
           # updateXmlPath: 'build/update.xml'
