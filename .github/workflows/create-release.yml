@@ -44,6 +44,12 @@ jobs:
           # The following is optional if you need update.xml file
           # updateXmlPath: 'build/update.xml'
           # updateXmlCodebaseUrl: 'http://...'
+          
+      - name: Build changelog
+        id: github-release
+        uses: mikepenz/release-changelog-builder-action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create release
         id: create-release
@@ -53,15 +59,7 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: |
-            ### Enhancements
-            
-            ### Changes
-            
-            ### Removals
-            
-            ### Fixes
-            
+          body: ${{ steps.github-release.outputs.changelog }}
           draft: false
           
       - name: Upload .zip asset
