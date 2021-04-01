@@ -3,16 +3,8 @@
 [![Build status](https://img.shields.io/github/workflow/status/micah-yeager/proclivity/Build%20and%20test)](https://github.com/micah-yeager/proclivity/actions/workflows/build-and-test.yml)
 [![Release status](https://img.shields.io/github/workflow/status/micah-yeager/proclivity/Create%20release?label=release)](https://github.com/micah-yeager/proclivity/actions/workflows/create-release.yml)
 [![Libraries.io dependency status](https://img.shields.io/librariesio/github/micah-yeager/proclivity)](https://libraries.io/github/micah-yeager/proclivity)
-
-[![Maintained](https://img.shields.io/maintenance/yes/2021)](https://github.com/micah-yeager/proclivity/graphs/commit-activity)
-[![GitHub issues](https://img.shields.io/github/issues/micah-yeager/proclivity)](https://github.com/micah-yeager/proclivity/issues)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/micah-yeager/proclivity)](https://codeclimate.com/github/micah-yeager/proclivity)
 [![Code Climate issues](https://img.shields.io/codeclimate/issues/micah-yeager/proclivity?label=code%20climate%20issues)](https://codeclimate.com/github/micah-yeager/proclivity/issues)
-
-[![Latest release version](https://img.shields.io/github/v/release/micah-yeager/proclivity)](https://github.com/micah-yeager/proclivity/releases)
-[![Latest release date](https://img.shields.io/github/release-date/micah-yeager/proclivity)](https://github.com/micah-yeager/proclivity/releases)
-[![Last commit to main branch](https://img.shields.io/github/last-commit/micah-yeager/proclivity/main)](https://github.com/micah-yeager/proclivity/commits/main)
-[![License](https://img.shields.io/github/license/micah-yeager/proclivity)](https://github.com/micah-yeager/proclivity/blob/main/LICENSE.md)
 
 A browser plugin that assists with reading webcomics by improving accessibility
 — focused especially on archival readings through webcomics.
