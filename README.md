@@ -1,7 +1,6 @@
 # Proclivity
 
 [![Build status](https://img.shields.io/github/workflow/status/micah-yeager/proclivity/Build%20and%20test)](https://github.com/micah-yeager/proclivity/actions/workflows/build-and-test.yml)
-[![Release status](https://img.shields.io/github/workflow/status/micah-yeager/proclivity/Create%20release?label=release)](https://github.com/micah-yeager/proclivity/actions/workflows/create-release.yml)
 [![Libraries.io dependency status](https://img.shields.io/librariesio/github/micah-yeager/proclivity)](https://libraries.io/github/micah-yeager/proclivity)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/micah-yeager/proclivity)](https://codeclimate.com/github/micah-yeager/proclivity)
 [![Code Climate issues](https://img.shields.io/codeclimate/issues/micah-yeager/proclivity?label=code%20climate%20issues)](https://codeclimate.com/github/micah-yeager/proclivity/issues)
