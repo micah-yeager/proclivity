@@ -1,0 +1,92 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - '*.*.*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Create release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+        
+      - name: Build using Node.js 15.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 15.x
+      - run: npm ci
+      - run: npm install postcss
+      - run: npm run build
+      - run: npm test
+      
+      # pack zip and read manifest, can be reused in the following steps
+      - name: Zip extension
+        id: packExtensionDir
+        uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
+        with:
+          extensionDir: 'dist'
+          zipFilePath: 'dist/Proclivity.zip'
+  
+      - name: Package and sign extension
+        uses: cardinalby/webext-buildtools-chrome-crx-action@v2
+        with:
+          # zip file made at the packExtensionDir step
+          zipFilePath: 'dist/Proclivity.zip'
+          crxFilePath: 'dist/Proclivity.crx'
+          privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }},
+          # The following is optional if you need update.xml file
+          # updateXmlPath: 'build/update.xml'
+          # updateXmlCodebaseUrl: 'http://...'
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            ### Enhancements
+            
+            ### Changes
+            
+            ### Removals
+            
+            ### Fixes
+            
+          draft: false
+          
+      - name: Upload .zip asset
+        id: upload-zip-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: dist/Proclivity.zip
+          asset_name: Proclivity.zip
+          asset_content_type: application/zip
+          prerelease: false
+          
+      - name: Upload .crx asset
+        id: upload-crx-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: dist/Proclivity.crx
+          asset_name: Proclivity.crx
+          asset_content_type: application/x-chrome-extension
+          prerelease: false
+      
+          
+      
+      
+      
+      
