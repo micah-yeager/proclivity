@@ -25,25 +25,26 @@ jobs:
       
       # pack zip and read manifest, can be reused in the following steps
       - name: Zip extension
-        id: packExtensionDir
+        id: zip-extension
         uses: cardinalby/webext-buildtools-pack-extension-dir-action@v1
         with:
           extensionDir: 'dist'
-          zipFilePath: 'dist/Proclivity.zip'
+          zipFilePath: 'release/Proclivity.zip'
   
       - name: Package and sign extension
+        id: package-extension
         uses: cardinalby/webext-buildtools-chrome-crx-action@v2
         with:
           # zip file made at the packExtensionDir step
-          zipFilePath: 'dist/Proclivity.zip'
-          crxFilePath: 'dist/Proclivity.crx'
-          privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }},
+          zipFilePath: ${{ steps.zip-extension.outputs.zipFilePath }}
+          crxFilePath: 'release/Proclivity.crx'
+          privateKey: ${{ secrets.CHROME_CRX_PRIVATE_KEY }}
           # The following is optional if you need update.xml file
           # updateXmlPath: 'build/update.xml'
           # updateXmlCodebaseUrl: 'http://...'
 
       - name: Create release
-        id: create_release
+        id: create-release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
@@ -67,8 +68,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: dist/Proclivity.zip
+          upload_url: ${{ steps.create-release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ${{ steps.zip-extension.outputs.zipFilePath }}
           asset_name: Proclivity.zip
           asset_content_type: application/zip
           prerelease: false
@@ -79,8 +80,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: dist/Proclivity.crx
+          upload_url: ${{ steps.create-release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: ${{ steps.package-extension.outputs.crxFilePath }}
           asset_name: Proclivity.crx
           asset_content_type: application/x-chrome-extension
           prerelease: false
