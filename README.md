@@ -1,3 +1,6 @@
+[![dependencies Status](https://david-dm.org/micah-yeager/proclivity.svg)](https://david-dm.org/micah-yeager/proclivity)
+[![devDependencies Status](https://david-dm.org/micah-yeager/proclivity/dev-status.svg)](https://david-dm.org/micah-yeager/proclivity?type=dev)
+
 # Proclivity
 
 A browser plugin that assists with reading webcomics by improving accessibility
