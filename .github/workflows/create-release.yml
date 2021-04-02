@@ -31,9 +31,12 @@ jobs:
         with:
           extensionDir: 'dist'
           zipFilePath: 'release/Proclivity.zip'
+          
+      # copy to .xpi for Firefox
+      - run: cp ${{ steps.zip-extension.outputs.zipFilePath }} release/Proclivity.xpi
   
-      - name: Package and sign extension
-        id: package-extension
+      - name: Package and sign .crx extension
+        id: package-crx-extension
         uses: cardinalby/webext-buildtools-chrome-crx-action@v2
         with:
           # zip file made at the packExtensionDir step
@@ -101,6 +104,16 @@ jobs:
           client-secret: ${{ CHROME_WEBSTORE_CLIENT_SECRET }}
           # Google OAuth2 refresh token
           refresh-token: ${{ CHROME_WEBSTORE_REFRESH_TOKEN }}
+          
+      - uses: trmcnvn/firefox-addon@v1
+        with:
+          # uuid is only necessary when updating an existing addon,
+          # omitting it will create a new addon
+          uuid: 'proclivity@yeagers.co'
+          xpi: release/Proclivity.xpi
+          manifest: dist/manifest.json
+          api-key: ${{ secrets.FIREFOX_WEBSTORE_JWT_ISSUER }}
+          api-secret: ${{ secrets.FIREFOX_WEBSTORE_JWT_SECRET }}
       
           
       
