@@ -9,7 +9,7 @@ A browser plugin that assists with reading webcomics by improving accessibility
 — focused especially on archival readings through webcomics.
 
 Available for:
-- Chrome (pending webstore approval)
+- [Chrome](https://chrome.google.com/webstore/detail/proclivity/aidjofdjbdcdhenlocpjmimcoocbadmg?hl=en&authuser=0)
 - [Edge](https://microsoftedge.microsoft.com/addons/detail/lcaholkbkkckcncgiinhepkmccifjcpl)
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/proclivity/)
 - Opera (pending webstore approval)
