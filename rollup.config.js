@@ -18,28 +18,24 @@ const isProduction = process.env.NODE_ENV === 'production'
 // Aliases for module resolution
 const projectRootDir = path.resolve(__dirname)
 const aliases = [
-    {
-        find: 'src',
-        replacement: path.resolve(projectRootDir, 'src')
-    }
+  {
+    find: 'src',
+    replacement: path.resolve(projectRootDir, 'src'),
+  },
 ]
 if (isProduction) {
-  aliases.concat(
-    [
-      {
-        find: 'react',
-        // Use the production build
-        replacement: require.resolve('react/esm/react.production.min.js'),
-      },
-      {
-        find: 'react-dom',
-        // Use the production build
-        replacement: require.resolve(
-            'react-dom/esm/react-dom.production.min.js',
-        ),
-      },
-    ]
-  )
+  aliases.concat([
+    {
+      find: 'react',
+      // Use the production build
+      replacement: require.resolve('react/esm/react.production.min.js'),
+    },
+    {
+      find: 'react-dom',
+      // Use the production build
+      replacement: require.resolve('react-dom/esm/react-dom.production.min.js'),
+    },
+  ])
 }
 
 export default {
@@ -47,7 +43,7 @@ export default {
   output: {
     dir: 'dist',
     format: 'esm',
-    chunkFileNames: path.join('chunks','[name]-[hash].js'),
+    chunkFileNames: path.join('chunks', '[name]-[hash].js'),
   },
   plugins: [
     chromeExtension({ browserPolyfill: true }),
@@ -67,12 +63,12 @@ export default {
     resolve({ preferBuiltins: false }),
     commonjs(),
     json({ compact: true }),
-        postcss({
-            extract: false,
-            modules: true,
-            use: ['sass'],
-        }),
-    cleanup({'comments': 'none'}),
+    postcss({
+      extract: false,
+      modules: true,
+      use: ['sass'],
+    }),
+    cleanup({ comments: 'none' }),
     // Empties the output dir before a new build
     del({ targets: 'dist/*' }),
     // Outputs a zip file in ./releases
