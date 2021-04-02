@@ -10,7 +10,7 @@ import replace from '@rollup/plugin-replace'
 import resolve from '@rollup/plugin-node-resolve'
 
 import { chromeExtension, simpleReloader } from 'rollup-plugin-chrome-extension'
-import { emptyDir } from 'rollup-plugin-empty-dir'
+import del from 'rollup-plugin-delete'
 import zip from 'rollup-plugin-zip'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -74,7 +74,7 @@ export default {
         }),
     cleanup({'comments': 'none'}),
     // Empties the output dir before a new build
-    emptyDir(),
+    del({ targets: 'dist/*' }),
     // Outputs a zip file in ./releases
     isProduction && zip({ dir: 'releases' }),
   ],

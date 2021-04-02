@@ -60,11 +60,10 @@
     "eslint": "^7.16.0",
     "eslint-plugin-react": "^7.21.5",
     "jest": "^26.6.3",
-    "jest-chrome": "^0.7.0",
     "prettier": "^2.2.1",
     "rollup": "^2.40.0",
     "rollup-plugin-chrome-extension": "^3.5.4",
-    "rollup-plugin-empty-dir": "^1.0.4",
+    "rollup-plugin-delete": "^2.0.0",
     "rollup-plugin-zip": "^1.0.1",
     "styled-jsx": "^3.3.2"
   }
