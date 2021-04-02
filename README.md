@@ -53,7 +53,6 @@ Available for:
   - [Johnny Wander](http://www.johnnywander.com/)
   - [Junior Scientist Power Hour](https://www.jspowerhour.com/)
   - [Lackadaisy Cats](https://lackadaisycats.com/)
-  - [Oglaf](https://www.oglaf.com/) (NSFW)
   - [Paradox Space](http://hs.hiveswap.com/paradoxspace/index.php)
   - [Poorly Drawn Lines](https://poorlydrawnlines.com/)
   - [Prequel](https://www.prequeladventure.com/)
