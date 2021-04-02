@@ -6,12 +6,19 @@ import {
 	KeyCombo,
 	Link,
 	Info,
-} from 'src/pages/components/settings'
-import 'src/pages/components/styles'
+} from '@src/pages/components/settings'
+import '@src/pages/components/styles'
 import styles from './index.scss'
 import sortArray from 'sort-array'
 
+import { IndexSite } from '@src/types'
+
 class App extends Component {
+	state: { [id: string]: any }
+
+	siteList: Array<IndexSite> = []
+	defaults: { [id: string]: any } = {}
+
 	constructor(props) {
 		super(props)
 		this.state = { loading: true }
@@ -21,14 +28,14 @@ class App extends Component {
 		this.processStorageChange = this.processStorageChange.bind(this)
 	}
 
-	shouldComponentUpdate() {
-		if (this.loading) {
+	shouldComponentUpdate(): boolean {
+		if (this.state.loading) {
 			return false
 		}
 		return true
 	}
 
-	componentDidMount() {
+	componentDidMount(): void {
 		let toggleOptionDefaults = {
 			globalEnabled: true,
 			automaticUpdates: true,
@@ -46,10 +53,10 @@ class App extends Component {
 
 		// apply settings from storage
 		browser.runtime.sendMessage('indexSiteList').then(
-			function (siteList) {
+			function (siteList: Array<IndexSite>) {
 				this.siteList = sortArray(siteList, {
 					by: 'nameLower',
-					nameLower: (name) => name.toLowerCase(),
+					nameLower: (name: string) => name.toLowerCase(),
 				})
 				browser.storage.sync
 					.get(this.defaults)
@@ -59,23 +66,18 @@ class App extends Component {
 		browser.storage.onChanged.addListener(this.processStorageChange)
 	}
 
-	bootstrapStateFromStorage(items) {
-		for (const [key, value] of Object.entries(items)) {
-			this.setState({ [key]: value })
-		}
-
+	bootstrapStateFromStorage(items: { [id: string]: any }): void {
+		this.setState(items)
 		this.setState({ loading: false })
 	}
 
-	processStorageChange(changes, namespace) {
-		let reload = false
-
+	processStorageChange(changes, namespace): void {
 		for (let key in changes) {
 			this.setState({ [key]: changes[key].newValue })
 		}
 	}
 
-	handleChange(key, value) {
+	handleChange(key: string, value: any): void {
 		let dict = { [key]: value }
 		browser.storage.sync.set(dict).then(
 			function () {
@@ -84,7 +86,7 @@ class App extends Component {
 		)
 	}
 
-	render() {
+	render(): JSX.Element {
 		if (this.state.loading) {
 			return (
 				<div className={styles.pageContainer}>

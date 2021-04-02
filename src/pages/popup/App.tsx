@@ -6,12 +6,13 @@ import {
 	Link,
 	Button,
 	Info,
-} from 'src/pages/components/settings'
-import 'src/pages/components/styles'
-import styles from './index.scss'
+} from '@src/pages/components/settings'
+import '@src/pages/components/styles'
 
 class App extends Component {
-	siteLabelPairs = {
+	state: { [id: string]: any }
+
+	siteLabelPairs: { [id: string]: string } = {
 		siteKeyboardNav: 'Enable keyboard navigation',
 		siteStaticCaptions: 'Enable static captions',
 		siteTextboxExpansion: 'Enable textbox expansion',
@@ -29,19 +30,19 @@ class App extends Component {
 		this.processStorageChange = this.processStorageChange.bind(this)
 	}
 
-	shouldComponentUpdate() {
-		if (this.loading) {
+	shouldComponentUpdate(): boolean {
+		if (this.state.loading) {
 			return false
 		}
 		return true
 	}
 
-	componentDidMount() {
+	componentDidMount(): void {
 		let query = { active: true, currentWindow: true }
 		browser.tabs.query(query).then(this.getStorageFromTabUrl)
 	}
 
-	getStorageFromTabUrl(tabs) {
+	getStorageFromTabUrl(tabs): void {
 		// set URL
 		let url = new URL(tabs[0].url)
 		let path = url.pathname + url.search
@@ -61,19 +62,19 @@ class App extends Component {
 		browser.storage.onChanged.addListener(this.processStorageChange)
 	}
 
-	parseBaseUrl(url) {
+	parseBaseUrl(url): string {
 		return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
 	}
 
-	bootstrapStateFromResponse(response) {
+	bootstrapStateFromResponse(response): void {
 		this.setState(response.config)
 		this.setState({ webcomicSite: response.webcomicSite })
 		// set loading to be false to start rendering
 		this.setState({ loading: false })
 	}
 
-	processStorageChange(changes, namespace) {
-		let processedChanges = {}
+	processStorageChange(changes, namespace): void {
+		let processedChanges: { [id: string]: any } = {}
 		for (let key in changes) {
 			// only apply changes if applicable to this site
 			if (key in this.state) {
@@ -83,7 +84,7 @@ class App extends Component {
 		this.setState(processedChanges)
 	}
 
-	handleChange(key, value) {
+	handleChange(key: string, value: any): void {
 		let dict = { [key]: value }
 		browser.storage.sync.set(dict).then(
 			function () {
@@ -92,7 +93,7 @@ class App extends Component {
 		)
 	}
 
-	render() {
+	render(): JSX.Element {
 		if (this.state.loading) {
 			return <div></div>
 		}

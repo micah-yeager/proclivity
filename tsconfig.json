@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "lib": ["dom", "es2019"],
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noImplicitReturns": true,
+    "noImplicitThis": false,
+    "noUnusedLocals": true,
+    "strict": true,
+    "target": "es2018",
+    "types": ["firefox-webext-browser", "jest", "node"],
+    "paths": {
+      "@src/*": ["./src/*"]
+    }
+  },
+  "include": ["decs.d.ts", "**/*.ts", "**/*.tsx"]
+}
