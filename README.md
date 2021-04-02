@@ -1,14 +1,16 @@
 # Proclivity
 
-[![dependencies Status](https://david-dm.org/micah-yeager/proclivity.svg)](https://david-dm.org/micah-yeager/proclivity)
-[![devDependencies Status](https://david-dm.org/micah-yeager/proclivity/dev-status.svg)](https://david-dm.org/micah-yeager/proclivity?type=dev)
+[![Build status](https://img.shields.io/github/workflow/status/micah-yeager/proclivity/Build%20and%20test)](https://github.com/micah-yeager/proclivity/actions/workflows/build-and-test.yml)
+[![Libraries.io dependency status](https://img.shields.io/librariesio/github/micah-yeager/proclivity)](https://libraries.io/github/micah-yeager/proclivity)
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/micah-yeager/proclivity)](https://codeclimate.com/github/micah-yeager/proclivity)
+[![Code Climate issues](https://img.shields.io/codeclimate/issues/micah-yeager/proclivity?label=code%20climate%20issues)](https://codeclimate.com/github/micah-yeager/proclivity/issues)
 
 A browser plugin that assists with reading webcomics by improving accessibility
 — focused especially on archival readings through webcomics.
 
 Available for:
-- Chrome (pending webstore approval)
-- Edge (pending webstore approval)
+- [Chrome](https://chrome.google.com/webstore/detail/proclivity/aidjofdjbdcdhenlocpjmimcoocbadmg?hl=en&authuser=0)
+- [Edge](https://microsoftedge.microsoft.com/addons/detail/lcaholkbkkckcncgiinhepkmccifjcpl)
 - [Firefox](https://addons.mozilla.org/en-US/firefox/addon/proclivity/)
 - Opera (pending webstore approval)
 
@@ -51,7 +53,6 @@ Available for:
   - [Johnny Wander](http://www.johnnywander.com/)
   - [Junior Scientist Power Hour](https://www.jspowerhour.com/)
   - [Lackadaisy Cats](https://lackadaisycats.com/)
-  - [Oglaf](https://www.oglaf.com/) (NSFW)
   - [Paradox Space](http://hs.hiveswap.com/paradoxspace/index.php)
   - [Poorly Drawn Lines](https://poorlydrawnlines.com/)
   - [Prequel](https://www.prequeladventure.com/)
