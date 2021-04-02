@@ -85,6 +85,22 @@ jobs:
           asset_name: Proclivity.crx
           asset_content_type: application/x-chrome-extension
           prerelease: false
+          
+      - name: Chrome Addon Action
+        # You may pin to the exact commit or the version.
+        # uses: trmcnvn/chrome-addon@7fc5a5ad3ff597dc64d6a13de7dcaa8515328be7
+        uses: trmcnvn/chrome-addon@v2
+        with:
+          # ID of the extension that you are updating
+          extension: aidjofdjbdcdhenlocpjmimcoocbadmg
+          # Path to a .zip of your addon
+          zip: ${{ steps.zip-extension.outputs.zipFilePath }}
+          # Google OAuth2 client id
+          client-id: ${{ CHROME_WEBSTORE_CLIENT_ID }}
+          # Google OAuth2 client secret
+          client-secret: ${{ CHROME_WEBSTORE_CLIENT_SECRET }}
+          # Google OAuth2 refresh token
+          refresh-token: ${{ CHROME_WEBSTORE_REFRESH_TOKEN }}
       
           
       
