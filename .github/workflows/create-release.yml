@@ -8,9 +8,8 @@ name: Create release
 
 jobs:
   build:
-    name: Create Release
+    name: Build release
     runs-on: ubuntu-latest
-    environment: Release
     steps:
       - name: Check out code
         uses: actions/checkout@v2
@@ -31,10 +30,53 @@ jobs:
         with:
           extensionDir: 'dist'
           zipFilePath: 'release/Proclivity.zip'
+      
+      # create Firefox .xpi
+      - run: cp ${{ steps.zip-extension.outputs.zipFilePath }} 'release/Proclivity.xpi'
           
-      # copy to .xpi for Firefox
-      - run: cp ${{ steps.zip-extension.outputs.zipFilePath }} release/Proclivity.xpi
-  
+      - name: Upload .zip
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          # Artifact name
+          name: Proclivity.zip
+          # A file, directory or wildcard pattern that describes what to upload
+          path: ${{ steps.zip-extension.outputs.zipFilePath }}
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error
+          
+      - name: Upload .xpi
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          # Artifact name
+          name: Proclivity.xpi
+          # A file, directory or wildcard pattern that describes what to upload
+          path: 'release/Proclivity.xpi'
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error
+          
+      - name: Upload manifest.json
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          # Artifact name
+          name: manifest.json
+          # A file, directory or wildcard pattern that describes what to upload
+          path: dist/manifest.json
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error
+          
+  package-chrome:
+    name: Build Chrome extension
+    runs-on: ubuntu-latest
+    environment: Release
+    steps:
+      - name: Download .zip artifact
+        uses: actions/download-artifact@v2.0.8
+        with:
+          # Artifact name
+          name: Proclivity.zip
+          # Destination path
+          path: 'release/Proclivity.zip'
+    
       - name: Package and sign .crx extension
         id: package-crx-extension
         uses: cardinalby/webext-buildtools-chrome-crx-action@v2
@@ -48,6 +90,36 @@ jobs:
           # updateXmlPath: 'build/update.xml'
           # updateXmlCodebaseUrl: 'http://...'
           
+      - name: Upload .crx
+        uses: actions/upload-artifact@v2.2.2
+        with:
+          # Artifact name
+          name: Proclivity.crx
+          # A file, directory or wildcard pattern that describes what to upload
+          path: 'release/Proclivity.crx'
+          # The desired behavior if no files are found using the provided path.
+          if-no-files-found: error
+          
+  github-release:
+    name: Create and upload release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download .zip artifact
+        uses: actions/download-artifact@v2.0.8
+        with:
+          # Artifact name
+          name: Proclivity.zip
+          # Destination path
+          path: 'release/Proclivity.zip'
+          
+      - name: Download .crx artifact
+        uses: actions/download-artifact@v2.0.8
+        with:
+          # Artifact name
+          name: Proclivity.crx
+          # Destination path
+          path: 'release/Proclivity.crx'
+    
       - name: Build changelog
         id: github-release
         uses: mikepenz/release-changelog-builder-action@v1
@@ -72,7 +144,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ${{ steps.zip-extension.outputs.zipFilePath }}
+          asset_path: 'release/Proclivity.zip'
           asset_name: Proclivity.zip
           asset_content_type: application/zip
           prerelease: false
@@ -84,11 +156,24 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          asset_path: ${{ steps.package-extension.outputs.crxFilePath }}
+          asset_path: 'release/Proclivity.crx'
           asset_name: Proclivity.crx
           asset_content_type: application/x-chrome-extension
           prerelease: false
           
+  publish-chrome:
+    name: Publish Chrome extension to webstore
+    runs-on: ubuntu-latest
+    environment: Release
+    steps:
+      - name: Download .zip artifact
+        uses: actions/download-artifact@v2.0.8
+        with:
+          # Artifact name
+          name: Proclivity.zip
+          # Destination path
+          path: 'release/Proclivity.zip'
+    
       - name: Chrome Addon Action
         # You may pin to the exact commit or the version.
         # uses: trmcnvn/chrome-addon@7fc5a5ad3ff597dc64d6a13de7dcaa8515328be7
@@ -97,7 +182,7 @@ jobs:
           # ID of the extension that you are updating
           extension: aidjofdjbdcdhenlocpjmimcoocbadmg
           # Path to a .zip of your addon
-          zip: ${{ steps.zip-extension.outputs.zipFilePath }}
+          zip: 'release/Proclivity.zip'
           # Google OAuth2 client id
           client-id: ${{ CHROME_WEBSTORE_CLIENT_ID }}
           # Google OAuth2 client secret
@@ -105,13 +190,34 @@ jobs:
           # Google OAuth2 refresh token
           refresh-token: ${{ CHROME_WEBSTORE_REFRESH_TOKEN }}
           
+  publish-firefox:
+    name: Publish Firefox extension to webstore
+    runs-on: ubuntu-latest
+    environment: Release
+    steps:
+      - name: Download .xpi artifact
+        uses: actions/download-artifact@v2.0.8
+        with:
+          # Artifact name
+          name: Proclivity.xpi
+          # Destination path
+          path: 'release/Proclivity.xpi'
+          
+      - name: Download manifest.json artifact
+        uses: actions/download-artifact@v2.0.8
+        with:
+          # Artifact name
+          name: manifest.json
+          # Destination path
+          path: 'dist/manifest.json'
+
       - uses: trmcnvn/firefox-addon@v1
         with:
           # uuid is only necessary when updating an existing addon,
           # omitting it will create a new addon
           uuid: 'proclivity@yeagers.co'
-          xpi: release/Proclivity.xpi
-          manifest: dist/manifest.json
+          xpi: 'release/Proclivity.xpi'
+          manifest: 'dist/manifest.json'
           api-key: ${{ secrets.FIREFOX_WEBSTORE_JWT_ISSUER }}
           api-secret: ${{ secrets.FIREFOX_WEBSTORE_JWT_SECRET }}
       
