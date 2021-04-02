@@ -28,12 +28,12 @@ if (isProduction) {
     {
       find: 'react',
       // Use the production build
-      replacement: require.resolve('react/esm/react.production.min.js'),
+      replacement: require.resolve('react/cjs/react.production.min.js'),
     },
     {
       find: 'react-dom',
       // Use the production build
-      replacement: require.resolve('react-dom/esm/react-dom.production.min.js'),
+      replacement: require.resolve('react-dom/cjs/react-dom.production.min.js'),
     },
   ])
 }
