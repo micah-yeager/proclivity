@@ -2,131 +2,123 @@ import Mousetrap from 'tn-mousetrap'
 import DOMPurify from 'dompurify'
 import Snackbar from 'node-snackbar'
 
+import {
+  StyleRule,
+  ExpansionRule,
+  WebcomicRules,
+  CaptionRule,
+  NavigationRule,
+  SiteRuleResponse,
+} from '@src/types'
+
 // constants
 let IMG_TYPES = ['jpg', 'png', 'gif']
 
 // helpers
 // parse URL
-function parseBaseUrl(url) {
+function parseBaseUrl(url: string): string {
   return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
 }
 
-function sanitizeHTML(str) {
-  return str.replace(/[^\w. ]/gi, function (c) {
-    return '&#' + c.charCodeAt(0) + ';'
-  })
-}
-
-class KeyMapElement {
-  constructor(varLabel, defaultValue) {
-    this.varLabel = varLabel
-    this.defaultValue = defaultValue
-  }
-}
-class KeyMap {
-  constructor(config, configKeyMap) {
-    // check to make sure tag is in approved config tags
-    for (let [tag, property] of Object.entries(configKeyMap)) {
-      // use tag map to set local properties
-      if (tag in config) {
-        if (config[tag]) {
-          this[property.varLabel] = config[tag]
-        } else {
-          this[property.varLabel] = property.defaultValue
-        }
-      }
-    }
-  }
+function querySelectorAllList(query: string): HTMLCanvasElement[] {
+  let results: NodeListOf<HTMLCanvasElement> = document.querySelectorAll(query)
+  return Array.prototype.slice.call(results)
 }
 
 // styling classes
-class StyleRule {
-  constructor(selector, styles) {
-    this.selector = selector
-    this.styles = styles
-  }
-}
-class Style {
+class Styles {
+  rules: StyleRule[] = []
+  private _node: HTMLElement
+
   constructor() {
-    this.rules = []
     // create rule to hide the .wip
-    this.rules.push(
-      new StyleRule('.proclivity-wip', 'display: none !important;'),
-    )
+    this.rules.push({
+      selector: '.proclivity-wip',
+      properties: 'display: none !important;',
+    })
+
+    this._node = this.get_or_create_node()
   }
 
-  addRule(selector, styles) {
-    this.rules.push(new StyleRule(selector, styles))
+  addRule(style: StyleRule): void {
+    this.rules.push(style)
   }
 
-  get node() {
-    // if already defined
-    if (this._node) {
-      return this._node
-
-      // if exists but not defined
-    } else if (document.querySelector('#proclivity-style')) {
-      this._node = document.querySelector('#proclivity-style')
-      return this._node
-
-      // otherwise, create the node
-    } else {
-      // Following code adapted from Matt Mitchell, http://stackoverflow.com/a/3286307
-      // create a style header in the document
-      let head = document.getElementsByTagName('HEAD')[0]
-      this._node = head.appendChild(window.document.createElement('style'))
-      this._node.setAttribute('id', 'proclivity-style')
-      this._node.setAttribute('type', 'text/css')
-      this._node.setAttribute('rel', 'stylesheet')
-
-      return this._node
+  get_or_create_node(): HTMLElement {
+    // if exists but not defined
+    if (document.querySelector('#proclivity-style')) {
+      let node = document.querySelector('#proclivity-style')
+      return node as HTMLElement
     }
+
+    // otherwise, create the node
+    // Following code adapted from Matt Mitchell, http://stackoverflow.com/a/3286307
+    // create a style header in the document
+    let head = document.getElementsByTagName('HEAD')[0]
+    let node = head.appendChild(window.document.createElement('style'))
+    node.setAttribute('id', 'proclivity-style')
+    node.setAttribute('type', 'text/css')
+    node.setAttribute('rel', 'stylesheet')
+
+    return node
   }
 
-  apply() {
-    // build CSS using contenated selectors, brackets, and styles
-    for (let i = this.rules.length - 1; i >= 0; i--) {
-      let selector = this.rules[i].selector
-      let styles = this.rules[i].styles
+  get node(): HTMLElement {
+    // if already defined
+    if (!this._node) {
+      this._node = this.get_or_create_node()
+    }
+    return this._node
+  }
 
-      // create the CSS rule with styles
-      let content = document.createTextNode(selector + ' {' + styles + '}')
+  apply(): void {
+    // build CSS using contenated selectors, brackets, and styles
+    for (let rule of this.rules) {
+      let selector = rule.selector
+      let properties = rule.properties
+
+      // create the CSS rule with properties
+      let content: Text = document.createTextNode(
+        selector + ' {' + properties + '}',
+      )
       this.node.appendChild(content)
     }
   }
 
-  reset() {
+  reset(): void {
     this.node.innerHTML = ''
   }
 }
 
-class NavigationRule extends KeyMap {
-  constructor(config) {
-    let configKeyMap = {
-      next: new KeyMapElement('next'),
-      prev: new KeyMapElement('prev'),
-      useParentLevel: new KeyMapElement('parentLevel'),
-    }
-
-    super(config, configKeyMap)
-  }
-}
 class Navigation {
-  constructor(rule, nextCombo, prevCombo) {
+  nextCombo: string
+  prevCombo: string
+  rule: NavigationRule
+
+  levelsRange: number[] = []
+  nextBound: boolean = false
+  prevBound: boolean = false
+
+  constructor(rule: NavigationRule, nextCombo: string, prevCombo: string) {
     this.rule = rule
     this.nextCombo = nextCombo
     this.prevCombo = prevCombo
   }
 
-  initialize() {
+  initialize(): void {
     // get next and previous button elements
-    let prev = document.querySelector(this.rule.prev)
-    let next = document.querySelector(this.rule.next)
+    let prev: HTMLElement | null = document.querySelector(
+      this.rule.previousSelector,
+    )
+    let next: HTMLElement | null = document.querySelector(
+      this.rule.nextSelector,
+    )
 
     // if defined, get the parents from selector (since queries can't select parent nodes)
     // need to use if {} because range generation will still generate a single-element array if undefined
-    if (!this.levels && this.rule.parentLevel) {
-      this.levels = [...Array(this.rule.parentLevel).keys()]
+    // this is the equivalent of Python's range()
+    if (!this.levelsRange && this.rule.levelsAboveSelector) {
+      this.levelsRange = [...Array(this.rule.levelsAboveSelector).keys()]
     }
 
     // bind the key combos
@@ -135,17 +127,14 @@ class Navigation {
       this.prevBound = true
 
       // get parents as defined above
-      for (let i in this.levels) {
-        prev = prev.parentElement
+      for (let {} of this.levelsRange) {
+        prev = (prev as HTMLCanvasElement).parentElement
       }
 
-      Mousetrap.bind(
-        this.prevCombo,
-        function (e) {
-          // if the prev element exists, click it
-          prev.click()
-        }.bind(this),
-      )
+      Mousetrap.bind(this.prevCombo, (event: any) => {
+        // if the prev element exists, click it
+        ;(prev as HTMLCanvasElement).click()
+      })
     }
 
     if (next && !this.nextBound) {
@@ -153,99 +142,92 @@ class Navigation {
       this.nextBound = true
 
       // get parents as defined above
-      for (let i in this.levels) {
-        next = next.parentElement
+      for (let {} of this.levelsRange) {
+        next = (next as HTMLCanvasElement).parentElement
       }
 
-      Mousetrap.bind(
-        this.nextCombo,
-        function (e) {
-          // if the next element exists, click it
-          next.click()
-        }.bind(this),
-      )
+      Mousetrap.bind(this.nextCombo, (event: any) => {
+        // if the next element exists, click it
+        ;(next as HTMLCanvasElement).click()
+      })
     }
   }
 
-  reset() {
+  reset(): void {
     Mousetrap.unbind(this.nextCombo)
-    Mousetrap.unbind(this.nextCombo)
+    Mousetrap.unbind(this.prevCombo)
   }
 }
 
-// comic classes, used for alt-text and post-comic panels
-class ComicRule extends KeyMap {
-  constructor(config) {
-    let configKeyMap = {
-      comic: new KeyMapElement('comic'),
-      destin: new KeyMapElement('destin'),
-      after: new KeyMapElement('afterComic'),
-      ignore: new KeyMapElement('ignoredPatterns', []),
-      style: new KeyMapElement('style'),
-      wrapperStyle: new KeyMapElement('wrapperStyle'),
-    }
-
-    super(config, configKeyMap)
-  }
-}
+// caption rules
 class PostComicWrapper {
-  constructor(comicNode, rule, style) {
+  comicNode: HTMLCanvasElement
+  rule: CaptionRule
+  style: Styles
+
+  private _node: HTMLElement | undefined
+
+  constructor(comicNode: HTMLCanvasElement, rule: CaptionRule, style: Styles) {
     this.comicNode = comicNode
     this.rule = rule
     this.style = style
   }
 
   // create an wrapper element in which to put the copied content
-  get node() {
+  get node(): HTMLElement {
     // if the node is known, return it
     if (this._node) {
       return this._node
-    } else {
-      this._node = document.createElement('div')
-      this._node.setAttribute('class', 'proclivity-wrapper')
+    }
 
-      let targetNode
-      if (this.rule.destin !== undefined && this.rule.destin.select) {
-        targetNode = document.querySelector(this.rule.destin.select)
+    this._node = document.createElement('div')
+    this._node.setAttribute('class', 'proclivity-wrapper')
 
-        if (targetNode) {
-          // sibling nodes
-          if (this.rule.destin.insert === 'before') {
-            targetNode.parentNode.insertBefore(this._node, targetNode)
-          } else if (this.rule.destin.insert === 'after') {
-            targetNode.parentNode.insertBefore(
-              this._node,
-              targetNode.nextSibling,
-            )
+    let targetNode
+    if (this.rule.destination && this.rule.destination.selector) {
+      targetNode = document.querySelector(this.rule.destination.selector)
 
-            // parent nodes
-          } else if (this.rule.destin.insert === 'prepend') {
-            targetNode.prepend(this._node)
-          } else if (this.rule.destin.insert === 'append') {
-            targetNode.appendChild(this._node)
+      if (targetNode) {
+        // sibling nodes
+        if (this.rule.destination.insertionMethod === 'before') {
+          ;(targetNode.parentNode as HTMLElement).insertBefore(
+            this._node,
+            targetNode,
+          )
+        } else if (this.rule.destination.insertionMethod === 'after') {
+          ;(targetNode.parentNode as HTMLElement).insertBefore(
+            this._node,
+            targetNode.nextSibling,
+          )
 
-            // failsafe if no match
-          } else {
-            targetNode = undefined
-          }
+          // parent nodes
+        } else if (this.rule.destination.insertionMethod === 'prependChild') {
+          targetNode.prepend(this._node)
+        } else if (this.rule.destination.insertionMethod === 'appendChild') {
+          targetNode.appendChild(this._node)
+
+          // failsafe if no match
+        } else {
+          targetNode = undefined
         }
       }
-      if (!targetNode) {
-        // place the created element after the comic
-        this.comicNode.parentNode.insertBefore(
-          this._node,
-          this.comicNode.nextSibling,
-        )
-      }
-
-      // add a class to the created element to temporarily hide it until processing is done
-      this._node.classList.add('proclivity-wip')
-
-      return this._node
     }
+
+    if (!targetNode) {
+      // place the created element after the comic
+      ;(this.comicNode.parentNode as HTMLElement).insertBefore(
+        this._node,
+        this.comicNode.nextSibling,
+      )
+    }
+
+    // add a class to the created element to temporarily hide it until processing is done
+    this._node.classList.add('proclivity-wip')
+
+    return this._node
   }
 
-  set altText(data) {
+  set altText(data: any) {
     // create a text element
     let altNode = document.createElement('p')
     altNode.setAttribute('class', 'proclivity-alt-text')
@@ -257,13 +239,16 @@ class PostComicWrapper {
     this.node.appendChild(altNode)
 
     // if the ruleset includes styling rules
-    if (this.rule.style) {
+    if (this.rule.styleProperties) {
       // build CSS rules to be added later
-      this.style.addRule('.proclivity-wrapper > p', this.rule.style)
+      this.style.addRule({
+        selector: '.proclivity-wrapper > p',
+        properties: this.rule.styleProperties,
+      })
     }
   }
 
-  set afterComic(node) {
+  set afterComic(node: any) {
     if (!document.querySelector('#proclivity-after-comic')) {
       node.setAttribute('id', 'proclivity-after-comic')
 
@@ -276,43 +261,57 @@ class PostComicWrapper {
     }
   }
 
-  apply() {
+  apply(): void {
     // add class to wrapper for styling
     this.node.classList.add('proclivity-wrapper')
     // set the wrapper width to the comic width
-    if (this.rule.wrapperStyle) {
-      this.style.addRule('.proclivity-wrapper', this.rule.wrapperStyle)
+    if (this.rule.wrapperStyleProperties) {
+      this.style.addRule({
+        selector: '.proclivity-wrapper',
+        properties: this.rule.wrapperStyleProperties,
+      })
     }
-    this.style.addRule(
-      '.proclivity-wrapper',
-      'width:' + this.comicNode.width + 'px; margin: 0 auto',
-    )
+    this.style.addRule({
+      selector: '.proclivity-wrapper',
+      properties: 'width:' + this.comicNode.width + 'px; margin: 0 auto',
+    })
     // remove the temporary class to reveal it on the page
     this.node.classList.remove('proclivity-wip')
   }
 
-  clear() {
+  clear(): void {
     this.node.innerHTML = ''
   }
 }
-class Comic {
-  constructor(node, rule, style) {
+class Caption {
+  node: HTMLCanvasElement
+  rule: CaptionRule
+  style: Styles
+
+  postComicWrapper: PostComicWrapper
+  afterComicNode: HTMLCanvasElement | null
+
+  private _altText: string = ''
+
+  constructor(node: HTMLCanvasElement, rule: CaptionRule, style: Styles) {
     this.node = node
     this.rule = rule
     this.style = style
 
     this.postComicWrapper = new PostComicWrapper(node, rule, style)
-    this.afterComicNode = document.querySelector(rule.afterComic)
+    this.afterComicNode = document.querySelector(
+      rule.afterComicSelector as string,
+    )
   }
 
-  get altText() {
+  get altText(): string {
     // if alt-text is already defined, return it
     if (this._altText) {
       return this._altText
 
       // otherwise, find it
     } else {
-      let data = DOMPurify.sanitize(this.node.getAttribute('title'))
+      let data = DOMPurify.sanitize(this.node.getAttribute('title') as string)
       // if title text doesn't match the ignored regex
       if (data && !this._inIgnoreList(data)) {
         this._altText = data
@@ -321,12 +320,12 @@ class Comic {
     }
   }
 
-  _inIgnoreList(data) {
+  _inIgnoreList(data: any): boolean {
     // check if alt-text matches any ignored patterns (as listed in the ruleset)
     if (this.rule.ignoredPatterns) {
-      for (let i = this.rule.ignoredPatterns.length - 1; i >= 0; i--) {
+      for (let rawIgnoredPattern of this.rule.ignoredPatterns) {
         // use RegEx to test for the patterns
-        let ignoredPattern = new RegExp(this.rule.ignoredPatterns[i], 'g')
+        let ignoredPattern = new RegExp(rawIgnoredPattern, 'g')
         // if a match is found, return true
         if (data.search(ignoredPattern) !== -1) {
           return true
@@ -336,7 +335,7 @@ class Comic {
     return false
   }
 
-  process() {
+  process(): void {
     // add the alt-text to the post-comic wrapper
     if (this.altText) {
       this.postComicWrapper.altText = this.altText
@@ -350,43 +349,41 @@ class Comic {
   }
 }
 
-// expansion element stuffs
-class ExpansionRule extends KeyMap {
-  constructor(config) {
-    let configKeyMap = {
-      source: new KeyMapElement('sourcePath'),
-      destin: new KeyMapElement('destinationPath'),
-      prefix: new KeyMapElement('contentPrefix'),
-      suffix: new KeyMapElement('contentSuffix'),
-      style: new KeyMapElement('style'),
-      type: new KeyMapElement('type'),
-    }
-    super(config, configKeyMap)
-  }
-}
+// element expansions
 class Expansion {
-  constructor(sourceNode, destinationNode, rule) {
+  sourceNode: HTMLCanvasElement
+  destinationNode: HTMLCanvasElement
+  rule: ExpansionRule
+
+  constructor(
+    sourceNode: HTMLCanvasElement,
+    destinationNode: HTMLCanvasElement,
+    rule: ExpansionRule,
+  ) {
     this.sourceNode = sourceNode
     this.destinationNode = destinationNode
     this.rule = rule
   }
 
-  process() {
+  process(): void {
     // if the target is a link...
-    if (this.rule.type === 'link' && this.sourceNode.tagName == 'A') {
+    if (this.rule.isLink && this.sourceNode.tagName == 'A') {
       // get link
-      let link = new URL(this.sourceNode.getAttribute('href'))
+      let link = new URL(this.sourceNode.getAttribute('href') as string)
       // get file extension from link
-      let ext = link.pathname.split('.').slice(-1).pop().toLowerCase()
+      let ext = (link.pathname
+        .split('.')
+        .slice(-1)
+        .pop() as string).toLowerCase()
       // check if it's in the approved image extensions
       if (ext in IMG_TYPES) {
         // build the destination node contents as an node utilizing the link (usually as an img source)
         this.destinationNode.innerHTML = [
           // contentPrefix usually contains something like <img src="
-          this.rule.contentPrefix,
+          this.rule.prefix,
           DOMPurify.sanitize(link.href),
           // contentSuffix usually contains something like " />
-          this.rule.contentSuffix,
+          this.rule.suffix,
         ].join('')
         // otherwise, if it's a YouTube link
       } else if (parseBaseUrl(link.host) === 'youtube.com') {
@@ -396,68 +393,111 @@ class Expansion {
     } else {
       // create the node with the set prefixes and suffixes
       this.destinationNode.innerHTML = [
-        this.rule.contentPrefix,
+        this.rule.prefix,
         // can't sanitize using encoding since subelements are allowed and often expected
         DOMPurify.sanitize(this.sourceNode.innerHTML),
-        this.rule.contentSuffix,
+        this.rule.suffix,
       ].join('')
     }
   }
 
-  apply() {
+  apply(): void {
     this.process()
 
     // remove the expansion source if it still exists and hasn't already been directly replaced by the expansion rule
     if (
       document.body.contains(this.sourceNode) &&
-      this.rule.sourcePath !== this.rule.destinationPath
+      this.rule.sourceSelector !== this.rule.destination.selector
     ) {
-      this.sourceNode.parentNode.removeChild(this.sourceNode)
+      ;(this.sourceNode.parentNode as HTMLCanvasElement).removeChild(
+        this.sourceNode,
+      )
     }
   }
 }
 class ExpansionSet {
-  constructor(rule, style) {
+  rule: ExpansionRule
+  style: Styles
+
+  id: string
+  sourceNodes: HTMLCanvasElement[]
+  destinationNodes: HTMLCanvasElement[]
+
+  sources: Expansion[] = []
+
+  constructor(rule: any, style: any) {
     this.rule = rule
     this.style = style
 
     this.id = '_' + Math.random().toString(36).substr(2, 9)
-    this.sourceNodes = document.querySelectorAll(rule.sourcePath)
-    this.destinationNodes = document.querySelectorAll(rule.destinationPath)
+    this.sourceNodes = querySelectorAllList(rule.sourceSelector)
+    this.destinationNodes = querySelectorAllList(rule.destination.selector)
   }
 
-  process() {
+  process(): void {
     this.sources = []
     if (
       this.sourceNodes &&
+      this.destinationNodes &&
       this.sourceNodes.length === this.destinationNodes.length
     ) {
-      for (let i = this.sourceNodes.length - 1; i >= 0; i--) {
-        let sourceNode = this.sourceNodes[i]
-        let destinationNode = this.destinationNodes[i]
+      let iteration = 0
+      for (let sourceNode of this.sourceNodes) {
+        let destinationNode = this.destinationNodes[iteration]
         destinationNode.classList.add('proclivity-expansion' + this.id)
 
         let source = new Expansion(sourceNode, destinationNode, this.rule)
         this.sources.push(source)
         source.apply()
+
+        iteration += 1
       }
-      if (this.rule.style) {
-        this.style.addRule('.proclivity-expansion' + this.id, this.rule.style)
+      if (this.rule.styleProperties) {
+        this.style.addRule({
+          selector: '.proclivity-expansion' + this.id,
+          properties: this.rule.styleProperties,
+        })
       }
     }
   }
 }
 
 // website stuffs
-class ComicWebsite extends KeyMap {
-  constructor(siteData, config, webcomicSite) {
-    let configKeyMap = {
-      nav: new KeyMapElement('navSelectors', {}),
-      alt: new KeyMapElement('altRules', []),
-      exp: new KeyMapElement('expansionRules', []),
-      sty: new KeyMapElement('styleRules', []),
-    }
-    super(siteData, configKeyMap)
+class ComicWebsite {
+  nextCombo: string
+  prevCombo: string
+
+  // global config
+  enableNavGlobal: boolean
+  enableAltGlobal: boolean
+  enableAfterGlobal: boolean
+  enableExpansionGlobal: boolean
+  enableStylesGlobal: boolean
+
+  // site config
+  enableNavLocal: boolean
+  enableAltLocal: boolean
+  enableAfterLocal: boolean
+  enableExpansionLocal: boolean
+  enableStylesLocal: boolean
+
+  // rules
+  navSelectors: NavigationRule
+  altRules: CaptionRule[]
+  expansionRules: ExpansionRule[]
+  styleRules: StyleRule[]
+
+  // constructs
+  style: Styles
+  nav: Navigation
+  captions: Caption[] = []
+  expansionSets: ExpansionSet[] = []
+
+  constructor(siteData: WebcomicRules, config: any, webcomicSite: any) {
+    this.navSelectors = siteData.navigation
+    this.altRules = siteData.captions
+    this.expansionRules = siteData.expansions
+    this.styleRules = siteData.styles
 
     // set nav config
     this.nextCombo = config['globalNextCombo'].join(' ')
@@ -478,11 +518,13 @@ class ComicWebsite extends KeyMap {
     this.enableStylesLocal = config['siteCustomStyles_' + webcomicSite]
 
     // setup
-    this.style = new Style()
+    this.style = new Styles()
+    this.nav = new Navigation(this.navSelectors, this.nextCombo, this.prevCombo)
+
     this.initialize()
   }
 
-  initialize() {
+  initialize(): void {
     // need to get nav up as soon as possible — this may fail sometimes due to DOM not being fully loaded, so it's repeated after the DOM has loaded
     // this method is idempotent, so it can be called multiple times without adverse affect
     this.loadUnfinished()
@@ -492,7 +534,7 @@ class ComicWebsite extends KeyMap {
     var postLoaded = false
 
     browser.runtime.onMessage.addListener(
-      function (request, sender, sendResponse) {
+      function (request: string, sender: any, sendResponse: any): void {
         // listen for messages sent from background.js
         if (request === 'urlchanged') {
           this.refreshComic()
@@ -503,38 +545,32 @@ class ComicWebsite extends KeyMap {
     this.loadUnfinished()
     preLoaded = true
 
-    document.addEventListener(
-      'readystatechange',
-      function (e) {
-        // when window loaded ( external resources are loaded too- `css`,`src`, etc...)
-        if (e.target.readyState === 'complete' && !postLoaded) {
-          // load any remainders that were missed above
-          if (!preLoaded) {
-            this.loadUnfinished()
-            preLoaded = true
-          }
-
-          // load things that are content-dependent (e.g. alt-text)
-          this.loadFinished()
-          postLoaded = true
+    document.addEventListener('readystatechange', (event: any) => {
+      // when window loaded ( external resources are loaded too- `css`,`src`, etc...)
+      if (event.target.readyState === 'complete' && !postLoaded) {
+        // load any remainders that were missed above
+        if (!preLoaded) {
+          this.loadUnfinished()
+          preLoaded = true
         }
-      }.bind(this),
-    )
+
+        // load things that are content-dependent (e.g. alt-text)
+        this.loadFinished()
+        postLoaded = true
+      }
+    })
 
     // if document already fully finished loading before listeners could be added, load everything
     // also allow for skipWait if sites have slow loading times but don't need full DOM to render (e.g. qwantz.com)
-    if (document.readyState === 'complete') {
+    if (document.readyState === 'complete' && !postLoaded) {
       // load any remainders that were missed above
-      if (!postLoaded) {
-        this.loadFinished()
-      }
+      this.loadFinished()
       postLoaded = true
     }
   }
 
   // things that should occur before the page finishes loading
-  loadUnfinished() {
-    this.nav = this.createNav()
+  loadUnfinished(): void {
     // apply nav if enabled globally and locally and if the nav selectors exist
     if (this.enableNavGlobal && this.enableNavLocal && this.navSelectors) {
       this.nav.initialize()
@@ -550,10 +586,10 @@ class ComicWebsite extends KeyMap {
   }
 
   // things that should occur after the page finishes loading
-  loadFinished() {
+  loadFinished(): void {
     // copy alt-text if enabled globally and locally and if the alt selectors exist
     if (this.enableAltGlobal && this.enableAltLocal && this.altRules) {
-      this.processAltText()
+      this.processCaptions()
     }
 
     // expand drop-down text and images if enabled globally and locally and if the expansion selectors exist
@@ -571,64 +607,55 @@ class ComicWebsite extends KeyMap {
     }
   }
 
-  createNav() {
-    let rule = new NavigationRule(this.navSelectors)
-    return new Navigation(rule, this.nextCombo, this.prevCombo)
-  }
-
-  reset() {
-    for (let i = this.comicNodes.length - 1; i >= 0; i--) {
-      let comicNode = this.comicNodes[i]
+  reset(): void {
+    for (let caption of this.captions) {
       // remove the post-comic wrapper contents
-      comicNode.postComicWrapper.clear()
+      caption.postComicWrapper.clear()
     }
     // reset generated styles
     this.style.reset()
   }
 
   // refresh comic in case this is a single-page app (e.g. DaisyOwl); will get interrupted on DOM reload for non-single-page sites
-  refreshComic() {
+  refreshComic(): void {
     this.reset()
     // re-run the items that are generated after page load — include items before load finishes for single-page apps where nav elements might change
     this.loadUnfinished()
     this.loadFinished()
 
     // re-send message to update progress, since everything is already applied (i.e. single-page app), don't need to worry about the response
-    browser.runtime.sendMessage({ popup: false }).then((_) => {})
+    browser.runtime.sendMessage({ popup: false }).then(({}) => {})
   }
 
-  addStyles() {
-    for (var i = this.styleRules.length - 1; i >= 0; i--) {
-      let styleRule = this.styleRules[i]
-      this.style.addRule(styleRule.destin, styleRule.styles)
+  addStyles(): void {
+    for (let styleRule of this.styleRules) {
+      this.style.addRule(styleRule)
     }
   }
 
   // copy alt-text to below the comic
-  processAltText() {
-    this.comicNodes = []
+  processCaptions(): void {
+    this.captions = []
     // copy alt-text
-    for (let i = this.altRules.length - 1; i >= 0; i--) {
-      let altRule = new ComicRule(this.altRules[i])
-
+    for (let altRule of this.altRules) {
       // get the comic image elements
-      let comics = document.querySelectorAll(altRule.comic)
+      let comics: HTMLCanvasElement[] = querySelectorAllList(
+        altRule.comicSelector,
+      )
       // add the elements to the list and process them
-      for (let i = comics.length - 1; i >= 0; i--) {
-        let comic = new Comic(comics[i], altRule, this.style)
-        this.comicNodes.push(comic)
-        comic.process()
+      for (let comic of comics as any) {
+        let caption = new Caption(comic, altRule, this.style)
+        this.captions.push(caption)
+        caption.process()
       }
     }
   }
 
   // expand drop-down text and images (e.g. XKCD's What-If and SMBC)
-  processExpansions() {
+  processExpansions(): void {
     this.expansionSets = []
     // for each expansion rule, generate rule and set objects then process
-    for (let i = this.expansionRules.length - 1; i >= 0; i--) {
-      let expansionRule = new ExpansionRule(this.expansionRules[i])
-
+    for (let expansionRule of this.expansionRules) {
       let expansionSet = new ExpansionSet(expansionRule, this.style)
       this.expansionSets.push(expansionSet)
       expansionSet.process()
@@ -637,58 +664,68 @@ class ComicWebsite extends KeyMap {
 }
 
 // process the global page's response
-function handleResponse(response) {
+function handleResponse(response: SiteRuleResponse): void {
   // if globally disabled, bypass all logic and skip
   if (!response.config.globalEnabled) {
     return
   }
 
-  // do progress redirect here if enabled for the fastest turnaround time
-  let path = location.pathname + location.search
-  if (
-    response.config.globalAutoSaveProgress &&
-    response.config['siteAutoSaveProgress_' + response.webcomicSite] &&
-    path !== response.autoSavedUrl &&
-    // if matches sitePath or an additionalIndices item
-    (path === response.sitePath ||
-      // ensure exists before using .indexOf()
-      (response.siteData.autoSave.additionalIndices &&
-        response.siteData.autoSave.additionalIndices.indexOf(path) > -1))
-  ) {
-    Snackbar.show({
-      text: 'Load saved progress?',
-      pos: 'top-right',
-      // set duration to null to have it open indefinitely
-      duration: null,
-      alertScreenReader: true,
-      // "first" button is on the right side
-      showAction: true,
-      actionText: 'No thanks',
-      actionTextColor: '#f28b82',
-      onActionClick: function (element) {
-        element.style.opacity = 0
-      },
-      // "second" button is on the lift side
-      showSecondButton: true,
-      secondButtonText: 'Do it',
-      secondButtonTextColor: '#1c82f0',
-      onSecondButtonClick: function (element) {
-        // use .href() so history is generated
-        location.href = response.autoSavedUrl
-        // hide notification in case of single-page apps
-        element.style.opacity = 0
-      },
-    })
-
-    // don't return since single-page apps won't need a refresh
-  }
+  offerToLoadProgress(response)
 
   // pass the rules to the comic class
-  let site = new ComicWebsite(
-    response.siteData,
+  new ComicWebsite(
+    response.siteData as WebcomicRules,
     response.config,
     response.webcomicSite,
   )
+}
+
+function offerToLoadProgress(response: SiteRuleResponse): void {
+  // do progress redirect here if enabled for the fastest turnaround time
+  let path = location.pathname + location.search
+  if (
+    !response.config.globalAutoSaveProgress ||
+    !response.config['siteAutoSaveProgress_' + response.webcomicSite] ||
+    !(path !== response.autoSavedUrl) ||
+    // if matches sitePath or an additionalIndices item
+    !(
+      path === response.sitePath ||
+      // ensure exists before using .indexOf()
+      (response.siteData &&
+        response.siteData.autoSave &&
+        response.siteData.autoSave.additionalIndices &&
+        response.siteData.autoSave.additionalIndices.indexOf(path) > -1)
+    )
+  ) {
+    return
+  }
+
+  //
+  Snackbar.show({
+    text: 'Load saved progress?',
+    pos: 'top-right',
+    // set duration to 0 to have it open indefinitely
+    duration: 0,
+    alertScreenReader: true,
+    // "first" button is on the right side
+    showAction: true,
+    actionText: 'No thanks',
+    actionTextColor: '#f28b82',
+    onActionClick: (element: HTMLCanvasElement) => {
+      element.style.opacity = '0'
+    },
+    // "second" button is on the lift side
+    showSecondButton: true,
+    secondButtonText: 'Do it',
+    secondButtonTextColor: '#1c82f0',
+    onSecondButtonClick: (element: HTMLCanvasElement) => {
+      // use .href() so history is generated
+      location.href = response.autoSavedUrl as string
+      // hide notification in case of single-page apps
+      element.style.opacity = '0'
+    },
+    // force to any since types for Snackbar are incomplete
+  } as any)
 }
 
 // send a message to the background page to get rules from the domain
