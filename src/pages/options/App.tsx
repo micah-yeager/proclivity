@@ -16,7 +16,7 @@ import { IndexSite } from '@src/types'
 class App extends Component {
 	state: { [key: string]: any }
 
-	siteList: Array<IndexSite> = []
+	siteList: IndexSite[] = []
 	defaults: { [key: string]: any } = {}
 
 	constructor(props: { [key: string]: any }) {
@@ -26,6 +26,7 @@ class App extends Component {
 		this.handleChange = this.handleChange.bind(this)
 		this.bootstrapStateFromStorage = this.bootstrapStateFromStorage.bind(this)
 		this.processStorageChange = this.processStorageChange.bind(this)
+		this.processSiteList = this.processSiteList.bind(this)
 	}
 
 	shouldComponentUpdate(): boolean {
@@ -53,23 +54,29 @@ class App extends Component {
 
 		// retrieve and process site list
 		browser.runtime.sendMessage('indexSiteList').then(this.processSiteList)
-		// apply settings from storage
-		browser.storage.sync.get(this.defaults).then(this.bootstrapStateFromStorage)
 		// add a listener for storage changes to reflect in state
 		browser.storage.onChanged.addListener(this.processStorageChange)
 	}
 
-	processSiteList(siteList: Array<IndexSite>) {
+	processSiteList(siteList: IndexSite[]) {
 		// sort array by property
-		this.siteList = sortArray(siteList, {
+		this.state.siteList = sortArray(siteList, {
 			by: ['nameLower'],
-			nameLower: (name: string) => name.toLowerCase(),
+			computed: {
+				nameLower: (indexSite: IndexSite) => {
+					return indexSite.name.toLowerCase()
+				},
+			},
 		})
+
+		// apply settings from storage
+		browser.storage.sync.get(this.defaults).then(this.bootstrapStateFromStorage)
 	}
 
 	bootstrapStateFromStorage(items: { [key: string]: any }): void {
 		this.setState(items)
 		this.setState({ loading: false })
+		this.forceUpdate()
 	}
 
 	processStorageChange(
@@ -188,9 +195,9 @@ class App extends Component {
 						/>
 					</Section>
 					<Section title="Supported webcomics">
-						{this.siteList.map((site) => (
-							<Link key={site.url} url={site.url} title={site.name} />
-						))}
+						{this.state.siteList.map((site: IndexSite) => {
+							return <Link key={site.url} url={site.url} title={site.name} />
+						})}
 					</Section>
 				</div>
 			</div>

@@ -74,6 +74,7 @@ class App extends Component {
 		})
 		// set loading to be false to start rendering
 		this.setState({ loading: false })
+		this.forceUpdate()
 	}
 
 	processStorageChange(
