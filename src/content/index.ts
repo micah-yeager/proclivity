@@ -92,7 +92,6 @@ class ComicWebsite {
     this.loadUnfinished()
 
     // set up canary variables in case the page loads too fast to catch specific readyStates
-    var preLoaded = false
     var postLoaded = false
 
     browser.runtime.onMessage.addListener(
@@ -108,18 +107,9 @@ class ComicWebsite {
       },
     )
 
-    this.loadUnfinished()
-    preLoaded = true
-
     document.addEventListener('readystatechange', (event: any) => {
       // when window loaded ( external resources are loaded too- `css`,`src`, etc...)
       if (event.target.readyState === 'complete' && !postLoaded) {
-        // load any remainders that were missed above
-        if (!preLoaded) {
-          this.loadUnfinished()
-          preLoaded = true
-        }
-
         // load things that are content-dependent (e.g. alt-text)
         this.loadFinished()
         postLoaded = true
