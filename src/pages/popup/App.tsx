@@ -92,11 +92,9 @@ class App extends Component {
 
 	handleChange(key: string, value: any): void {
 		let dict = { [key]: value }
-		browser.storage.sync.set(dict).then(
-			function () {
-				this.setState(dict)
-			}.bind(this),
-		)
+		browser.storage.sync.set(dict).then(() => {
+			this.setState(dict)
+		})
 	}
 
 	render(): JSX.Element {

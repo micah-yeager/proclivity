@@ -109,7 +109,7 @@ function promiseSiteRules(requestMeta: RequestMeta): Promise<SiteRuleResponse> {
   }
   if (!siteMeta.exists) {
     // this browser API returns a Promise
-    return browser.storage.sync.get(globalDefaults).then(function (items) {
+    return browser.storage.sync.get(globalDefaults).then((items) => {
       return { config: items }
     })
   }
@@ -125,20 +125,18 @@ function promiseSiteRules(requestMeta: RequestMeta): Promise<SiteRuleResponse> {
   }
   let defaults = { ...globalDefaults, ...siteDefaults }
 
-  return browser.storage.sync
-    .get(defaults)
-    .then(function (settings: UserSettings) {
-      if (!settings.globalEnabled && !requestMeta.popup) {
-        return { config: { globalEnabled: false } }
-      }
+  return browser.storage.sync.get(defaults).then((settings: UserSettings) => {
+    if (!settings.globalEnabled && !requestMeta.popup) {
+      return { config: { globalEnabled: false } }
+    }
 
-      saveProgress(requestMeta, siteMeta, settings)
+    saveProgress(requestMeta, siteMeta, settings)
 
-      return {
-        config: settings,
-        siteMeta: siteMeta,
-      }
-    })
+    return {
+      config: settings,
+      siteMeta: siteMeta,
+    }
+  })
 }
 
 function getSiteMeta(requestMeta: RequestMeta): SiteMeta {
@@ -219,7 +217,7 @@ function saveProgress(
 browser.runtime.onMessage.addListener(returnResponse)
 
 // add tab state change listener since single-page apps are very difficult to listen to from within the content script
-browser.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   // check if url changed
   if (changeInfo.url) {
     browser.tabs.sendMessage(tabId, 'urlchanged').catch((e) => {})
