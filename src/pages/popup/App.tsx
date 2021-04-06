@@ -8,6 +8,7 @@ import {
 	Info,
 } from '@src/pages/components/settings'
 import '@src/pages/components/styles'
+import { SiteRuleResponse, WebcomicRules, SiteMeta } from '@src/types'
 
 class App extends Component {
 	state: { [key: string]: any }
@@ -20,7 +21,7 @@ class App extends Component {
 		siteAutoSaveProgress: 'Auto-save progress',
 	}
 
-	constructor(props: any) {
+	constructor(props: { [key: string]: any }) {
 		super(props)
 		this.state = { loading: true }
 
@@ -42,9 +43,9 @@ class App extends Component {
 		browser.tabs.query(query).then(this.getStorageFromTabUrl)
 	}
 
-	getStorageFromTabUrl(tabs: any): void {
+	getStorageFromTabUrl(tabs: browser.tabs.Tab[]): void {
 		// set URL
-		let url = new URL(tabs[0].url)
+		let url = new URL(tabs[0].url as string)
 		let path = url.pathname + url.search
 
 		// parse URL
@@ -66,14 +67,19 @@ class App extends Component {
 		return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
 	}
 
-	bootstrapStateFromResponse(response: any): void {
+	bootstrapStateFromResponse(response: SiteRuleResponse): void {
 		this.setState(response.config)
-		this.setState({ webcomicSite: response.webcomicSite })
+		this.setState({
+			webcomicSite: (response.siteMeta as SiteMeta).data as WebcomicRules,
+		})
 		// set loading to be false to start rendering
 		this.setState({ loading: false })
 	}
 
-	processStorageChange(changes: any, namespace: any): void {
+	processStorageChange(
+		changes: { [key: string]: browser.storage.StorageChange },
+		namespace: string,
+	): void {
 		let processedChanges: { [key: string]: any } = {}
 		for (let key in changes) {
 			// only apply changes if applicable to this site

@@ -48,9 +48,7 @@ export class Styles {
 
   apply(): void {
     // build CSS using contenated selectors, brackets, and styles
-    console.log('outside')
     for (let rule of this.rules) {
-      console.log('iteration')
       let selector = rule.selector
       let properties = rule.properties
 

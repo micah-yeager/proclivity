@@ -83,7 +83,7 @@ export class ExpansionSet {
 
   sources: Expansion[] = []
 
-  constructor(rule: any, styles: any) {
+  constructor(rule: ExpansionRule, styles: Styles) {
     this.rule = rule
     this.styles = styles
 

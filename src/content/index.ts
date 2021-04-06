@@ -96,7 +96,11 @@ class ComicWebsite {
     var postLoaded = false
 
     browser.runtime.onMessage.addListener(
-      function (request: string, sender: any, sendResponse: any): void {
+      function (
+        request: string,
+        sender: browser.runtime.MessageSender,
+        sendResponse: any,
+      ): void {
         // listen for messages sent from background.js
         if (request === 'urlchanged') {
           this.refreshComic()

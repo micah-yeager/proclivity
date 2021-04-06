@@ -9,7 +9,7 @@ import 'tn-mousetrap/plugins/record/mousetrap-record'
 class Toggle extends Component {
 	props: { [key: string]: any }
 
-	constructor(props: any) {
+	constructor(props: { [key: string]: any }) {
 		super(props)
 
 		// not strictly needed, but silences a compiler warning
@@ -58,7 +58,7 @@ class KeyCombo extends Component {
 	state: { [key: string]: any }
 	refs: { [key: string]: any } = {}
 
-	constructor(props: any) {
+	constructor(props: { [key: string]: any }) {
 		super(props)
 
 		// not strictly needed, but prevents a compiler warning
@@ -72,13 +72,11 @@ class KeyCombo extends Component {
 		let tooltip = this.refs.tooltip
 		tooltip.style = 'visibility: visible; opacity: 1;'
 
-		Mousetrap.record(
-			function (sequence: any) {
-				tooltip.style = ''
-				this.props.onChange(this.props.id, sequence)
-				this.setState({ textValue: sequence.join(this.sequenceJoiner) })
-			}.bind(this),
-		)
+		Mousetrap.record((sequence: string[]) => {
+			tooltip.style = ''
+			this.props.onChange(this.props.id, sequence)
+			this.setState({ textValue: sequence.join(this.sequenceJoiner) })
+		})
 	}
 
 	render(): JSX.Element {
@@ -112,7 +110,7 @@ class KeyCombo extends Component {
 	}
 }
 
-function Link(props: any): JSX.Element {
+function Link(props: { [key: string]: any }): JSX.Element {
 	let linkStyles = `${styles.setting} ${styles.linkRow}`
 
 	return (
@@ -130,7 +128,7 @@ function Link(props: any): JSX.Element {
 class Button extends Component {
 	props: { [key: string]: any }
 
-	constructor(props: any) {
+	constructor(props: { [key: string]: any }) {
 		super(props)
 
 		this.props = props
@@ -140,7 +138,7 @@ class Button extends Component {
 
 	handleClick(event: any): void {
 		let query = { active: true, currentWindow: true }
-		browser.tabs.query(query).then((tabs: any) => {
+		browser.tabs.query(query).then((tabs) => {
 			let url = tabs[0].url
 			this.props.onChange(this.props.id, url)
 			window.close()
@@ -166,7 +164,7 @@ class Button extends Component {
 		)
 	}
 }
-function Info(props: any): JSX.Element {
+function Info(props: { [key: string]: any }): JSX.Element {
 	return (
 		<div className={styles.setting}>
 			<div className={styles.settingTitle}>{props.title}</div>
@@ -175,7 +173,7 @@ function Info(props: any): JSX.Element {
 	)
 }
 
-function Header(props: any): JSX.Element {
+function Header(props: { [key: string]: any }): JSX.Element {
 	let icon
 	let title
 	if (props.type === 'popup') {
@@ -205,7 +203,7 @@ function Header(props: any): JSX.Element {
 		</div>
 	)
 }
-function HeaderSection(props: any): JSX.Element {
+function HeaderSection(props: { [key: string]: any }): JSX.Element {
 	// props:
 	// - type<string>: 'popup' or anything else
 	// - title<string>: title of the extension
@@ -218,7 +216,7 @@ function HeaderSection(props: any): JSX.Element {
 	)
 }
 
-function SectionInner(props: any): JSX.Element {
+function SectionInner(props: { [key: string]: any }): JSX.Element {
 	// props:
 	// - additionalClasses<string>: classes to append
 	// - content:
@@ -228,7 +226,7 @@ function SectionInner(props: any): JSX.Element {
 	return <div className={classes}>{props.children}</div>
 }
 
-function Section(props: any): JSX.Element {
+function Section(props: { [key: string]: any }): JSX.Element {
 	let sectionStyles = styles.settingsSectionHeader
 	if (props.type === 'popup') {
 		sectionStyles = `${sectionStyles} ${styles.settingsSectionHeaderPopup}`

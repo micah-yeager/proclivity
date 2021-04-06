@@ -38,14 +38,14 @@ for (const [domain, value] of Object.entries(siteRules)) {
 // listener functions
 function returnResponse(
   request: string | SiteRuleRequest,
-  sender: any, // tab info from the browser
-  sendResponse: any, // deprecated, not used
+  sender: browser.runtime.MessageSender, // tab info from the browser
+  sendResponse: (response?: any) => void, // deprecated, not used
 ): Promise<IndexSite[]> | Promise<SiteRuleResponse> | undefined {
   if (request === 'indexSiteList') {
     return promiseSiteList()
   }
 
-  let requestMeta = generateRequestMeta(request, sender)
+  let requestMeta = generateRequestMeta(request as SiteRuleRequest, sender)
   if (requestMeta.rootDomain in siteRules) {
     return promiseSiteRules(requestMeta)
   }
@@ -66,14 +66,18 @@ interface RequestMeta {
   readonly path: string
   readonly popup: boolean
 }
-function generateRequestMeta(request: any, sender: any): RequestMeta {
-  let rootDomain: string = parseBaseUrl(sender.origin)
+function generateRequestMeta(
+  request: SiteRuleRequest,
+  sender: browser.runtime.MessageSender,
+): RequestMeta {
+  // use sender as any since types aren't updated
+  let rootDomain: string = parseBaseUrl((sender as any).origin)
   let path: string = ''
   let popup: boolean = false
 
   // if from popup, no tab property will exist
   if (sender.tab) {
-    let urlObj = new URL(sender.tab.url)
+    let urlObj = new URL(sender.tab.url as string)
     path = urlObj.pathname + urlObj.search
 
     // need to check if it's a popup AND if it's from the chrome extension domain (security check)
@@ -81,8 +85,8 @@ function generateRequestMeta(request: any, sender: any): RequestMeta {
   } else if (rootDomain === 'chrome-extension:' && request.popup === true) {
     popup = true
 
-    rootDomain = parseBaseUrl(request.domain)
-    path = request.path
+    rootDomain = parseBaseUrl(request.domain as string)
+    path = request.path as string
   }
 
   return { rootDomain: rootDomain, path: path, popup: popup }

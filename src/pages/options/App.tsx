@@ -19,7 +19,7 @@ class App extends Component {
 	siteList: Array<IndexSite> = []
 	defaults: { [key: string]: any } = {}
 
-	constructor(props: any) {
+	constructor(props: { [key: string]: any }) {
 		super(props)
 		this.state = { loading: true }
 
@@ -72,7 +72,10 @@ class App extends Component {
 		this.setState({ loading: false })
 	}
 
-	processStorageChange(changes: any, namespace: any): void {
+	processStorageChange(
+		changes: { [key: string]: browser.storage.StorageChange },
+		namespace: string,
+	): void {
 		for (let key in changes) {
 			this.setState({ [key]: changes[key].newValue })
 		}
@@ -80,11 +83,9 @@ class App extends Component {
 
 	handleChange(key: string, value: any): void {
 		let dict = { [key]: value }
-		browser.storage.sync.set(dict).then(
-			function () {
-				this.setState(dict)
-			}.bind(this),
-		)
+		browser.storage.sync.set(dict).then(() => {
+			this.setState(dict)
+		})
 	}
 
 	render(): JSX.Element {

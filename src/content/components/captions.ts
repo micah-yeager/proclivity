@@ -71,7 +71,7 @@ class PostComicWrapper {
     return this._node
   }
 
-  set altText(data: any) {
+  set altText(data: string) {
     // create a text element
     let altNode = document.createElement('p')
     altNode.setAttribute('class', 'proclivity-alt-text')
@@ -92,7 +92,7 @@ class PostComicWrapper {
     }
   }
 
-  set afterComic(node: any) {
+  set afterComic(node: HTMLElement) {
     if (!document.querySelector('#proclivity-after-comic')) {
       node.setAttribute('id', 'proclivity-after-comic')
 
@@ -164,7 +164,7 @@ export class Caption {
     }
   }
 
-  _inIgnoreList(data: any): boolean {
+  _inIgnoreList(data: string): boolean {
     // check if alt-text matches any ignored patterns (as listed in the ruleset)
     if (this.rule.ignoredPatterns) {
       for (let rawIgnoredPattern of this.rule.ignoredPatterns) {
