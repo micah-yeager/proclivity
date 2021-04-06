@@ -76,7 +76,7 @@ class ComicWebsite {
     this.autoSavedUrl = config['siteProgressAutoSaved_' + coreUrl] as string
 
     // setup
-    this.styles = new Styles()
+    this.styles = new Styles(this.globalEnableStyles && this.localEnableStyles)
     this.navigation = new Navigation(
       this.webcomicRules.navigation,
       this.nextCombo,
@@ -155,11 +155,8 @@ class ComicWebsite {
     }
 
     // apply CSS rules to generated content if enabled globally and locally
-    if (this.globalEnableStyles && this.localEnableStyles) {
-      if (this.webcomicRules.styles) {
-        this.addStyles()
-      }
-      this.styles.apply()
+    if (this.webcomicRules.styles) {
+      this.addStyles()
     }
   }
 
@@ -188,11 +185,6 @@ class ComicWebsite {
         this.processExpansions(ExpansionSet)
       })
     }
-
-    // apply CSS rules to generated content if enabled globally and locally
-    if (this.globalEnableStyles && this.localEnableStyles) {
-      this.styles.apply()
-    }
   }
 
   reset(): void {
@@ -217,7 +209,7 @@ class ComicWebsite {
 
   addStyles(): void {
     for (let styleRule of this.webcomicRules.styles as StyleRule[]) {
-      this.styles.addRule(styleRule)
+      this.styles.apply(styleRule)
     }
   }
 

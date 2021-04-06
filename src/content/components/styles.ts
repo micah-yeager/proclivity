@@ -2,21 +2,18 @@ import { StyleRule } from '@src/types'
 
 // styling classes
 export class Styles {
-  rules: StyleRule[] = []
   private _node: HTMLElement
+  enabled: boolean
 
-  constructor() {
+  constructor(enabled: boolean) {
+    this._node = this.get_or_create_node()
+    this.enabled = enabled
+
     // create rule to hide the .wip
-    this.rules.push({
+    this.apply({
       selector: '.proclivity-wip',
       properties: 'display: none !important;',
     })
-
-    this._node = this.get_or_create_node()
-  }
-
-  addRule(styles: StyleRule): void {
-    this.rules.push(styles)
   }
 
   get_or_create_node(): HTMLElement {
@@ -46,18 +43,20 @@ export class Styles {
     return this._node
   }
 
-  apply(): void {
-    // build CSS using contenated selectors, brackets, and styles
-    for (let rule of this.rules) {
-      let selector = rule.selector
-      let properties = rule.properties
-
-      // create the CSS rule with properties
-      let content: Text = document.createTextNode(
-        selector + ' {' + properties + '}',
-      )
-      this.node.appendChild(content)
+  apply(rule: StyleRule): void {
+    if (!this.enabled) {
+      return
     }
+
+    // build CSS using contenated selectors, brackets, and styles
+    let selector = rule.selector
+    let properties = rule.properties
+
+    // create the CSS rule with properties
+    let content: Text = document.createTextNode(
+      selector + ' {' + properties + '}',
+    )
+    this.node.appendChild(content)
   }
 
   reset(): void {

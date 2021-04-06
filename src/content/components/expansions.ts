@@ -111,7 +111,7 @@ export class ExpansionSet {
         iteration += 1
       }
       if (this.rule.styleProperties) {
-        this.styles.addRule({
+        this.styles.apply({
           selector: '.proclivity-expansion' + this.id,
           properties: this.rule.styleProperties,
         })

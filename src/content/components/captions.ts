@@ -85,7 +85,7 @@ class PostComicWrapper {
     // if the ruleset includes styling rules
     if (this.rule.styleProperties) {
       // build CSS rules to be added later
-      this.styles.addRule({
+      this.styles.apply({
         selector: '.proclivity-wrapper > p',
         properties: this.rule.styleProperties,
       })
@@ -110,12 +110,12 @@ class PostComicWrapper {
     this.node.classList.add('proclivity-wrapper')
     // set the wrapper width to the comic width
     if (this.rule.wrapperStyleProperties) {
-      this.styles.addRule({
+      this.styles.apply({
         selector: '.proclivity-wrapper',
         properties: this.rule.wrapperStyleProperties,
       })
     }
-    this.styles.addRule({
+    this.styles.apply({
       selector: '.proclivity-wrapper',
       properties: 'width:' + this.comicNode.width + 'px; margin: 0 auto',
     })
