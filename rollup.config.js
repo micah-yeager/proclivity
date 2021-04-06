@@ -39,7 +39,6 @@ if (isProduction) {
 }
 
 export default {
-  preserveModules: true,
   input: 'src/manifest.json',
   output: {
     dir: 'dist',

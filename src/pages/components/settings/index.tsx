@@ -1,22 +1,28 @@
 import React, { Component } from 'react'
 import styles from './index.scss'
+
 import { MdLaunch, MdFiberManualRecord } from 'react-icons/md'
 // import icons from 'src/assets'
 import Mousetrap from 'tn-mousetrap'
 import 'tn-mousetrap/plugins/record/mousetrap-record'
 
 class Toggle extends Component {
-	constructor(props) {
+	props: { [key: string]: any }
+
+	constructor(props: any) {
 		super(props)
+
+		// not strictly needed, but silences a compiler warning
+		this.props = props
 
 		this.handleChange = this.handleChange.bind(this)
 	}
 
-	handleChange(event) {
+	handleChange(event: any): void {
 		this.props.onChange(event.target.id, event.target.checked)
 	}
 
-	render() {
+	render(): JSX.Element {
 		let toggleStyles = `${styles.setting} ${styles.toggleRow}`
 
 		return (
@@ -48,20 +54,26 @@ class Toggle extends Component {
 class KeyCombo extends Component {
 	sequenceJoiner = ', then '
 
-	constructor(props) {
+	props: { [key: string]: any }
+	state: { [key: string]: any }
+	refs: { [key: string]: any } = {}
+
+	constructor(props: any) {
 		super(props)
 
+		// not strictly needed, but prevents a compiler warning
+		this.props = props
 		this.state = { textValue: this.props.value.join(this.sequenceJoiner) }
 
 		this.handleClick = this.handleClick.bind(this)
 	}
 
-	handleClick(event) {
+	handleClick(event: any): void {
 		let tooltip = this.refs.tooltip
 		tooltip.style = 'visibility: visible; opacity: 1;'
 
 		Mousetrap.record(
-			function (sequence) {
+			function (sequence: any) {
 				tooltip.style = ''
 				this.props.onChange(this.props.id, sequence)
 				this.setState({ textValue: sequence.join(this.sequenceJoiner) })
@@ -69,7 +81,7 @@ class KeyCombo extends Component {
 		)
 	}
 
-	render() {
+	render(): JSX.Element {
 		let keyComboStyles = `${styles.setting} ${styles.keyComboRow}`
 
 		return (
@@ -100,7 +112,7 @@ class KeyCombo extends Component {
 	}
 }
 
-function Link(props) {
+function Link(props: any): JSX.Element {
 	let linkStyles = `${styles.setting} ${styles.linkRow}`
 
 	return (
@@ -116,7 +128,9 @@ function Link(props) {
 	)
 }
 class Button extends Component {
-	constructor(props) {
+	props: { [key: string]: any }
+
+	constructor(props: any) {
 		super(props)
 
 		this.props = props
@@ -124,19 +138,16 @@ class Button extends Component {
 		this.handleClick = this.handleClick.bind(this)
 	}
 
-	handleClick(event) {
+	handleClick(event: any): void {
 		let query = { active: true, currentWindow: true }
-		chrome.tabs.query(
-			query,
-			function (tabs) {
-				let url = tabs[0].url
-				this.props.onChange(this.props.id, url)
-				window.close()
-			}.bind(this),
-		)
+		browser.tabs.query(query).then((tabs: any) => {
+			let url = tabs[0].url
+			this.props.onChange(this.props.id, url)
+			window.close()
+		})
 	}
 
-	render() {
+	render(): JSX.Element {
 		let buttonStyles = `${styles.setting} ${styles.buttonRow}`
 
 		return (
@@ -155,7 +166,7 @@ class Button extends Component {
 		)
 	}
 }
-function Info(props) {
+function Info(props: any): JSX.Element {
 	return (
 		<div className={styles.setting}>
 			<div className={styles.settingTitle}>{props.title}</div>
@@ -164,7 +175,7 @@ function Info(props) {
 	)
 }
 
-function Header(props) {
+function Header(props: any): JSX.Element {
 	let icon
 	let title
 	if (props.type === 'popup') {
@@ -194,7 +205,7 @@ function Header(props) {
 		</div>
 	)
 }
-function HeaderSection(props) {
+function HeaderSection(props: any): JSX.Element {
 	// props:
 	// - type<string>: 'popup' or anything else
 	// - title<string>: title of the extension
@@ -207,7 +218,7 @@ function HeaderSection(props) {
 	)
 }
 
-function SectionInner(props) {
+function SectionInner(props: any): JSX.Element {
 	// props:
 	// - additionalClasses<string>: classes to append
 	// - content:
@@ -217,7 +228,7 @@ function SectionInner(props) {
 	return <div className={classes}>{props.children}</div>
 }
 
-function Section(props) {
+function Section(props: any): JSX.Element {
 	let sectionStyles = styles.settingsSectionHeader
 	if (props.type === 'popup') {
 		sectionStyles = `${sectionStyles} ${styles.settingsSectionHeaderPopup}`

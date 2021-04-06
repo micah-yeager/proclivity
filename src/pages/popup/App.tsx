@@ -10,9 +10,9 @@ import {
 import '@src/pages/components/styles'
 
 class App extends Component {
-	state: { [id: string]: any }
+	state: { [key: string]: any }
 
-	siteLabelPairs: { [id: string]: string } = {
+	siteLabelPairs: { [key: string]: string } = {
 		siteKeyboardNav: 'Enable keyboard navigation',
 		siteStaticCaptions: 'Enable static captions',
 		siteTextboxExpansion: 'Enable textbox expansion',
@@ -20,7 +20,7 @@ class App extends Component {
 		siteAutoSaveProgress: 'Auto-save progress',
 	}
 
-	constructor(props) {
+	constructor(props: any) {
 		super(props)
 		this.state = { loading: true }
 
@@ -42,7 +42,7 @@ class App extends Component {
 		browser.tabs.query(query).then(this.getStorageFromTabUrl)
 	}
 
-	getStorageFromTabUrl(tabs): void {
+	getStorageFromTabUrl(tabs: any): void {
 		// set URL
 		let url = new URL(tabs[0].url)
 		let path = url.pathname + url.search
@@ -62,19 +62,19 @@ class App extends Component {
 		browser.storage.onChanged.addListener(this.processStorageChange)
 	}
 
-	parseBaseUrl(url): string {
+	parseBaseUrl(url: string): string {
 		return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
 	}
 
-	bootstrapStateFromResponse(response): void {
+	bootstrapStateFromResponse(response: any): void {
 		this.setState(response.config)
 		this.setState({ webcomicSite: response.webcomicSite })
 		// set loading to be false to start rendering
 		this.setState({ loading: false })
 	}
 
-	processStorageChange(changes, namespace): void {
-		let processedChanges: { [id: string]: any } = {}
+	processStorageChange(changes: any, namespace: any): void {
+		let processedChanges: { [key: string]: any } = {}
 		for (let key in changes) {
 			// only apply changes if applicable to this site
 			if (key in this.state) {
@@ -152,6 +152,7 @@ class App extends Component {
 								/>
 							)
 						}
+						return
 					})}
 					<Button
 						key="save"

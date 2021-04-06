@@ -14,12 +14,12 @@ import sortArray from 'sort-array'
 import { IndexSite } from '@src/types'
 
 class App extends Component {
-	state: { [id: string]: any }
+	state: { [key: string]: any }
 
 	siteList: Array<IndexSite> = []
-	defaults: { [id: string]: any } = {}
+	defaults: { [key: string]: any } = {}
 
-	constructor(props) {
+	constructor(props: any) {
 		super(props)
 		this.state = { loading: true }
 
@@ -51,27 +51,28 @@ class App extends Component {
 		}
 		this.defaults = { ...toggleOptionDefaults, ...keyComboDefaults }
 
+		// retrieve and process site list
+		browser.runtime.sendMessage('indexSiteList').then(this.processSiteList)
 		// apply settings from storage
-		browser.runtime.sendMessage('indexSiteList').then(
-			function (siteList: Array<IndexSite>) {
-				this.siteList = sortArray(siteList, {
-					by: 'nameLower',
-					nameLower: (name: string) => name.toLowerCase(),
-				})
-				browser.storage.sync
-					.get(this.defaults)
-					.then(this.bootstrapStateFromStorage)
-			}.bind(this),
-		)
+		browser.storage.sync.get(this.defaults).then(this.bootstrapStateFromStorage)
+		// add a listener for storage changes to reflect in state
 		browser.storage.onChanged.addListener(this.processStorageChange)
 	}
 
-	bootstrapStateFromStorage(items: { [id: string]: any }): void {
+	processSiteList(siteList: Array<IndexSite>) {
+		// sort array by property
+		this.siteList = sortArray(siteList, {
+			by: ['nameLower'],
+			nameLower: (name: string) => name.toLowerCase(),
+		})
+	}
+
+	bootstrapStateFromStorage(items: { [key: string]: any }): void {
 		this.setState(items)
 		this.setState({ loading: false })
 	}
 
-	processStorageChange(changes, namespace): void {
+	processStorageChange(changes: any, namespace: any): void {
 		for (let key in changes) {
 			this.setState({ [key]: changes[key].newValue })
 		}

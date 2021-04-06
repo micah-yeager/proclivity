@@ -1,62 +1,92 @@
 // site index
 export interface IndexSite {
-	name: string
-	url: string
+	readonly name: string
+	readonly url: string
 }
 
-// webcomic types
-export interface Navigation {
-	nextSelector: string
-	previousSelector: string
-	levelsAboveSelector?: number
-}
-export interface Destination {
-	selector: string
-	insertionType: 'replace' | 'before' | 'after' | 'prependChild' | 'appendChild'
-}
-export interface Caption {
-	comicSelector: string
-	ignorePattern?: RegExp[]
-	afterComicSelector?: string
+// requests and responses
+export interface SiteRuleRequest {
+	popup: boolean
 
-	destination: Destination
-	wrapperStyles?: string
-	styles?: string
+	// properties only used if a popup
+	url?: string
+	domain?: string
+	path?: string
 }
-export interface Expansion {
-	sourceSelector: string
-	destination: Destination
-	isLink?: boolean
+export interface UserSettings {
+	readonly [key: string]: any
+}
+export interface SiteMeta {
+	readonly coreUrl: string
+	readonly exists: boolean
 
-	prefix?: string
-	suffix?: string
+	readonly path: string | null
+	readonly data: WebcomicRules | null
+}
+export interface SiteRuleResponse {
+	readonly config: UserSettings
+	readonly siteMeta?: SiteMeta
+}
 
-	styles?: string
+// webcomic rules
+export interface NavigationRule {
+	readonly nextSelector: string
+	readonly previousSelector: string
+	readonly levelsAboveSelector?: number
 }
-export interface Style {
-	destinationSelector: string
-	styles: string
+export interface DestinationRule {
+	readonly selector: string
+	readonly insertionMethod:
+		| 'replace'
+		| 'before'
+		| 'after'
+		| 'prependChild'
+		| 'appendChild'
 }
-export interface AutoSave {
-	additionalIndices: string[]
-	allowPattern: RegExp
-	ignorePattern: RegExp
-}
-export interface WebComic {
-	name: string
-	indexUrl: string
-	skipIndex?: boolean
-	nsfw?: boolean
+export interface CaptionRule {
+	readonly comicSelector: string
+	// string array here since must be JSON serializable for content script
+	readonly ignoredPatterns?: string[]
+	readonly afterComicSelector?: string
 
-	navigation: Navigation
-	caption: Caption
-	expansions: Expansion[]
-	styles: Style[]
-	autoSave: AutoSave
+	readonly destination?: DestinationRule
+	readonly wrapperStyleProperties?: string
+	readonly styleProperties?: string
 }
-export interface Host {
-	[id: string]: WebComic
+export interface ExpansionRule {
+	readonly sourceSelector: string
+	readonly destination: DestinationRule
+	readonly isLink?: boolean
+
+	readonly prefix?: string
+	readonly suffix?: string
+
+	readonly styleProperties?: string
 }
-export interface Sites {
-	[id: string]: Host
+export interface StyleRule {
+	readonly selector: string
+	readonly properties: string
+}
+export interface AutoSaveRule {
+	readonly additionalIndices?: string[]
+	readonly allowedPattern: RegExp
+	readonly ignoredPattern?: RegExp
+}
+export interface WebcomicRules {
+	readonly name: string
+	readonly indexUrl: string
+	readonly skipIndex?: boolean
+	readonly nsfw?: boolean
+
+	readonly navigation: NavigationRule
+	readonly captions?: CaptionRule[]
+	readonly expansions?: ExpansionRule[]
+	readonly styles?: StyleRule[]
+	readonly autoSave?: AutoSaveRule
+}
+export interface Webcomics {
+	readonly [key: string]: WebcomicRules
+}
+export interface WebcomicHosts {
+	readonly [key: string]: Webcomics
 }
