@@ -216,8 +216,11 @@ function saveProgress(
 // add message listeners
 browser.runtime.onMessage.addListener(returnResponse)
 
-// add tab state change listener since single-page apps are very difficult to listen to from within the content script
-browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+function showPageActionIfApplicable(
+  tabId: number,
+  changeInfo: { [key: string]: any },
+  tab: browser.tabs.Tab,
+) {
   // check if url changed
   if (changeInfo.url) {
     browser.tabs.sendMessage(tabId, 'urlchanged').catch((e) => {})
@@ -235,11 +238,15 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     // hide if no rules matched
     browser.pageAction.hide(tabId)
   }
-})
+}
 
-// add storage listener to reload sites on change
-// TODO: replace tab reloading with dynamic enabling/disabling
-browser.storage.onChanged.addListener((changes, namespace) => {
+// add tab state change listener since single-page apps are very difficult to listen to from within the content script
+browser.tabs.onUpdated.addListener(showPageActionIfApplicable)
+
+function reloadOnChange(
+  changes: { [key: string]: browser.storage.StorageChange },
+  namespace: string,
+) {
   let patterns = []
 
   for (let key in changes) {
@@ -279,4 +286,8 @@ browser.storage.onChanged.addListener((changes, namespace) => {
       }
     })
   }
-})
+}
+
+// add storage listener to reload sites on change
+// TODO: replace tab reloading with dynamic enabling/disabling
+browser.storage.onChanged.addListener(reloadOnChange)
