@@ -1,17 +1,16 @@
 module.exports = {
-  overrides: [
-    {
-      files: ['*.test.js'],
-      env: { jest: true },
-    },
-  ],
   env: {
     browser: true,
     es2021: true,
     node: true,
     webextensions: true,
   },
-  extends: ['eslint:recommended', 'plugin:react/recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+  ],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
@@ -19,6 +18,6 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['react'],
+  plugins: ['react', '@typescript-eslint'],
   rules: {},
 }

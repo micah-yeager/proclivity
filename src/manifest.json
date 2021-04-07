@@ -57,13 +57,13 @@
     "*://xkcd.com/"
   ],
   "background": {
-    "scripts": ["background/index.js"],
+    "scripts": ["background/index.ts"],
     "persistent": false
   },
   "content_scripts": [
     {
       "run_at": "document_end",
-      "js": ["content/index.js"],
+      "js": ["content/index.ts"],
       "css": ["content/snackbar.css"],
       "matches": [
         "*://amultiverse.com/*",

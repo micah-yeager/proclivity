@@ -1,13 +1,13 @@
 import path from 'path'
 
 import alias from '@rollup/plugin-alias'
-import babel from '@rollup/plugin-babel'
 import cleanup from 'rollup-plugin-cleanup'
 import commonjs from '@rollup/plugin-commonjs'
 import json from '@rollup/plugin-json'
 import postcss from 'rollup-plugin-postcss'
 import replace from '@rollup/plugin-replace'
 import resolve from '@rollup/plugin-node-resolve'
+import typescript from '@rollup/plugin-typescript'
 
 import { chromeExtension, simpleReloader } from 'rollup-plugin-chrome-extension'
 import del from 'rollup-plugin-delete'
@@ -19,7 +19,7 @@ const isProduction = process.env.NODE_ENV === 'production'
 const projectRootDir = path.resolve(__dirname)
 const aliases = [
   {
-    find: 'src',
+    find: '@src',
     replacement: path.resolve(projectRootDir, 'src'),
   },
 ]
@@ -50,24 +50,25 @@ export default {
     // Adds a Chrome extension reloader during watch mode
     simpleReloader(),
     alias({ entries: aliases }),
+
     // Replace environment variables
     replace({
       preventAssignment: true,
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
-    babel({
-      // Do not transpile dependencies
-      ignore: ['node_modules'],
-      babelHelpers: 'bundled',
-    }),
     resolve({ preferBuiltins: false }),
-    commonjs(),
-    json({ compact: true }),
+
     postcss({
       extract: false,
       modules: true,
       use: ['sass'],
+      writeDefinitions: true,
+      namedExports: true,
     }),
+    commonjs(),
+    typescript(),
+    json({ compact: true }),
+
     cleanup({ comments: 'none' }),
     // Empties the output dir before a new build
     del({ targets: 'dist/*' }),

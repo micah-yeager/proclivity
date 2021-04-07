@@ -6,12 +6,14 @@ import {
 	Link,
 	Button,
 	Info,
-} from 'src/pages/components/settings'
-import 'src/pages/components/styles'
-import styles from './index.scss'
+} from '@src/pages/components/settings'
+import '@src/pages/components/styles'
+import { SiteRuleResponse, WebcomicRules, SiteMeta } from '@src/types'
 
 class App extends Component {
-	siteLabelPairs = {
+	state: { [key: string]: any }
+
+	siteLabelPairs: { [key: string]: string } = {
 		siteKeyboardNav: 'Enable keyboard navigation',
 		siteStaticCaptions: 'Enable static captions',
 		siteTextboxExpansion: 'Enable textbox expansion',
@@ -19,7 +21,7 @@ class App extends Component {
 		siteAutoSaveProgress: 'Auto-save progress',
 	}
 
-	constructor(props) {
+	constructor(props: { [key: string]: any }) {
 		super(props)
 		this.state = { loading: true }
 
@@ -29,21 +31,21 @@ class App extends Component {
 		this.processStorageChange = this.processStorageChange.bind(this)
 	}
 
-	shouldComponentUpdate() {
-		if (this.loading) {
+	shouldComponentUpdate(): boolean {
+		if (this.state.loading) {
 			return false
 		}
 		return true
 	}
 
-	componentDidMount() {
+	componentDidMount(): void {
 		let query = { active: true, currentWindow: true }
 		browser.tabs.query(query).then(this.getStorageFromTabUrl)
 	}
 
-	getStorageFromTabUrl(tabs) {
+	getStorageFromTabUrl(tabs: browser.tabs.Tab[]): void {
 		// set URL
-		let url = new URL(tabs[0].url)
+		let url = new URL(tabs[0].url as string)
 		let path = url.pathname + url.search
 
 		// parse URL
@@ -61,19 +63,25 @@ class App extends Component {
 		browser.storage.onChanged.addListener(this.processStorageChange)
 	}
 
-	parseBaseUrl(url) {
+	parseBaseUrl(url: string): string {
 		return url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0]
 	}
 
-	bootstrapStateFromResponse(response) {
+	bootstrapStateFromResponse(response: SiteRuleResponse): void {
 		this.setState(response.config)
-		this.setState({ webcomicSite: response.webcomicSite })
+		this.setState({
+			webcomicSite: (response.siteMeta as SiteMeta).data as WebcomicRules,
+		})
 		// set loading to be false to start rendering
 		this.setState({ loading: false })
+		this.forceUpdate()
 	}
 
-	processStorageChange(changes, namespace) {
-		let processedChanges = {}
+	processStorageChange(
+		changes: { [key: string]: browser.storage.StorageChange },
+		namespace: string,
+	): void {
+		let processedChanges: { [key: string]: any } = {}
 		for (let key in changes) {
 			// only apply changes if applicable to this site
 			if (key in this.state) {
@@ -83,16 +91,14 @@ class App extends Component {
 		this.setState(processedChanges)
 	}
 
-	handleChange(key, value) {
+	handleChange(key: string, value: any): void {
 		let dict = { [key]: value }
-		browser.storage.sync.set(dict).then(
-			function () {
-				this.setState(dict)
-			}.bind(this),
-		)
+		browser.storage.sync.set(dict).then(() => {
+			this.setState(dict)
+		})
 	}
 
-	render() {
+	render(): JSX.Element {
 		if (this.state.loading) {
 			return <div></div>
 		}
@@ -151,6 +157,7 @@ class App extends Component {
 								/>
 							)
 						}
+						return
 					})}
 					<Button
 						key="save"

@@ -6,29 +6,37 @@ import {
 	KeyCombo,
 	Link,
 	Info,
-} from 'src/pages/components/settings'
-import 'src/pages/components/styles'
+} from '@src/pages/components/settings'
+import '@src/pages/components/styles'
 import styles from './index.scss'
 import sortArray from 'sort-array'
 
+import { IndexSite } from '@src/types'
+
 class App extends Component {
-	constructor(props) {
+	state: { [key: string]: any }
+
+	siteList: IndexSite[] = []
+	defaults: { [key: string]: any } = {}
+
+	constructor(props: { [key: string]: any }) {
 		super(props)
 		this.state = { loading: true }
 
 		this.handleChange = this.handleChange.bind(this)
 		this.bootstrapStateFromStorage = this.bootstrapStateFromStorage.bind(this)
 		this.processStorageChange = this.processStorageChange.bind(this)
+		this.processSiteList = this.processSiteList.bind(this)
 	}
 
-	shouldComponentUpdate() {
-		if (this.loading) {
+	shouldComponentUpdate(): boolean {
+		if (this.state.loading) {
 			return false
 		}
 		return true
 	}
 
-	componentDidMount() {
+	componentDidMount(): void {
 		let toggleOptionDefaults = {
 			globalEnabled: true,
 			automaticUpdates: true,
@@ -44,47 +52,50 @@ class App extends Component {
 		}
 		this.defaults = { ...toggleOptionDefaults, ...keyComboDefaults }
 
-		// apply settings from storage
-		browser.runtime.sendMessage('indexSiteList').then(
-			function (siteList) {
-				this.siteList = sortArray(siteList, {
-					by: 'nameLower',
-					nameLower: (name) => name.toLowerCase(),
-				})
-				browser.storage.sync
-					.get(this.defaults)
-					.then(this.bootstrapStateFromStorage)
-			}.bind(this),
-		)
+		// retrieve and process site list
+		browser.runtime.sendMessage('indexSiteList').then(this.processSiteList)
+		// add a listener for storage changes to reflect in state
 		browser.storage.onChanged.addListener(this.processStorageChange)
 	}
 
-	bootstrapStateFromStorage(items) {
-		for (const [key, value] of Object.entries(items)) {
-			this.setState({ [key]: value })
-		}
+	processSiteList(siteList: IndexSite[]) {
+		// sort array by property
+		this.state.siteList = sortArray(siteList, {
+			by: ['nameLower'],
+			computed: {
+				nameLower: (indexSite: IndexSite) => {
+					return indexSite.name.toLowerCase()
+				},
+			},
+		})
 
-		this.setState({ loading: false })
+		// apply settings from storage
+		browser.storage.sync.get(this.defaults).then(this.bootstrapStateFromStorage)
 	}
 
-	processStorageChange(changes, namespace) {
-		let reload = false
+	bootstrapStateFromStorage(items: { [key: string]: any }): void {
+		this.setState(items)
+		this.setState({ loading: false })
+		this.forceUpdate()
+	}
 
+	processStorageChange(
+		changes: { [key: string]: browser.storage.StorageChange },
+		namespace: string,
+	): void {
 		for (let key in changes) {
 			this.setState({ [key]: changes[key].newValue })
 		}
 	}
 
-	handleChange(key, value) {
+	handleChange(key: string, value: any): void {
 		let dict = { [key]: value }
-		browser.storage.sync.set(dict).then(
-			function () {
-				this.setState(dict)
-			}.bind(this),
-		)
+		browser.storage.sync.set(dict).then(() => {
+			this.setState(dict)
+		})
 	}
 
-	render() {
+	render(): JSX.Element {
 		if (this.state.loading) {
 			return (
 				<div className={styles.pageContainer}>
@@ -184,9 +195,9 @@ class App extends Component {
 						/>
 					</Section>
 					<Section title="Supported webcomics">
-						{this.siteList.map((site) => (
-							<Link key={site.url} url={site.url} title={site.name} />
-						))}
+						{this.state.siteList.map((site: IndexSite) => {
+							return <Link key={site.url} url={site.url} title={site.name} />
+						})}
 					</Section>
 				</div>
 			</div>
