@@ -8,6 +8,7 @@ name: Create release
 
 jobs:
   build:
+    name: Build release
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -57,6 +58,7 @@ jobs:
           if-no-files-found: error
 
   package-chrome:
+    name: Build Chrome extension
     runs-on: ubuntu-latest
     environment: Release
     steps:
@@ -92,6 +94,7 @@ jobs:
           if-no-files-found: error
 
   github-release:
+    name: Create and upload release
     runs-on: ubuntu-latest
     steps:
       - name: Download .zip artifact
@@ -152,6 +155,7 @@ jobs:
           prerelease: false
 
   publish-chrome:
+    name: Publish Chrome extension to webstore
     runs-on: ubuntu-latest
     environment: Release
     steps:
@@ -180,6 +184,7 @@ jobs:
           refresh-token: ${{ CHROME_WEBSTORE_REFRESH_TOKEN }}
 
   publish-firefox:
+    name: Publish Firefox extension to webstore
     runs-on: ubuntu-latest
     environment: Release
     steps:
