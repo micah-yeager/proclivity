@@ -178,11 +178,11 @@ jobs:
           # Path to a .zip of your addon
           zip: releases/Proclivity-${{ github.ref }}.zip
           # Google OAuth2 client id
-          client-id: ${{ CHROME_WEBSTORE_CLIENT_ID }}
+          client-id: ${{ secrets.CHROME_WEBSTORE_CLIENT_ID }}
           # Google OAuth2 client secret
-          client-secret: ${{ CHROME_WEBSTORE_CLIENT_SECRET }}
+          client-secret: ${{ secrets.CHROME_WEBSTORE_CLIENT_SECRET }}
           # Google OAuth2 refresh token
-          refresh-token: ${{ CHROME_WEBSTORE_REFRESH_TOKEN }}
+          refresh-token: ${{ secrets.CHROME_WEBSTORE_REFRESH_TOKEN }}
 
   publish-firefox:
     name: Publish Firefox extension to webstore
