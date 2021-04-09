@@ -1,9 +1,9 @@
 on:
   push:
     # Sequence of patterns matched against refs/tags
-    branches: master
+    branches: [main]
     tags:
-      - '*.*.*'
+      - 'releases/[1-9]+.[0-9]+.[0-9]+'
 
 name: Create release
 
