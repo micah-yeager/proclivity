@@ -1,6 +1,7 @@
 import DOMPurify from 'dompurify'
 
 import { CaptionRule } from '@src/types'
+import { insertElement } from '@src/utils'
 import { Styles } from './styles'
 
 // caption rules
@@ -32,37 +33,16 @@ class PostComicWrapper {
       targetNode = document.querySelector(this.rule.destination.selector)
 
       if (targetNode) {
-        // sibling nodes
-        if (this.rule.destination.insertionMethod === 'before') {
-          ;(targetNode.parentNode as HTMLElement).insertBefore(
-            this._node,
-            targetNode,
-          )
-        } else if (this.rule.destination.insertionMethod === 'after') {
-          ;(targetNode.parentNode as HTMLElement).insertBefore(
-            this._node,
-            targetNode.nextSibling,
-          )
-
-          // parent nodes
-        } else if (this.rule.destination.insertionMethod === 'prependChild') {
-          targetNode.prepend(this._node)
-        } else if (this.rule.destination.insertionMethod === 'appendChild') {
-          targetNode.appendChild(this._node)
-
-          // failsafe if no match
-        } else {
-          targetNode = undefined
-        }
+        insertElement(
+          this._node,
+          targetNode as HTMLElement,
+          this.rule.destination.insertionMethod,
+        )
       }
     }
 
     if (!targetNode) {
-      // place the created element after the comic
-      ;(this.comicNode.parentNode as HTMLElement).insertBefore(
-        this._node,
-        this.comicNode.nextSibling,
-      )
+      insertElement(this._node, this.comicNode, 'after')
     }
 
     // add a class to the created element to temporarily hide it until processing is done

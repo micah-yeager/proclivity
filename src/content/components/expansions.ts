@@ -1,7 +1,12 @@
 import DOMPurify from 'dompurify'
 
 import { ExpansionRule } from '@src/types'
-import { parseBaseUrl, querySelectorAllList } from '@src/utils'
+import {
+  parseBaseUrl,
+  querySelectorAllList,
+  insertElement,
+  elementFromString,
+} from '@src/utils'
 import { Styles } from './styles'
 
 // constants
@@ -24,39 +29,51 @@ class Expansion {
   }
 
   process(): void {
+    let sourceNode = this.sourceNode
+    var nodeString: string = ''
+
     // if the target is a link...
     if (this.rule.isLink && this.sourceNode.tagName == 'A') {
+      let sourceAnchorNode = sourceNode as HTMLAnchorElement
       // get link
-      let link = new URL(this.sourceNode.getAttribute('href') as string)
+      let path = sourceAnchorNode.pathname as string
       // get file extension from link
-      let ext = (link.pathname
-        .split('.')
-        .slice(-1)
-        .pop() as string).toLowerCase()
+      let ext = (path.split('.').slice(-1).pop() as string).toLowerCase()
+
       // check if it's in the approved image extensions
-      if (ext in IMG_TYPES) {
+      if (IMG_TYPES.indexOf(ext) > -1) {
         // build the destination node contents as an node utilizing the link (usually as an img source)
-        this.destinationNode.innerHTML = [
+        nodeString = [
           // contentPrefix usually contains something like <img src="
           this.rule.prefix,
-          DOMPurify.sanitize(link.href),
+          DOMPurify.sanitize(path),
           // contentSuffix usually contains something like " />
           this.rule.suffix,
         ].join('')
+
         // otherwise, if it's a YouTube link
-      } else if (parseBaseUrl(link.host) === 'youtube.com') {
+      } else if (parseBaseUrl(sourceAnchorNode.host) === 'youtube.com') {
         // TODO: implement YouTube imbeds
       }
+      sourceNode = sourceAnchorNode
+
       // otherwise (usually if it's just plain text)
     } else {
       // create the node with the set prefixes and suffixes
-      this.destinationNode.innerHTML = [
+      nodeString = [
         this.rule.prefix,
         // can't sanitize using encoding since subelements are allowed and often expected
-        DOMPurify.sanitize(this.sourceNode.innerHTML),
+        DOMPurify.sanitize(sourceNode.innerHTML),
         this.rule.suffix,
       ].join('')
     }
+
+    let newNode = elementFromString(nodeString)
+    insertElement(
+      newNode,
+      this.destinationNode,
+      this.rule.destination.insertionMethod,
+    )
   }
 
   apply(): void {
@@ -67,9 +84,7 @@ class Expansion {
       document.body.contains(this.sourceNode) &&
       this.rule.sourceSelector !== this.rule.destination.selector
     ) {
-      ;(this.sourceNode.parentNode as HTMLCanvasElement).removeChild(
-        this.sourceNode,
-      )
+      ;(this.sourceNode.parentNode as HTMLElement).removeChild(this.sourceNode)
     }
   }
 }
