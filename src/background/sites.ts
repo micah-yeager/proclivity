@@ -348,7 +348,8 @@ export const siteRules: WebcomicHosts = {
       navigation: {
         previousSelector:
           '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
-        nextSelector: '.o_story-nav > div:last-of-type a',
+        nextSelector:
+          '.o_story-nav > div:last-of-type a, .o_story-nav a:not([href="#2"])',
       },
       captions: [
         {
