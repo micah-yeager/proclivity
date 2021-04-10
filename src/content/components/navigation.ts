@@ -40,12 +40,12 @@ export class Navigation {
 
       // get parents as defined above
       for (let {} of this.levelsRange) {
-        prev = (prev as HTMLCanvasElement).parentElement
+        prev = (prev as HTMLElement).parentElement
       }
 
       Mousetrap.bind(this.prevCombo, (event: any) => {
         // if the prev element exists, click it
-        ;(prev as HTMLCanvasElement).click()
+        ;(prev as HTMLElement).click()
       })
     }
 
@@ -55,12 +55,12 @@ export class Navigation {
 
       // get parents as defined above
       for (let {} of this.levelsRange) {
-        next = (next as HTMLCanvasElement).parentElement
+        next = (next as HTMLElement).parentElement
       }
 
       Mousetrap.bind(this.nextCombo, (event: any) => {
         // if the next element exists, click it
-        ;(next as HTMLCanvasElement).click()
+        ;(next as HTMLElement).click()
       })
     }
   }

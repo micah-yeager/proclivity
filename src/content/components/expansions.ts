@@ -14,13 +14,13 @@ let IMG_TYPES = ['jpg', 'png', 'gif']
 
 // element expansions
 class Expansion {
-  sourceNode: HTMLCanvasElement
-  destinationNode: HTMLCanvasElement
+  sourceNode: HTMLElement
+  destinationNode: HTMLElement
   rule: ExpansionRule
 
   constructor(
-    sourceNode: HTMLCanvasElement,
-    destinationNode: HTMLCanvasElement,
+    sourceNode: HTMLElement,
+    destinationNode: HTMLElement,
     rule: ExpansionRule,
   ) {
     this.sourceNode = sourceNode
@@ -29,12 +29,11 @@ class Expansion {
   }
 
   process(): void {
-    let sourceNode = this.sourceNode
     var nodeString: string = ''
 
     // if the target is a link...
     if (this.rule.isLink && this.sourceNode.tagName == 'A') {
-      let sourceAnchorNode = sourceNode as HTMLAnchorElement
+      let sourceAnchorNode = this.sourceNode as HTMLAnchorElement
       // get link
       let path = sourceAnchorNode.pathname as string
       // get file extension from link
@@ -55,7 +54,6 @@ class Expansion {
       } else if (parseBaseUrl(sourceAnchorNode.host) === 'youtube.com') {
         // TODO: implement YouTube imbeds
       }
-      sourceNode = sourceAnchorNode
 
       // otherwise (usually if it's just plain text)
     } else {
@@ -63,7 +61,7 @@ class Expansion {
       nodeString = [
         this.rule.prefix,
         // can't sanitize using encoding since subelements are allowed and often expected
-        DOMPurify.sanitize(sourceNode.innerHTML),
+        DOMPurify.sanitize(this.sourceNode.innerHTML),
         this.rule.suffix,
       ].join('')
     }
@@ -93,8 +91,8 @@ export class ExpansionSet {
   styles: Styles
 
   id: string
-  sourceNodes: HTMLCanvasElement[]
-  destinationNodes: HTMLCanvasElement[]
+  sourceNodes: HTMLElement[]
+  destinationNodes: HTMLElement[]
 
   sources: Expansion[] = []
 

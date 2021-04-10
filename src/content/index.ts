@@ -224,14 +224,14 @@ class ComicWebsite {
       showAction: true,
       actionText: 'No thanks',
       actionTextColor: '#f28b82',
-      onActionClick: (element: HTMLCanvasElement) => {
+      onActionClick: (element: HTMLElement) => {
         element.style.opacity = '0'
       },
       // "second" button is on the lift side
       showSecondButton: true,
       secondButtonText: 'Do it',
       secondButtonTextColor: '#1c82f0',
-      onSecondButtonClick: (element: HTMLCanvasElement) => {
+      onSecondButtonClick: (element: HTMLElement) => {
         // use .href() so history is generated
         location.href = this.autoSavedUrl as string
         // hide notification in case of single-page apps
@@ -251,9 +251,7 @@ class ComicWebsite {
     // copy alt-text
     for (let altRule of this.webcomicRules.captions as CaptionRule[]) {
       // get the comic image elements
-      let comics: HTMLCanvasElement[] = querySelectorAllList(
-        altRule.comicSelector,
-      )
+      let comics: HTMLElement[] = querySelectorAllList(altRule.comicSelector)
       // add the elements to the list and process them
       for (let comic of comics as any) {
         let caption = new Caption(comic, altRule, this.styles)
