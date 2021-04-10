@@ -359,15 +359,6 @@ export const siteRules: WebcomicHosts = {
       ],
       expansions: [
         {
-          sourceSelector: '.o_chat-log',
-          destination: {
-            selector: '.o_chat-container',
-            insertionMethod: 'replace',
-          },
-          styleProperties:
-            'display: block; line-height: 1.35; font-size: 14px; text-align: left; padding: 16px 32.5px',
-        },
-        {
           sourceSelector: '.o_chat-log span a',
           destination: {
             selector: '.o_chat-log span a',
@@ -380,6 +371,10 @@ export const siteRules: WebcomicHosts = {
         },
       ],
       styles: [
+        {
+          selector: '.o_chat-log',
+          properties: 'display: block;',
+        },
         {
           selector: '.o_chat-container span[style*="color: #FFFFFF"]',
           properties: 'background-color: #000;',
