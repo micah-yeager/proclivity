@@ -404,7 +404,7 @@ export const siteRules: WebcomicHosts = {
         {
           selector: '#desktop_skyscraper',
           properties:
-            'z-index: unset !important; background-color: #C6C6C6 !important;',
+            'z-index: unset !important; background-color: unset !important;',
         },
       ],
       autoSave: {
