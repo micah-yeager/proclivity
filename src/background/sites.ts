@@ -348,7 +348,8 @@ export const siteRules: WebcomicHosts = {
       navigation: {
         previousSelector:
           '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
-        nextSelector: '.o_story-nav > div:last-of-type a',
+        nextSelector:
+          '.o_story-nav > div:last-of-type a, .o_story-nav a:not([href="#2"])',
       },
       captions: [
         {
@@ -357,15 +358,6 @@ export const siteRules: WebcomicHosts = {
         },
       ],
       expansions: [
-        {
-          sourceSelector: '.o_chat-log',
-          destination: {
-            selector: '.o_chat-container',
-            insertionMethod: 'replace',
-          },
-          styleProperties:
-            'display: block; line-height: 1.35; font-size: 14px; text-align: left; padding: 16px 32.5px',
-        },
         {
           sourceSelector: '.o_chat-log span a',
           destination: {
@@ -377,23 +369,33 @@ export const siteRules: WebcomicHosts = {
           styleProperties: 'display: inline-block; text-indent: 0;',
           isLink: true,
         },
+        {
+          sourceSelector: '.o_chat-log-btn',
+          destination: {
+            selector: '.o_chat-log-btn',
+            insertionMethod: 'replace',
+          },
+          prefix: '<button disabled>',
+          suffix: '</button>',
+        },
       ],
       styles: [
+        {
+          selector: '.o_chat-log',
+          properties: 'display: block;',
+        },
         {
           selector: '.o_chat-container span[style*="color: #FFFFFF"]',
           properties: 'background-color: #000;',
         },
         {
-          selector: '.o_chat-container br + span',
-          properties: 'display: block; padding-left: 34px; text-indent: -34px;',
+          selector: '.o_chat-log > span:not(:only-child)',
+          properties:
+            'display: inline-block; padding-left: 34px; text-indent: -34px;',
         },
         {
           selector: '.o_chat-container span, .o_chat-container span *',
           properties: 'vertical-align: top;',
-        },
-        {
-          selector: '.o_chat-container br + span + br',
-          properties: 'display: none;',
         },
         {
           selector: '.o_chat-container img',
@@ -402,7 +404,7 @@ export const siteRules: WebcomicHosts = {
         {
           selector: '#desktop_skyscraper',
           properties:
-            'z-index: unset !important; background-color: #C6C6C6 !important;',
+            'z-index: unset !important; background-color: unset !important;',
         },
       ],
       autoSave: {
