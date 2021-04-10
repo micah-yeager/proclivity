@@ -369,6 +369,15 @@ export const siteRules: WebcomicHosts = {
           styleProperties: 'display: inline-block; text-indent: 0;',
           isLink: true,
         },
+        {
+          sourceSelector: '.o_chat-log-btn',
+          destination: {
+            selector: '.o_chat-log-btn',
+            insertionMethod: 'replace',
+          },
+          prefix: '<button disabled>',
+          suffix: '</button>',
+        },
       ],
       styles: [
         {
