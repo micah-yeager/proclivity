@@ -34,14 +34,16 @@ export interface NavigationRule {
 	readonly previousSelector: string
 	readonly levelsAboveSelector?: number
 }
+export type InsertionMethod =
+	| 'replace'
+	| 'before'
+	| 'after'
+	| 'prependChild'
+	| 'appendChild'
+	| 'replaceContents'
 export interface DestinationRule {
 	readonly selector: string
-	readonly insertionMethod:
-		| 'replace'
-		| 'before'
-		| 'after'
-		| 'prependChild'
-		| 'appendChild'
+	readonly insertionMethod: InsertionMethod
 }
 export interface CaptionRule {
 	readonly comicSelector: string
