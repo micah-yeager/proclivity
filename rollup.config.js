@@ -47,8 +47,6 @@ export default {
   },
   plugins: [
     chromeExtension({ browserPolyfill: true }),
-    // Adds a Chrome extension reloader during watch mode
-    simpleReloader(),
     alias({ entries: aliases }),
 
     // Replace environment variables
@@ -70,6 +68,9 @@ export default {
     json({ compact: true }),
 
     cleanup({ comments: 'none' }),
+
+    // // Adds a Chrome extension reloader during watch mode
+    // simpleReloader(),
     // Empties the output dir before a new build
     del({ targets: 'dist/*' }),
     // Outputs a zip file in ./releases
