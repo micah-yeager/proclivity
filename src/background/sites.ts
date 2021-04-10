@@ -380,16 +380,13 @@ export const siteRules: WebcomicHosts = {
           properties: 'background-color: #000;',
         },
         {
-          selector: '.o_chat-container br + span',
-          properties: 'display: block; padding-left: 34px; text-indent: -34px;',
+          selector: '.o_chat-log > span:not(:only-child)',
+          properties:
+            'display: inline-block; padding-left: 34px; text-indent: -34px;',
         },
         {
           selector: '.o_chat-container span, .o_chat-container span *',
           properties: 'vertical-align: top;',
-        },
-        {
-          selector: '.o_chat-container br + span + br',
-          properties: 'display: none;',
         },
         {
           selector: '.o_chat-container img',
