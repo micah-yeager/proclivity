@@ -370,9 +370,9 @@ export const siteRules: WebcomicHosts = {
           sourceSelector: '.o_chat-log span a',
           destination: {
             selector: '.o_chat-log span a',
-            insertionMethod: 'replace',
+            insertionMethod: 'after',
           },
-          prefix: '<img src="',
+          prefix: '<br><img src="',
           suffix: '" />',
           styleProperties: 'display: inline-block; text-indent: 0;',
           isLink: true,
@@ -720,7 +720,10 @@ export const siteRules: WebcomicHosts = {
       expansions: [
         {
           sourceSelector: '.refbody',
-          destination: { selector: '.refnum', insertionMethod: 'replace' },
+          destination: {
+            selector: '.refnum',
+            insertionMethod: 'replaceContents',
+          },
           prefix: ' [',
           suffix: '] ',
           styleProperties:
