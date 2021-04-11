@@ -17,7 +17,6 @@ export function elementFromString(input: string): Node {
 	// never return a space text node as a result
 	input = input.trim()
 	template.innerHTML = input
-	console.log(template)
 
 	return template.content
 }

@@ -109,7 +109,6 @@ export class ExpansionSet {
     if (this.rule.destination === 'unwrappedTextNodes') {
       this._targetUnwrappedTextNodes = true
 
-      console.log(this.rule.sourceSelector)
       this.destinationNodes = Array.from(
         (document.querySelector(this.rule.sourceSelector) as HTMLElement)
           .childNodes,
