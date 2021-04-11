@@ -1,6 +1,6 @@
 import DOMPurify from 'dompurify'
 
-import { ExpansionRule } from '@src/types'
+import { ExpansionRule, DestinationRule } from '@src/types'
 import {
   parseBaseUrl,
   querySelectorAllList,
@@ -70,7 +70,7 @@ class Expansion {
     insertElement(
       newNode,
       this.destinationNode,
-      this.rule.destination.insertionMethod,
+      (this.rule.destination as DestinationRule).insertionMethod,
     )
   }
 
@@ -80,19 +80,21 @@ class Expansion {
     // remove the expansion source if it still exists and hasn't already been directly replaced by the expansion rule
     if (
       document.body.contains(this.sourceNode) &&
-      this.rule.sourceSelector !== this.rule.destination.selector
+      this.rule.sourceSelector !==
+        (this.rule.destination as DestinationRule).selector
     ) {
       ;(this.sourceNode.parentNode as HTMLElement).removeChild(this.sourceNode)
     }
   }
 }
 export class ExpansionSet {
+  private _targetUnwrappedTextNodes: boolean = false
   rule: ExpansionRule
   styles: Styles
 
   id: string
   sourceNodes: HTMLElement[]
-  destinationNodes: HTMLElement[]
+  destinationNodes: Text[] | HTMLElement[]
 
   sources: Expansion[] = []
 
@@ -102,33 +104,79 @@ export class ExpansionSet {
 
     this.id = '_' + Math.random().toString(36).substr(2, 9)
     this.sourceNodes = querySelectorAllList(rule.sourceSelector)
-    this.destinationNodes = querySelectorAllList(rule.destination.selector)
+
+    // if for child unwrapped text nodes
+    if (this.rule.destination === 'unwrappedTextNodes') {
+      this._targetUnwrappedTextNodes = true
+
+      console.log(this.rule.sourceSelector)
+      this.destinationNodes = Array.from(
+        (document.querySelector(this.rule.sourceSelector) as HTMLElement)
+          .childNodes,
+      ).filter(
+        (node) =>
+          node.nodeType === 3 &&
+          node.textContent &&
+          node.textContent.length > 1,
+      ) as Text[]
+
+      // otherwise, do the normal rule
+    } else {
+      this.destinationNodes = querySelectorAllList(
+        (rule.destination as DestinationRule).selector,
+      )
+    }
   }
 
   process(): void {
     this.sources = []
     if (
+      !this._targetUnwrappedTextNodes &&
       this.sourceNodes &&
       this.destinationNodes &&
       this.sourceNodes.length === this.destinationNodes.length
     ) {
-      let iteration = 0
-      for (let sourceNode of this.sourceNodes) {
-        let destinationNode = this.destinationNodes[iteration]
-        destinationNode.classList.add('proclivity-expansion' + this.id)
+      this.processRules()
+    } else if (
+      this._targetUnwrappedTextNodes &&
+      this.sourceNodes &&
+      this.destinationNodes
+    ) {
+      this.wrapTextNodes()
+    }
 
-        let source = new Expansion(sourceNode, destinationNode, this.rule)
-        this.sources.push(source)
-        source.apply()
+    if (this.rule.styleProperties) {
+      this.styles.apply({
+        selector: '.proclivity-expansion' + this.id,
+        properties: this.rule.styleProperties,
+      })
+    }
+  }
 
-        iteration += 1
-      }
-      if (this.rule.styleProperties) {
-        this.styles.apply({
-          selector: '.proclivity-expansion' + this.id,
-          properties: this.rule.styleProperties,
-        })
-      }
+  processRules(): void {
+    let iteration = 0
+    for (let sourceNode of this.sourceNodes) {
+      let destinationNode = this.destinationNodes[iteration] as HTMLElement
+      destinationNode.classList.add('proclivity-expansion' + this.id)
+
+      let source = new Expansion(
+        sourceNode,
+        destinationNode as HTMLElement,
+        this.rule,
+      )
+      this.sources.push(source)
+      source.apply()
+
+      iteration += 1
+    }
+  }
+
+  wrapTextNodes(): void {
+    for (let node of this.destinationNodes) {
+      const span = document.createElement('span')
+      node.after(span)
+      span.appendChild(node)
+      span.classList.add('proclivity-expansion' + this.id)
     }
   }
 }

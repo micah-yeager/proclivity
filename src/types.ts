@@ -57,7 +57,7 @@ export interface CaptionRule {
 }
 export interface ExpansionRule {
 	readonly sourceSelector: string
-	readonly destination: DestinationRule
+	readonly destination: DestinationRule | 'unwrappedTextNodes'
 	readonly isLink?: boolean
 
 	readonly prefix?: string
