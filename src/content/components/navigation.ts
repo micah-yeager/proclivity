@@ -17,7 +17,7 @@ export class Navigation {
     this.prevCombo = prevCombo
   }
 
-  initialize(): void {
+  apply(): void {
     // get next and previous button elements
     let prev: HTMLElement | null = document.querySelector(
       this.rule.previousSelector,

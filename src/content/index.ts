@@ -133,7 +133,7 @@ class ComicWebsite {
       this.localEnableKeyboardNav &&
       this.webcomicRules.navigation
     ) {
-      this.navigation.initialize()
+      this.navigation.apply()
     }
 
     let path = location.pathname + location.search

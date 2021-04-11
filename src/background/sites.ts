@@ -73,8 +73,10 @@ export const siteRules: WebcomicHosts = {
       name: 'Buttercup Festival',
       indexUrl: 'http://www.buttercupfestival.com/',
       navigation: {
-        previousSelector: 'center > * > a:nth-last-child(3)',
-        nextSelector: 'center > * > a:nth-last-child(2)',
+        previousSelector:
+          'center > * > a:nth-last-child(3):not([href="2-1.htm"]), center > * > a:nth-child(2):not([href="index.htm"])',
+        nextSelector:
+          'center > * > a:first-child:nth-last-child(2), center > * > a:nth-child(3):nth-last-child(2)',
       },
       autoSave: {
         additionalIndices: ['/index.htm'],
@@ -137,8 +139,8 @@ export const siteRules: WebcomicHosts = {
       name: 'Daisy Owl',
       indexUrl: 'https://daisyowl.com/',
       navigation: {
-        previousSelector: '.nav > *:first-child',
-        nextSelector: '.nav > *:last-child',
+        previousSelector: '.nav > *:first-child:not(.nothing)',
+        nextSelector: '.nav > *:last-child:not(.nothing)',
       },
       captions: [
         {
@@ -349,7 +351,7 @@ export const siteRules: WebcomicHosts = {
         previousSelector:
           '.o_game-nav:first-of-type .o_game-nav-item:nth-of-type(2) a',
         nextSelector:
-          '.o_story-nav > div:last-of-type a, .o_story-nav a:not([href="#2"])',
+          '.o_story-nav a:not([href="#2"]):not([href="/story/7235"])',
       },
       captions: [
         {
