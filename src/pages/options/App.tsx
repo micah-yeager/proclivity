@@ -39,16 +39,14 @@ class App extends Component {
 	componentDidMount(): void {
 		let toggleOptionDefaults = {
 			globalEnabled: true,
-			automaticUpdates: true,
-			enableNewSites: true,
 			globalStaticCaptions: true,
 			globalKeyboardNav: true,
 			globalCustomStyles: true,
 			globalTextboxExpansion: true,
 		}
 		let keyComboDefaults = {
-			nextCombo: ['right'],
-			prevCombo: ['left'],
+			globalNextCombo: ['right'],
+			globalPrevCombo: ['left'],
 		}
 		this.defaults = { ...toggleOptionDefaults, ...keyComboDefaults }
 
@@ -126,16 +124,16 @@ class App extends Component {
 							description="Key combos are added to each webcomic page to allow for navigating via keyboard. To disable keyboard navigation, de-select this option."
 						/>
 						<KeyCombo
-							key="nextCombo"
-							id="nextCombo"
-							value={this.state.nextCombo}
+							key="globalNextCombo"
+							id="globalNextCombo"
+							value={this.state.globalNextCombo}
 							onChange={this.handleChange}
 							title="Key combo for next page"
 						/>
 						<KeyCombo
-							key="prevCombo"
-							id="prevCombo"
-							value={this.state.prevCombo}
+							key="globalPrevCombo"
+							id="globalPrevCombo"
+							value={this.state.globalPrevCombo}
 							onChange={this.handleChange}
 							title="Key combo for previous page"
 						/>
