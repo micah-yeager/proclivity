@@ -78,6 +78,12 @@ export const siteRules: WebcomicHosts = {
         nextSelector:
           'center > * > a:first-child:nth-last-child(2), center > * > a:nth-child(3):nth-last-child(2)',
       },
+      styles: [
+        {
+          selector: 'body > table',
+          properties: 'margin: 0 auto;',
+        },
+      ],
       autoSave: {
         additionalIndices: ['/index.htm'],
         allowedPattern: /[0-9]-[0-9]+\.htm/g,
