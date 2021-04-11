@@ -533,7 +533,7 @@ export const siteRules: WebcomicHosts = {
       ],
       autoSave: {
         allowedPattern: /.+/g,
-        ignoredPattern: /archive\//g,
+        ignoredPattern: /(archive\/|age-confirmation\/.*)/g,
       },
     },
   },
