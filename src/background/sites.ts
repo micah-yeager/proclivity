@@ -386,11 +386,16 @@ export const siteRules: WebcomicHosts = {
           prefix: '<button disabled>',
           suffix: '</button>',
         },
+        {
+          sourceSelector: '.o_chat-log',
+          destination: 'unwrappedTextNodes',
+          styleProperties: 'width: initial !important;',
+        },
       ],
       styles: [
         {
           selector: '.o_chat-log',
-          properties: 'display: block;',
+          properties: 'display: block !important;',
         },
         {
           selector: '.o_chat-container span[style*="color: #FFFFFF"]',
@@ -399,7 +404,16 @@ export const siteRules: WebcomicHosts = {
         {
           selector: '.o_chat-log > span:not(:only-child)',
           properties:
-            'display: inline-block; padding-left: 34px; text-indent: -34px;',
+            'display: inline-block; padding-left: 34px; text-indent: -34px; white-space: break-spaces;',
+        },
+        {
+          selector: '.o_chat-log > br + span',
+          properties: 'width: 100%;',
+        },
+        {
+          selector:
+            '.o_chat-log > br + br + span, .o_chat-log > span + br + br, .o_chat-log > span:last-of-type, .o_chat-log > span:first-of-type',
+          properties: 'width: initial !important;',
         },
         {
           selector: '.o_chat-container span, .o_chat-container span *',
